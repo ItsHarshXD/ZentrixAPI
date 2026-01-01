@@ -47,7 +47,7 @@ publishing {
             pom {
                 name.set("ZentrixAPI")
                 description.set("Developer API for creating Zentrix addons")
-                url.set("https://github.com/ItsHarshXD/Zentrix")
+                url.set("https://github.com/ItsHarshXD/ZentrixAPI")
 
                 licenses {
                     license {
