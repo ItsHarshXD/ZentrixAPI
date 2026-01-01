@@ -65,6 +65,8 @@ public final class MyAddon extends ZentrixAddon {
 
 See the [Developer API Wiki](https://zentrix.gitbook.io/docs/dev-api) for full documentation.
 
+Browse the [Javadocs](https://itsharshxd.github.io/ZentrixAPI/) for API reference.
+
 ## Requirements
 
 - Java 21+
