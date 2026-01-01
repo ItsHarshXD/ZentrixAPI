@@ -3,7 +3,7 @@ plugins {
     `maven-publish`
 }
 
-group = "dev.itsharshxd"
+group = "com.github.ItsHarshXD"
 version = "1.0.0"
 
 java {
@@ -42,6 +42,9 @@ tasks.javadoc {
 publishing {
     publications {
         create<MavenPublication>("mavenJava") {
+            groupId = "com.github.ItsHarshXD"
+            artifactId = "ZentrixAPI"
+            
             from(components["java"])
 
             pom {
@@ -60,6 +63,12 @@ publishing {
                         id.set("itsharshxd")
                         name.set("ItsHarshXD")
                     }
+                }
+
+                scm {
+                    connection.set("scm:git:github.com/ItsHarshXD/ZentrixAPI.git")
+                    developerConnection.set("scm:git:ssh://github.com/ItsHarshXD/ZentrixAPI.git")
+                    url.set("https://github.com/ItsHarshXD/ZentrixAPI")
                 }
             }
         }
