@@ -1,8 +1,9 @@
-name: Deploy Javadoc
+name: Deploy Versioned Javadoc
 
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - '*'
   workflow_dispatch:
 
 jobs:
@@ -10,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -23,11 +25,24 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
 
+      - name: Grant execute permission for Gradle
+        run: chmod +x ./gradlew
+
       - name: Build Javadoc
         run: ./gradlew javadoc
 
-      - name: Deploy to GitHub Pages
+      # 🔹 Deploy versioned docs: /api/1.0.0
+      - name: Deploy versioned Javadoc
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: build/docs/javadoc
           branch: gh-pages
+          folder: build/docs/javadoc
+          target-folder: api/${{ github.ref_name }}
+
+      # 🔹 Deploy latest docs: /api/latest
+      - name: Deploy latest Javadoc
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: build/docs/javadoc
+          target-folder: api/latest
