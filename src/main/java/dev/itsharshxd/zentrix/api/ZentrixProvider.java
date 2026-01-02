@@ -3,32 +3,30 @@ package dev.itsharshxd.zentrix.api;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Static provider for accessing the ZentrixAPI.
+ * Internal provider for the ZentrixAPI instance.
  * <p>
- * Third-party addons use this class to obtain an instance of the {@link ZentrixAPI}
- * for interacting with Zentrix Battle Royale games.
+ * <b>For addon developers:</b> Use {@link ZentrixAPI#get()} instead of this class.
+ * The static methods on {@link ZentrixAPI} are the recommended way to access the API.
  * </p>
  *
- * <h2>Usage Example</h2>
+ * <h2>Recommended Usage</h2>
  * <pre>{@code
- * // Check if API is available
- * if (ZentrixProvider.isAvailable()) {
- *     ZentrixAPI api = ZentrixProvider.get();
- *
- *     // Use the API
- *     api.getGameService().getActiveGames();
- * }
+ * // Use ZentrixAPI.get() instead (recommended)
+ * ZentrixAPI api = ZentrixAPI.get();
+ * api.getGameService().getActiveGames();
  * }</pre>
  *
- * <h2>Important Notes</h2>
- * <ul>
- *   <li>Always check {@link #isAvailable()} before calling {@link #get()} if unsure whether Zentrix is loaded</li>
- *   <li>The API becomes available after Zentrix plugin is fully enabled</li>
- *   <li>The API becomes unavailable when Zentrix plugin is disabled</li>
- * </ul>
+ * <h2>When to use ZentrixProvider directly</h2>
+ * <p>
+ * This class is primarily used internally by the Zentrix core plugin and the
+ * {@link ZentrixAddon} base class. Direct usage is only needed for advanced
+ * scenarios like manual API registration/unregistration.
+ * </p>
  *
  * @author ItsHarshXD
  * @since 1.0.0
+ * @see ZentrixAPI#get()
+ * @see ZentrixAPI#isAvailable()
  */
 public final class ZentrixProvider {
 
@@ -44,14 +42,12 @@ public final class ZentrixProvider {
     /**
      * Gets the ZentrixAPI instance.
      * <p>
-     * This method should only be called after confirming the API is available
-     * using {@link #isAvailable()}, or from within a Zentrix addon that has
-     * already been enabled (which guarantees Zentrix is loaded).
+     * <b>Prefer using {@link ZentrixAPI#get()} instead.</b>
      * </p>
      *
      * @return The API instance
      * @throws IllegalStateException if the API has not been initialized yet
-     *         (Zentrix plugin is not enabled)
+     * @see ZentrixAPI#get()
      */
     @NotNull
     public static ZentrixAPI get() {
@@ -69,21 +65,11 @@ public final class ZentrixProvider {
     /**
      * Checks if the ZentrixAPI is available.
      * <p>
-     * Use this method to safely check whether the API can be accessed
-     * before calling {@link #get()}.
+     * <b>Prefer using {@link ZentrixAPI#isAvailable()} instead.</b>
      * </p>
      *
-     * <pre>{@code
-     * if (ZentrixProvider.isAvailable()) {
-     *     ZentrixAPI api = ZentrixProvider.get();
-     *     // Safe to use API
-     * } else {
-     *     // Zentrix is not loaded
-     * }
-     * }</pre>
-     *
-     * @return {@code true} if the API is initialized and ready to use,
-     *         {@code false} otherwise
+     * @return {@code true} if the API is initialized and ready to use
+     * @see ZentrixAPI#isAvailable()
      */
     public static boolean isAvailable() {
         return instance != null;

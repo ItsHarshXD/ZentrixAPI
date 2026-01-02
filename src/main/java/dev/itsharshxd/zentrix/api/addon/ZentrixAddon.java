@@ -24,8 +24,8 @@ import java.util.logging.Level;
  *         // Your addon initialization code
  *         getLogger().info("MyAddon enabled!");
  *
- *         // Access the API
- *         ZentrixAPI api = getAPI();
+ *         // Access the API (within addon class)
+ *         ZentrixAPI api = ZentrixAPI.get();
  *         api.getGameService().getActiveGames();
  *     }
  *
@@ -42,6 +42,12 @@ import java.util.logging.Level;
  * }
  * }</pre>
  *
+ * <h2>API Access</h2>
+ * <p>
+ * Use {@link ZentrixAPI#get()} to access the API from anywhere in your addon.
+ * This is the single recommended way to obtain the API instance.
+ * </p>
+ *
  * <h2>plugin.yml Configuration</h2>
  * <p>
  * Your addon's plugin.yml should declare Zentrix as a dependency:
@@ -56,6 +62,7 @@ import java.util.logging.Level;
  *
  * @author ItsHarshXD
  * @since 1.0.0
+ * @see ZentrixAPI#get()
  */
 public abstract class ZentrixAddon extends JavaPlugin {
 
@@ -163,7 +170,7 @@ public abstract class ZentrixAddon extends JavaPlugin {
      * and after the addon has been registered with Zentrix.
      * </p>
      * <p>
-     * At this point, you can safely use {@link #getAPI()} to access the ZentrixAPI.
+     * At this point, you can safely use {@link ZentrixAPI#get()} to access the API.
      * </p>
      */
     protected abstract void onAddonEnable();
@@ -217,14 +224,15 @@ public abstract class ZentrixAddon extends JavaPlugin {
     /**
      * Gets the ZentrixAPI instance.
      * <p>
-     * This is a convenience method that delegates to {@link ZentrixProvider#get()}.
-     * Only call this after the addon has been enabled (i.e., within or after
-     * {@link #onAddonEnable()}).
+     * <b>Prefer using {@link ZentrixAPI#get()} instead.</b>
+     * This method is kept for backwards compatibility but using the static
+     * method on ZentrixAPI directly is the recommended approach.
      * </p>
      *
      * @return The ZentrixAPI instance (never null)
      * @throws IllegalStateException if called before the addon is enabled
      *         or if Zentrix is not available
+     * @see ZentrixAPI#get()
      */
     @NotNull
     protected final ZentrixAPI getAPI() {
@@ -239,10 +247,12 @@ public abstract class ZentrixAddon extends JavaPlugin {
     /**
      * Checks if the ZentrixAPI is currently available.
      * <p>
+     * <b>Prefer using {@link ZentrixAPI#isAvailable()} instead.</b>
      * This is useful for checking API availability outside of the enable phase.
      * </p>
      *
      * @return {@code true} if the API is available
+     * @see ZentrixAPI#isAvailable()
      */
     protected final boolean isAPIAvailable() {
         return apiAvailable && ZentrixProvider.isAvailable();

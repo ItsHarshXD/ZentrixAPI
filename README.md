@@ -5,6 +5,13 @@
 
 Developer API for creating Zentrix Battle Royale addons.
 
+## Features
+
+- Query games, players, teams, phases, and stats
+- React to gameplay via events
+- Register custom recipes with craft limits
+- Store addon data under `plugins/Zentrix/addons/<addon-id>/`
+
 ## Installation
 
 ### Gradle (Kotlin DSL)
@@ -51,26 +58,53 @@ dependencies {
 
 ## Quick Start
 
+### 1. Create Your Addon
+
 ```java
 public final class MyAddon extends ZentrixAddon {
     @Override
     protected void onAddonEnable() {
-        ZentrixAPI api = getAPI();
+        // Access the API
+        ZentrixAPI api = ZentrixAPI.get();
+        
+        // Use services
+        api.getGameService().getActiveGames();
+        
+        // Register listeners
         getServer().getPluginManager().registerEvents(new MyListener(), this);
     }
 }
 ```
 
+### 2. Add plugin.yml
+
+```yaml
+name: MyAddon
+version: 1.0.0
+main: com.example.myaddon.MyAddon
+depend: [Zentrix]
+api-version: '1.21'
+```
+
+### 3. Use the API Anywhere
+
+```java
+// Single, simple way to access the API
+ZentrixAPI api = ZentrixAPI.get();
+api.getGameService().getActiveGames();
+api.getCurrencyService().getBalance(player);
+```
+
 ## Documentation
 
-See the [Developer API Wiki](https://zentrix.gitbook.io/docs/dev-api) for full documentation.
-
-Browse the [Javadocs](https://itsharshxd.github.io/ZentrixAPI/) for API reference.
+- [Developer API Wiki](https://zentrix.gitbook.io/docs/dev-api) - Full documentation
+- [Javadocs](https://itsharshxd.github.io/ZentrixAPI/) - API reference
+- [Example Addon](https://github.com/ItsHarshXD/ZentrixExampleAddon) - Working example
 
 ## Requirements
 
 - Java 21+
-- Paper 1.21.9-1.21.10
+- Paper 1.21.9-.1.21.10
 - Zentrix plugin
 
 ## License

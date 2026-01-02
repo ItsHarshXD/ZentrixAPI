@@ -21,8 +21,8 @@ import org.jetbrains.annotations.NotNull;
  *
  * <h2>Getting Started</h2>
  * <pre>{@code
- * // Get the API instance
- * ZentrixAPI api = ZentrixProvider.get();
+ * // Get the API instance (recommended)
+ * ZentrixAPI api = ZentrixAPI.get();
  *
  * // Access services
  * GameService gameService = api.getGameService();
@@ -46,6 +46,54 @@ import org.jetbrains.annotations.NotNull;
  * @since 1.0.0
  */
 public interface ZentrixAPI {
+
+    /**
+     * Gets the ZentrixAPI instance.
+     * <p>
+     * This is the recommended way to access the Zentrix API from anywhere in your addon.
+     * </p>
+     *
+     * <h3>Usage Example</h3>
+     * <pre>{@code
+     * // Get the API instance
+     * ZentrixAPI api = ZentrixAPI.get();
+     *
+     * // Use services
+     * api.getGameService().getActiveGames();
+     * api.getCurrencyService().getBalance(player);
+     * }</pre>
+     *
+     * @return The API instance (never null)
+     * @throws IllegalStateException if Zentrix is not loaded. Ensure your plugin.yml
+     *         has {@code depend: [Zentrix]} to guarantee load order.
+     * @since 1.0.0
+     */
+    @NotNull
+    static ZentrixAPI get() {
+        return ZentrixProvider.get();
+    }
+
+    /**
+     * Checks if the ZentrixAPI is available.
+     * <p>
+     * Use this method to safely check whether the API can be accessed
+     * before calling {@link #get()}.
+     * </p>
+     *
+     * <h3>Usage Example</h3>
+     * <pre>{@code
+     * if (ZentrixAPI.isAvailable()) {
+     *     ZentrixAPI api = ZentrixAPI.get();
+     *     // Safe to use API
+     * }
+     * }</pre>
+     *
+     * @return {@code true} if the API is initialized and ready to use
+     * @since 1.0.0
+     */
+    static boolean isAvailable() {
+        return ZentrixProvider.isAvailable();
+    }
     /**
      * Gets the API version for compatibility checks.
      * <p>
