@@ -5,6 +5,13 @@
 
 Developer API for creating Zentrix Battle Royale addons.
 
+## Resources
+
+- [Developer API Wiki](https://zentrix.gitbook.io/docs/dev-api) - Full documentation
+- [Javadocs](https://itsharshxd.github.io/ZentrixAPI/) - API reference
+- [Example Addon](https://github.com/ItsHarshXD/ZentrixExampleAddon) - Working example
+
+
 ## Features
 
 - Query games, players, teams, phases, and stats
@@ -94,12 +101,6 @@ ZentrixAPI api = ZentrixAPI.get();
 api.getGameService().getActiveGames();
 api.getCurrencyService().getBalance(player);
 ```
-
-## Documentation
-
-- [Developer API Wiki](https://zentrix.gitbook.io/docs/dev-api) - Full documentation
-- [Javadocs](https://itsharshxd.github.io/ZentrixAPI/) - API reference
-- [Example Addon](https://github.com/ItsHarshXD/ZentrixExampleAddon) - Working example
 
 ## Requirements
 
