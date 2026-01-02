@@ -116,8 +116,8 @@ loadScripts(document, 'script');</script>
          // Your addon initialization code
          getLogger().info("MyAddon enabled!");
 
-         // Access the API
-         ZentrixAPI api = getAPI();
+         // Access the API (within addon class)
+         ZentrixAPI api = ZentrixAPI.get();
          api.getGameService().getActiveGames();
      }
 
@@ -134,6 +134,12 @@ loadScripts(document, 'script');</script>
  }
  </code></pre>
 
+ <h2 id="api-access-heading">API Access</h2>
+ <p>
+ Use <a href="../ZentrixAPI.html#get()"><code>ZentrixAPI.get()</code></a> to access the API from anywhere in your addon.
+ This is the single recommended way to obtain the API instance.
+ </p>
+
  <h2 id="plugin-yml-configuration-heading">plugin.yml Configuration</h2>
  <p>
  Your addon's plugin.yml should declare Zentrix as a dependency:
@@ -148,6 +154,12 @@ loadScripts(document, 'script');</script>
 <dl class="notes">
 <dt>Since:</dt>
 <dd>1.0.0</dd>
+<dt>See Also:</dt>
+<dd>
+<ul class="tag-list">
+<li><a href="../ZentrixAPI.html#get()"><code>ZentrixAPI.get()</code></a></li>
+</ul>
+</dd>
 </dl>
 </section>
 <section class="summary">
@@ -308,7 +320,7 @@ loadScripts(document, 'script');</script>
  and after the addon has been registered with Zentrix.
  </p>
  <p>
- At this point, you can safely use <a href="#getAPI()"><code>getAPI()</code></a> to access the ZentrixAPI.
+ At this point, you can safely use <a href="../ZentrixAPI.html#get()"><code>ZentrixAPI.get()</code></a> to access the API.
  </p></div>
 </section>
 </li>
@@ -369,9 +381,9 @@ loadScripts(document, 'script');</script>
 </span><span class="modifiers">protected final</span>&nbsp;<span class="return-type">@NotNull <a href="../ZentrixAPI.html" title="interface in dev.itsharshxd.zentrix.api">ZentrixAPI</a></span>&nbsp;<span class="element-name">getAPI</span>()</div>
 <div class="block">Gets the ZentrixAPI instance.
  <p>
- This is a convenience method that delegates to <a href="../ZentrixProvider.html#get()"><code>ZentrixProvider.get()</code></a>.
- Only call this after the addon has been enabled (i.e., within or after
- <a href="#onAddonEnable()"><code>onAddonEnable()</code></a>).
+ <b>Prefer using <a href="../ZentrixAPI.html#get()"><code>ZentrixAPI.get()</code></a> instead.</b>
+ This method is kept for backwards compatibility but using the static
+ method on ZentrixAPI directly is the recommended approach.
  </p></div>
 <dl class="notes">
 <dt>Returns:</dt>
@@ -379,6 +391,12 @@ loadScripts(document, 'script');</script>
 <dt>Throws:</dt>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/IllegalStateException.html" title="class or interface in java.lang" class="external-link">IllegalStateException</a></code> - if called before the addon is enabled
          or if Zentrix is not available</dd>
+<dt>See Also:</dt>
+<dd>
+<ul class="tag-list">
+<li><a href="../ZentrixAPI.html#get()"><code>ZentrixAPI.get()</code></a></li>
+</ul>
+</dd>
 </dl>
 </section>
 </li>
@@ -388,11 +406,18 @@ loadScripts(document, 'script');</script>
 <div class="member-signature"><span class="modifiers">protected final</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">isAPIAvailable</span>()</div>
 <div class="block">Checks if the ZentrixAPI is currently available.
  <p>
+ <b>Prefer using <a href="../ZentrixAPI.html#isAvailable()"><code>ZentrixAPI.isAvailable()</code></a> instead.</b>
  This is useful for checking API availability outside of the enable phase.
  </p></div>
 <dl class="notes">
 <dt>Returns:</dt>
 <dd><code>true</code> if the API is available</dd>
+<dt>See Also:</dt>
+<dd>
+<ul class="tag-list">
+<li><a href="../ZentrixAPI.html#isAvailable()"><code>ZentrixAPI.isAvailable()</code></a></li>
+</ul>
+</dd>
 </dl>
 </section>
 </li>

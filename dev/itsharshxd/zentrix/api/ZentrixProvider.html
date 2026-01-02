@@ -92,32 +92,40 @@ loadScripts(document, 'script');</script>
 <hr>
 <div class="type-signature"><span class="modifiers">public final class </span><span class="element-name type-name-label">ZentrixProvider</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span></div>
-<div class="block">Static provider for accessing the ZentrixAPI.
+<div class="block">Internal provider for the ZentrixAPI instance.
  <p>
- Third-party addons use this class to obtain an instance of the <a href="ZentrixAPI.html" title="interface in dev.itsharshxd.zentrix.api"><code>ZentrixAPI</code></a>
- for interacting with Zentrix Battle Royale games.
+ <b>For addon developers:</b> Use <a href="ZentrixAPI.html#get()"><code>ZentrixAPI.get()</code></a> instead of this class.
+ The static methods on <a href="ZentrixAPI.html" title="interface in dev.itsharshxd.zentrix.api"><code>ZentrixAPI</code></a> are the recommended way to access the API.
  </p>
 
- <h2 id="usage-example-heading">Usage Example</h2>
+ <h2 id="recommended-usage-heading">Recommended Usage</h2>
  <pre><code>
- // Check if API is available
- if (ZentrixProvider.isAvailable()) {
-     ZentrixAPI api = ZentrixProvider.get();
-
-     // Use the API
-     api.getGameService().getActiveGames();
- }
+ // Use ZentrixAPI.get() instead (recommended)
+ ZentrixAPI api = ZentrixAPI.get();
+ api.getGameService().getActiveGames();
  </code></pre>
 
- <h2 id="important-notes-heading">Important Notes</h2>
- <ul>
-   <li>Always check <a href="#isAvailable()"><code>isAvailable()</code></a> before calling <a href="#get()"><code>get()</code></a> if unsure whether Zentrix is loaded</li>
-   <li>The API becomes available after Zentrix plugin is fully enabled</li>
-   <li>The API becomes unavailable when Zentrix plugin is disabled</li>
- </ul></div>
+ <h2 id="when-to-use-zentrixprovider-directly-heading">When to use ZentrixProvider directly</h2>
+ <p>
+ This class is primarily used internally by the Zentrix core plugin and the
+ 
+<details class="invalid-tag">
+<summary>invalid reference</summary>
+<pre><code>ZentrixAddon</code></pre>
+</details>
+ base class. Direct usage is only needed for advanced
+ scenarios like manual API registration/unregistration.
+ </p></div>
 <dl class="notes">
 <dt>Since:</dt>
 <dd>1.0.0</dd>
+<dt>See Also:</dt>
+<dd>
+<ul class="tag-list">
+<li><a href="ZentrixAPI.html#get()"><code>ZentrixAPI.get()</code></a></li>
+<li><a href="ZentrixAPI.html#isAvailable()"><code>ZentrixAPI.isAvailable()</code></a></li>
+</ul>
+</dd>
 </dl>
 </section>
 <section class="summary">
@@ -177,16 +185,19 @@ loadScripts(document, 'script');</script>
 </span><span class="modifiers">public static</span>&nbsp;<span class="return-type">@NotNull <a href="ZentrixAPI.html" title="interface in dev.itsharshxd.zentrix.api">ZentrixAPI</a></span>&nbsp;<span class="element-name">get</span>()</div>
 <div class="block">Gets the ZentrixAPI instance.
  <p>
- This method should only be called after confirming the API is available
- using <a href="#isAvailable()"><code>isAvailable()</code></a>, or from within a Zentrix addon that has
- already been enabled (which guarantees Zentrix is loaded).
+ <b>Prefer using <a href="ZentrixAPI.html#get()"><code>ZentrixAPI.get()</code></a> instead.</b>
  </p></div>
 <dl class="notes">
 <dt>Returns:</dt>
 <dd>The API instance</dd>
 <dt>Throws:</dt>
-<dd><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/IllegalStateException.html" title="class or interface in java.lang" class="external-link">IllegalStateException</a></code> - if the API has not been initialized yet
-         (Zentrix plugin is not enabled)</dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/IllegalStateException.html" title="class or interface in java.lang" class="external-link">IllegalStateException</a></code> - if the API has not been initialized yet</dd>
+<dt>See Also:</dt>
+<dd>
+<ul class="tag-list">
+<li><a href="ZentrixAPI.html#get()"><code>ZentrixAPI.get()</code></a></li>
+</ul>
+</dd>
 </dl>
 </section>
 </li>
@@ -196,22 +207,17 @@ loadScripts(document, 'script');</script>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">isAvailable</span>()</div>
 <div class="block">Checks if the ZentrixAPI is available.
  <p>
- Use this method to safely check whether the API can be accessed
- before calling <a href="#get()"><code>get()</code></a>.
- </p>
-
- <pre><code>
- if (ZentrixProvider.isAvailable()) {
-     ZentrixAPI api = ZentrixProvider.get();
-     // Safe to use API
- } else {
-     // Zentrix is not loaded
- }
- </code></pre></div>
+ <b>Prefer using <a href="ZentrixAPI.html#isAvailable()"><code>ZentrixAPI.isAvailable()</code></a> instead.</b>
+ </p></div>
 <dl class="notes">
 <dt>Returns:</dt>
-<dd><code>true</code> if the API is initialized and ready to use,
-         <code>false</code> otherwise</dd>
+<dd><code>true</code> if the API is initialized and ready to use</dd>
+<dt>See Also:</dt>
+<dd>
+<ul class="tag-list">
+<li><a href="ZentrixAPI.html#isAvailable()"><code>ZentrixAPI.isAvailable()</code></a></li>
+</ul>
+</dd>
 </dl>
 </section>
 </li>
