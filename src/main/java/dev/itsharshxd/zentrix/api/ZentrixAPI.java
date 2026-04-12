@@ -2,12 +2,14 @@ package dev.itsharshxd.zentrix.api;
 
 import dev.itsharshxd.zentrix.api.addon.AddonManager;
 import dev.itsharshxd.zentrix.api.broadcast.BroadcastService;
+import dev.itsharshxd.zentrix.api.chat.ChatChannelService;
 import dev.itsharshxd.zentrix.api.classes.ClassService;
 import dev.itsharshxd.zentrix.api.currency.CurrencyService;
 import dev.itsharshxd.zentrix.api.data.DataService;
 import dev.itsharshxd.zentrix.api.game.GameService;
 import dev.itsharshxd.zentrix.api.gametype.GameTypeService;
 import dev.itsharshxd.zentrix.api.item.ItemService;
+import dev.itsharshxd.zentrix.api.party.PartyService;
 import dev.itsharshxd.zentrix.api.phase.PhaseService;
 import dev.itsharshxd.zentrix.api.player.PlayerService;
 import dev.itsharshxd.zentrix.api.profile.ProfileService;
@@ -46,6 +48,8 @@ import org.jetbrains.annotations.NotNull;
  *   <li>{@link BroadcastService} - Broadcast registration and management (since 1.1.0)</li>
  *   <li>{@link GameTypeService} - Game type registration and management (since 1.1.0)</li>
  *   <li>{@link ItemService} - Item registration and management (since 1.1.0)</li>
+ *   <li>{@link PartyService} - Party system operations (since 1.2.0)</li>
+ *   <li>{@link ChatChannelService} - Chat channel management (since 1.2.0)</li>
  * </ul>
  *
  * @author ItsHarshXD
@@ -326,4 +330,38 @@ public interface ZentrixAPI {
      */
     @NotNull
     ItemService getItemService();
+
+    /**
+     * Gets the party service for party system operations.
+     * <p>
+     * Use this service to:
+     * <ul>
+     *   <li>Query party state and membership</li>
+     *   <li>Create, disband, and manage parties</li>
+     *   <li>Invite, kick, and promote members</li>
+     * </ul>
+     * </p>
+     *
+     * @return The party service instance
+     * @since 1.2.0
+     */
+    @NotNull
+    PartyService getPartyService();
+
+    /**
+     * Gets the chat channel service for chat channel management.
+     * <p>
+     * Use this service to:
+     * <ul>
+     *   <li>Get and set player chat channels</li>
+     *   <li>Toggle between available channels</li>
+     *   <li>Check channel availability (team, party)</li>
+     * </ul>
+     * </p>
+     *
+     * @return The chat channel service instance
+     * @since 1.2.0
+     */
+    @NotNull
+    ChatChannelService getChatChannelService();
 }
