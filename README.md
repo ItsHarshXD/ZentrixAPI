@@ -29,7 +29,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly("com.github.ItsHarshXD:ZentrixAPI:1.0.0")
+    compileOnly("com.github.ItsHarshXD:ZentrixAPI:1.1.0")
 }
 ```
 
@@ -41,7 +41,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'com.github.ItsHarshXD:ZentrixAPI:1.0.0'
+    compileOnly 'com.github.ItsHarshXD:ZentrixAPI:1.1.0'
 }
 ```
 
@@ -58,7 +58,7 @@ dependencies {
 <dependency>
     <groupId>com.github.ItsHarshXD</groupId>
     <artifactId>ZentrixAPI</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <scope>provided</scope>
 </dependency>
 ```
