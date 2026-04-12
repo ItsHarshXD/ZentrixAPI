@@ -201,4 +201,46 @@ public interface GamePhase {
      * @return {@code true} if this phase triggers deathmatch
      */
     boolean startsDeathmatch();
+
+    // ==========================================
+    // Dynamic Registration Info (since 1.1.0)
+    // ==========================================
+
+    /**
+     * Gets the addon ID that registered this phase.
+     * <p>
+     * Returns empty if this is a built-in phase from configuration
+     * or if no addon ID was specified during registration.
+     * </p>
+     *
+     * @return Optional containing the addon ID, or empty if not addon-registered
+     * @since 1.1.0
+     */
+    @NotNull
+    Optional<String> getAddonId();
+
+    /**
+     * Checks if this phase was dynamically registered by an addon.
+     * <p>
+     * Phases loaded from the configuration file return {@code false}.
+     * Phases registered via the API return {@code true}.
+     * </p>
+     *
+     * @return {@code true} if this phase was dynamically registered
+     * @since 1.1.0
+     */
+    boolean isDynamicallyRegistered();
+
+    /**
+     * Gets custom metadata fields for this phase.
+     * <p>
+     * Custom fields are set during dynamic registration via
+     * {@link PhaseBuilder#customField(String, Object)}.
+     * </p>
+     *
+     * @return An unmodifiable map of custom fields (never null, may be empty)
+     * @since 1.1.0
+     */
+    @NotNull
+    java.util.Map<String, Object> getCustomFields();
 }

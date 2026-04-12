@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Service for accessing game phase information within Zentrix.
@@ -195,4 +196,110 @@ public interface PhaseService {
      * @return The target border size, or 0 if not applicable
      */
     double getTargetBorderSize(@NotNull ZentrixGame game);
+
+    // ==========================================
+    // Dynamic Phase Registration (since 1.1.0)
+    // ==========================================
+
+    /**
+     * Registers a custom phase from a builder.
+     * <p>
+     * The phase is added at the end of the phase sequence.
+     * This method performs in-memory registration only.
+     * </p>
+     *
+     * @param builder The phase builder with configuration
+     * @return {@code true} if registration was successful
+     * @throws IllegalArgumentException if the builder is invalid
+     * @since 1.1.0
+     */
+    boolean registerPhase(@NotNull PhaseBuilder builder);
+
+    /**
+     * Registers a custom phase asynchronously with persistence.
+     * <p>
+     * The phase is added at the end of the phase sequence and
+     * saved to the phases.yml configuration file.
+     * </p>
+     *
+     * @param builder The phase builder with configuration
+     * @return A future that completes with {@code true} if successful
+     * @throws IllegalArgumentException if the builder is invalid
+     * @since 1.1.0
+     */
+    @NotNull
+    CompletableFuture<Boolean> registerPhaseAsync(@NotNull PhaseBuilder builder);
+
+    /**
+     * Registers a custom phase at a specific index in the phase sequence.
+     * <p>
+     * This method performs in-memory registration only.
+     * </p>
+     *
+     * @param builder The phase builder with configuration
+     * @param index   The index to insert at (0-based)
+     * @return {@code true} if registration was successful
+     * @throws IllegalArgumentException if the builder is invalid or index is out of bounds
+     * @since 1.1.0
+     */
+    boolean registerPhaseAt(@NotNull PhaseBuilder builder, int index);
+
+    /**
+     * Unregisters a phase by name.
+     * <p>
+     * This method performs in-memory removal only.
+     * </p>
+     *
+     * @param phaseName The name of the phase to unregister
+     * @return {@code true} if the phase was found and removed
+     * @since 1.1.0
+     */
+    boolean unregisterPhase(@NotNull String phaseName);
+
+    /**
+     * Unregisters a phase and removes it from the configuration file.
+     *
+     * @param phaseName The name of the phase to unregister
+     * @return A future that completes with {@code true} if successful
+     * @since 1.1.0
+     */
+    @NotNull
+    CompletableFuture<Boolean> unregisterPhaseAndDelete(@NotNull String phaseName);
+
+    /**
+     * Updates an existing phase with new configuration.
+     * <p>
+     * The phase must already exist. This replaces the phase configuration
+     * while maintaining its position in the sequence.
+     * </p>
+     *
+     * @param builder The phase builder with updated configuration
+     * @return {@code true} if the phase was found and updated
+     * @since 1.1.0
+     */
+    boolean updatePhase(@NotNull PhaseBuilder builder);
+
+    /**
+     * Gets all phases registered by a specific addon.
+     *
+     * @param addonId The addon identifier
+     * @return Collection of phases registered by the addon (never null, may be empty)
+     * @since 1.1.0
+     */
+    @NotNull
+    Collection<GamePhase> getPhasesByAddon(@NotNull String addonId);
+
+    /**
+     * Creates a new PhaseBuilder instance.
+     * <p>
+     * Convenience method for creating builders.
+     * </p>
+     *
+     * @return A new PhaseBuilder
+     * @since 1.1.0
+     */
+    @NotNull
+    default PhaseBuilder createPhaseBuilder() {
+        return new PhaseBuilder();
+    }
 }

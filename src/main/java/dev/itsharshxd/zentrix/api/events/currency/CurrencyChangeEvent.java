@@ -13,7 +13,7 @@ import java.util.UUID;
 /**
  * Called when a player's currency balance is about to change.
  * <p>
- * This event is fired before the balance modification is applied, allowing
+ * This event is fired <b>before</b> the balance modification is applied, allowing
  * addons to:
  * <ul>
  *   <li>Cancel the change entirely</li>
