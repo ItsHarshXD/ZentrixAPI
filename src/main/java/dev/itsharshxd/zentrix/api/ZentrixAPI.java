@@ -1,10 +1,13 @@
 package dev.itsharshxd.zentrix.api;
 
 import dev.itsharshxd.zentrix.api.addon.AddonManager;
+import dev.itsharshxd.zentrix.api.broadcast.BroadcastService;
 import dev.itsharshxd.zentrix.api.classes.ClassService;
 import dev.itsharshxd.zentrix.api.currency.CurrencyService;
 import dev.itsharshxd.zentrix.api.data.DataService;
 import dev.itsharshxd.zentrix.api.game.GameService;
+import dev.itsharshxd.zentrix.api.gametype.GameTypeService;
+import dev.itsharshxd.zentrix.api.item.ItemService;
 import dev.itsharshxd.zentrix.api.phase.PhaseService;
 import dev.itsharshxd.zentrix.api.player.PlayerService;
 import dev.itsharshxd.zentrix.api.profile.ProfileService;
@@ -37,9 +40,12 @@ import org.jetbrains.annotations.NotNull;
  *   <li>{@link ClassService} - Player class information</li>
  *   <li>{@link CurrencyService} - Economy operations</li>
  *   <li>{@link ProfileService} - Player statistics</li>
- *   <li>{@link PhaseService} - Game phase information</li>
+ *   <li>{@link PhaseService} - Game phase information and dynamic registration</li>
  *   <li>{@link DataService} - Data folder and configuration access</li>
  *   <li>{@link RecipeService} - Custom recipe management</li>
+ *   <li>{@link BroadcastService} - Broadcast registration and management (since 1.1.0)</li>
+ *   <li>{@link GameTypeService} - Game type registration and management (since 1.1.0)</li>
+ *   <li>{@link ItemService} - Item registration and management (since 1.1.0)</li>
  * </ul>
  *
  * @author ItsHarshXD
@@ -266,4 +272,58 @@ public interface ZentrixAPI {
      */
     @NotNull
     RecipeService getRecipeService();
+
+    /**
+     * Gets the broadcast service for broadcast management.
+     * <p>
+     * Use this service to:
+     * <ul>
+     *   <li>Register custom broadcasts</li>
+     *   <li>Query existing broadcasts</li>
+     *   <li>Control broadcast timing and triggering</li>
+     *   <li>Filter broadcasts by game state</li>
+     * </ul>
+     * </p>
+     *
+     * @return The broadcast service instance
+     * @since 1.1.0
+     */
+    @NotNull
+    BroadcastService getBroadcastService();
+
+    /**
+     * Gets the game type service for game type management.
+     * <p>
+     * Use this service to:
+     * <ul>
+     *   <li>Register custom game types (Trios, etc.)</li>
+     *   <li>Query existing game types</li>
+     *   <li>Configure game type scoreboards</li>
+     *   <li>Manage team sizes and player limits</li>
+     * </ul>
+     * </p>
+     *
+     * @return The game type service instance
+     * @since 1.1.0
+     */
+    @NotNull
+    GameTypeService getGameTypeService();
+
+    /**
+     * Gets the item service for custom item management.
+     * <p>
+     * Use this service to:
+     * <ul>
+     *   <li>Register custom items</li>
+     *   <li>Retrieve items by ID</li>
+     *   <li>Resolve items from multiple sources (vanilla, custom, ItemsAdder, Nexo)</li>
+     *   <li>Identify items for custom behavior</li>
+     * </ul>
+     * </p>
+     *
+     * @return The item service instance
+     * @since 1.1.0
+     */
+    @NotNull
+    ItemService getItemService();
 }
