@@ -184,7 +184,7 @@ public class GamePhaseChangeEvent extends ZentrixGameEvent {
      * Returns 0 if no border shrinkage is configured.
      * </p>
      *
-     * @return Target border diameter in blocks, or 0 if not applicable
+     * @return Target border radius in blocks, or 0 if not applicable
      */
     public double getBorderTargetSize() {
         return newPhase.getBorderTargetSize();

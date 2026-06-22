@@ -2,10 +2,12 @@ package dev.itsharshxd.zentrix.api.classes;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Represents a read-only view of a player class configuration.
@@ -35,6 +37,31 @@ import java.util.List;
  * @since 1.0.0
  */
 public interface PlayerClass {
+
+    default boolean isEnabled() { return true; }
+
+    /** GUI slot, or {@code -1} when no explicit slot is configured. */
+    default int getGuiSlot() { return -1; }
+
+    @Nullable
+    default String getRequiredPermission() { return null; }
+
+    default boolean requiresPermission() {
+        String permission = getRequiredPermission();
+        return permission != null && !permission.isBlank();
+    }
+
+    default boolean canSelect(@NotNull Player player) {
+        String permission = getRequiredPermission();
+        return isEnabled() && (permission == null || permission.isBlank() || player.hasPermission(permission));
+    }
+
+    /** Locked GUI icon, or {@code null} when the normal icon should be used. */
+    @Nullable
+    default ItemStack getNoPermissionItem() { return null; }
+
+    @NotNull
+    default Map<String, Object> getAbilityParameters() { return Map.of(); }
 
     /**
      * Gets the unique type identifier for this class.

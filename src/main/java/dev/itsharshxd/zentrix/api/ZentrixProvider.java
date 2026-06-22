@@ -1,5 +1,7 @@
 package dev.itsharshxd.zentrix.api;
 
+import dev.itsharshxd.zentrix.api.addon.ZentrixAddon;
+
 import org.jetbrains.annotations.NotNull;
 
 /**

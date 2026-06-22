@@ -9,12 +9,19 @@ import dev.itsharshxd.zentrix.api.data.DataService;
 import dev.itsharshxd.zentrix.api.game.GameService;
 import dev.itsharshxd.zentrix.api.gametype.GameTypeService;
 import dev.itsharshxd.zentrix.api.item.ItemService;
+import dev.itsharshxd.zentrix.api.locale.LocaleService;
 import dev.itsharshxd.zentrix.api.party.PartyService;
 import dev.itsharshxd.zentrix.api.phase.PhaseService;
 import dev.itsharshxd.zentrix.api.player.PlayerService;
 import dev.itsharshxd.zentrix.api.profile.ProfileService;
 import dev.itsharshxd.zentrix.api.recipe.RecipeService;
 import dev.itsharshxd.zentrix.api.team.TeamService;
+import dev.itsharshxd.zentrix.api.world.RuntimeWorldService;
+import dev.itsharshxd.zentrix.api.nether.NetherService;
+import dev.itsharshxd.zentrix.api.deathmatch.DeathmatchService;
+import dev.itsharshxd.zentrix.api.gamerule.GameRuleService;
+import dev.itsharshxd.zentrix.api.arena.ArenaSourceService;
+import dev.itsharshxd.zentrix.api.matchmaking.MatchmakingService;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -50,6 +57,13 @@ import org.jetbrains.annotations.NotNull;
  *   <li>{@link ItemService} - Item registration and management (since 1.1.0)</li>
  *   <li>{@link PartyService} - Party system operations (since 1.2.0)</li>
  *   <li>{@link ChatChannelService} - Chat channel management (since 1.2.0)</li>
+ *   <li>{@link RuntimeWorldService} - Runtime-world ownership and shared scopes (since 1.3.0)</li>
+ *   <li>{@link NetherService} - Per-game Nether status and access (since 1.3.0)</li>
+ *   <li>{@link DeathmatchService} - Deathmatch status and startup (since 1.3.0)</li>
+ *   <li>{@link GameRuleService} - Typed dynamic game rules (since 1.3.0)</li>
+ *   <li>{@link ArenaSourceService} - Dynamic source-arena registration (since 1.4.0)</li>
+ *   <li>{@link MatchmakingService} - Atomic group matchmaking (since 1.4.0)</li>
+ *   <li>{@link LocaleService} - Active locale and Zentrix text formatting for addons (since 1.5.0)</li>
  * </ul>
  *
  * @author ItsHarshXD
@@ -364,4 +378,46 @@ public interface ZentrixAPI {
      */
     @NotNull
     ChatChannelService getChatChannelService();
+
+    /** Runtime-world lookup across arena, waiting lobby, Nether, and deathmatch. */
+    @NotNull
+    default RuntimeWorldService getRuntimeWorldService() {
+        throw new UnsupportedOperationException("RuntimeWorldService requires Zentrix API 1.3.0");
+    }
+
+    /** Per-game Nether lifecycle and access control. */
+    @NotNull
+    default NetherService getNetherService() {
+        throw new UnsupportedOperationException("NetherService requires Zentrix API 1.3.0");
+    }
+
+    /** Deathmatch status and start operations. */
+    @NotNull
+    default DeathmatchService getDeathmatchService() {
+        throw new UnsupportedOperationException("DeathmatchService requires Zentrix API 1.3.0");
+    }
+
+    /** Typed dynamic game-rule queries and mutations. */
+    @NotNull
+    default GameRuleService getGameRuleService() {
+        throw new UnsupportedOperationException("GameRuleService requires Zentrix API 1.3.0");
+    }
+
+    /** Dynamic registration of externally installed source arenas. */
+    @NotNull
+    default ArenaSourceService getArenaSourceService() {
+        return ArenaSourceService.unsupported();
+    }
+
+    /** Atomic existing/pending/new-game matchmaking for addons. */
+    @NotNull
+    default MatchmakingService getMatchmakingService() {
+        return MatchmakingService.unsupported();
+    }
+
+    /** Active locale and Zentrix text formatting for addons. */
+    @NotNull
+    default LocaleService getLocaleService() {
+        throw new UnsupportedOperationException("LocaleService requires Zentrix API 1.5.0");
+    }
 }

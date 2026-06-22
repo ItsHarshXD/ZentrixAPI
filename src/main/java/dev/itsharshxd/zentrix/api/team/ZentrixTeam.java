@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.UUID;
+import java.util.Optional;
 
 /**
  * Represents a read-only view of a team in a Zentrix game.
@@ -31,6 +32,10 @@ import java.util.UUID;
  * @since 1.0.0
  */
 public interface ZentrixTeam {
+
+    /** Configured material identifier used by the team-selection GUI. */
+    @NotNull
+    default Optional<String> getSelectionMaterial() { return Optional.empty(); }
 
     /**
      * Gets the team's unique identifier.
@@ -68,7 +73,7 @@ public interface ZentrixTeam {
     /**
      * Gets the team's color code.
      * <p>
-     * This can be a hex color (e.g., "&#FF5555") or legacy color code.
+     * This can be a hex color (for example, {@code &#FF5555}) or legacy color code.
      * </p>
      *
      * @return The color code (never null)

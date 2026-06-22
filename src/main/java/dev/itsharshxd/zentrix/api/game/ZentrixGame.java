@@ -46,8 +46,8 @@ public interface ZentrixGame {
     /**
      * Gets the unique identifier for this game instance.
      * <p>
-     * This ID is unique across all active games and is typically
-     * a combination of arena name and instance number.
+     * This legacy ID combines the copied arena name and object hash. Prefer
+     * {@link #getRuntimeId()} for the canonical copied {@code game-*} ID.
      * </p>
      *
      * @return The unique game ID (never null)
@@ -55,10 +55,23 @@ public interface ZentrixGame {
     @NotNull
     String getGameId();
 
+    /** Canonical copied runtime identifier (normally {@code game-*}). */
+    @NotNull
+    default String getRuntimeId() {
+        return getArenaName();
+    }
+
+    /** Source/template arena used to create this runtime game, when known. */
+    @NotNull
+    default Optional<String> getSourceArenaName() {
+        return Optional.empty();
+    }
+
     /**
      * Gets the arena name this game is running on.
      * <p>
-     * Multiple game instances can run on copies of the same arena.
+     * This legacy value is the copied runtime arena name. Use
+     * {@link #getSourceArenaName()} for the source/template arena.
      * </p>
      *
      * @return The arena name (never null)

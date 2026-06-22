@@ -1,5 +1,6 @@
 package dev.itsharshxd.zentrix.api.phase;
 
+import dev.itsharshxd.zentrix.api.nether.NetherToggleRequest;
 import org.bukkit.Sound;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
@@ -7,6 +8,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Consumer;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 
 /**
  * Fluent builder for creating custom game phases dynamically.
@@ -76,7 +79,7 @@ public class PhaseBuilder {
         if (name.isEmpty()) {
             throw new IllegalArgumentException("Phase name cannot be empty");
         }
-        String lowerName = name.toLowerCase();
+        String lowerName = name.toLowerCase(Locale.ROOT);
         if (!lowerName.matches("[a-z0-9_]+")) {
             throw new IllegalArgumentException(
                 "Phase name must only contain lowercase letters, numbers, and underscores: " + name
@@ -93,7 +96,7 @@ public class PhaseBuilder {
      * (both legacy {@code &c} and hex {@code &#RRGGBB} formats).
      * </p>
      *
-     * @param displayName The display name (e.g., "&#990000&l BLOOD MOON")
+     * @param displayName The display name (for example, {@code &#990000&l BLOOD MOON})
      * @return This builder for chaining
      */
     @NotNull
@@ -200,7 +203,7 @@ public class PhaseBuilder {
     public PhaseBuilder addAnnounce(@NotNull String message) {
         Objects.requireNonNull(message, "Announce message cannot be null");
         Map<String, Object> params = new HashMap<>();
-        params.put("message", message);
+        params.put("value", message);
         this.onStartActions.add(new PhaseAction(PhaseActionType.ANNOUNCE, params));
         return this;
     }
@@ -236,10 +239,23 @@ public class PhaseBuilder {
     public PhaseBuilder addSound(@NotNull Sound sound, float volume, float pitch) {
         Objects.requireNonNull(sound, "Sound cannot be null");
         Map<String, Object> params = new HashMap<>();
-        params.put("sound", sound.name());
+        params.put("name", soundName(sound));
         params.put("volume", volume);
         params.put("pitch", pitch);
         this.onStartActions.add(new PhaseAction(PhaseActionType.SOUND, params));
+        return this;
+    }
+
+    @NotNull
+    public PhaseBuilder addSound(@NotNull Sound sound, float volume, float pitch, int delaySeconds) {
+        if (delaySeconds < 0) throw new IllegalArgumentException("Sound delay cannot be negative");
+        Objects.requireNonNull(sound, "Sound cannot be null");
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", soundName(sound));
+        params.put("volume", volume);
+        params.put("pitch", pitch);
+        params.put("delay", delaySeconds);
+        onStartActions.add(new PhaseAction(PhaseActionType.SOUND, params));
         return this;
     }
 
@@ -252,7 +268,7 @@ public class PhaseBuilder {
     @NotNull
     public PhaseBuilder addTogglePvP(boolean enable) {
         Map<String, Object> params = new HashMap<>();
-        params.put("enabled", enable);
+        params.put("enable", enable);
         this.onStartActions.add(new PhaseAction(PhaseActionType.TOGGLE_PVP, params));
         return this;
     }
@@ -289,7 +305,7 @@ public class PhaseBuilder {
     public PhaseBuilder addCommand(@NotNull String command) {
         Objects.requireNonNull(command, "Command cannot be null");
         Map<String, Object> params = new HashMap<>();
-        params.put("command", command);
+        params.put("value", command);
         this.onStartActions.add(new PhaseAction(PhaseActionType.COMMAND, params));
         return this;
     }
@@ -315,9 +331,47 @@ public class PhaseBuilder {
     public PhaseBuilder addGiveItem(@NotNull String itemId) {
         Objects.requireNonNull(itemId, "Item ID cannot be null");
         Map<String, Object> params = new HashMap<>();
-        params.put("item", itemId);
+        params.put("itemId", itemId);
         this.onStartActions.add(new PhaseAction(PhaseActionType.GIVE_ITEM, params));
         return this;
+    }
+
+    @NotNull
+    public PhaseBuilder addToggleNether(@NotNull NetherToggleRequest request) {
+        this.onStartActions.add(new PhaseAction(PhaseActionType.TOGGLE_NETHER, netherParameters(request)));
+        return this;
+    }
+
+    private static Map<String, Object> netherParameters(NetherToggleRequest request) {
+        Objects.requireNonNull(request, "request");
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put("enable", request.enabled());
+        request.pvp().ifPresent(value -> params.put("pvp", value));
+        request.border().ifPresent(border -> {
+            Map<String, Object> values = new LinkedHashMap<>();
+            border.getShrink().ifPresent(value -> values.put("doShrinkage", value));
+            border.getTargetRadius().ifPresent(value -> values.put("shrinkTo", value));
+            border.getDurationSeconds().ifPresent(value -> values.put("duration", value));
+            border.getDamageAmount().ifPresent(value -> values.put("damagePerBlock", value));
+            border.getDamageBuffer().ifPresent(value -> values.put("damageBuffer", value));
+            border.getWarningDistance().ifPresent(value -> values.put("warningDistance", value));
+            border.getWarningTime().ifPresent(value -> values.put("warningTime", value));
+            params.put("border", values);
+        });
+        return params;
+    }
+
+    private static String soundName(Sound sound) {
+        for (Field field : Sound.class.getFields()) {
+            if (Modifier.isStatic(field.getModifiers()) && field.getType() == Sound.class) {
+                try {
+                    if (field.get(null) == sound) return field.getName();
+                } catch (IllegalAccessException ignored) {
+                    // Public Bukkit sound fields are accessible; continue for custom implementations.
+                }
+            }
+        }
+        return sound.toString();
     }
 
     // ==========================================
@@ -514,6 +568,7 @@ public class PhaseBuilder {
         GIVE_ITEM,
         COMMAND,
         TOGGLE_PVP,
+        TOGGLE_NETHER,
         START_DEATHMATCH
     }
 
@@ -525,8 +580,8 @@ public class PhaseBuilder {
         private final Map<String, Object> parameters;
 
         public PhaseAction(@NotNull PhaseActionType type, @NotNull Map<String, Object> parameters) {
-            this.type = type;
-            this.parameters = new HashMap<>(parameters);
+            this.type = Objects.requireNonNull(type, "type");
+            this.parameters = deepMutableMap(Objects.requireNonNull(parameters, "parameters"));
         }
 
         @NotNull
@@ -536,7 +591,49 @@ public class PhaseBuilder {
 
         @NotNull
         public Map<String, Object> getParameters() {
-            return Collections.unmodifiableMap(parameters);
+            return deepImmutableMap(parameters);
+        }
+
+        /** Resolves a canonical parameter while accepting legacy aliases. */
+        @NotNull
+        public Optional<Object> getParameter(@NotNull String canonical, @NotNull String... aliases) {
+            if (parameters.containsKey(canonical)) return Optional.ofNullable(deepImmutableValue(parameters.get(canonical)));
+            for (String alias : aliases) {
+                if (parameters.containsKey(alias)) return Optional.ofNullable(deepImmutableValue(parameters.get(alias)));
+            }
+            return Optional.empty();
+        }
+
+        private static Map<String, Object> deepMutableMap(Map<?, ?> source) {
+            Map<String, Object> copy = new LinkedHashMap<>();
+            source.forEach((key, value) -> copy.put(String.valueOf(key), deepMutableValue(value)));
+            return copy;
+        }
+
+        private static Object deepMutableValue(Object value) {
+            if (value instanceof Map<?, ?> map) return deepMutableMap(map);
+            if (value instanceof List<?> list) return list.stream().map(PhaseAction::deepMutableValue).toList();
+            if (value instanceof Set<?> set) return set.stream().map(PhaseAction::deepMutableValue)
+                .collect(java.util.stream.Collectors.toCollection(LinkedHashSet::new));
+            return value;
+        }
+
+        private static Map<String, Object> deepImmutableMap(Map<?, ?> source) {
+            Map<String, Object> copy = new LinkedHashMap<>();
+            source.forEach((key, value) -> copy.put(String.valueOf(key), deepImmutableValue(value)));
+            return Collections.unmodifiableMap(copy);
+        }
+
+        private static Object deepImmutableValue(Object value) {
+            if (value instanceof Map<?, ?> map) return deepImmutableMap(map);
+            if (value instanceof List<?> list) return list.stream().map(PhaseAction::deepImmutableValue).toList();
+            if (value instanceof Set<?> set) {
+                LinkedHashSet<Object> copy = set.stream()
+                    .map(PhaseAction::deepImmutableValue)
+                    .collect(java.util.stream.Collectors.toCollection(LinkedHashSet::new));
+                return Collections.unmodifiableSet(copy);
+            }
+            return value;
         }
     }
 
@@ -548,6 +645,7 @@ public class PhaseBuilder {
         private double shrinkTo = 50;
         private int shrinkDuration = 60;
         private double damagePerBlock = 1.0;
+        private double damageBuffer = 5.0;
         private int warningTime = 0;
 
         /**
@@ -565,7 +663,7 @@ public class PhaseBuilder {
         /**
          * Sets the target border size after shrinkage.
          *
-         * @param size The target diameter in blocks
+         * @param size The target radius in blocks
          * @return This builder for chaining
          */
         @NotNull
@@ -608,6 +706,13 @@ public class PhaseBuilder {
             return this;
         }
 
+        @NotNull
+        public BorderConfigBuilder damageBuffer(double blocks) {
+            if (blocks < 0) throw new IllegalArgumentException("Damage buffer cannot be negative");
+            this.damageBuffer = blocks;
+            return this;
+        }
+
         /**
          * Sets the warning time before the phase ends.
          *
@@ -646,6 +751,7 @@ public class PhaseBuilder {
             copy.shrinkTo = this.shrinkTo;
             copy.shrinkDuration = this.shrinkDuration;
             copy.damagePerBlock = this.damagePerBlock;
+            copy.damageBuffer = this.damageBuffer;
             copy.warningTime = this.warningTime;
             return copy;
         }
@@ -655,6 +761,7 @@ public class PhaseBuilder {
         public double getShrinkTo() { return shrinkTo; }
         public int getShrinkDuration() { return shrinkDuration; }
         public double getDamagePerBlock() { return damagePerBlock; }
+        public double getDamageBuffer() { return damageBuffer; }
         public int getWarningTime() { return warningTime; }
     }
 
@@ -674,7 +781,7 @@ public class PhaseBuilder {
         public PhaseActionsBuilder announce(@NotNull String message) {
             Objects.requireNonNull(message, "Announce message cannot be null");
             Map<String, Object> params = new HashMap<>();
-            params.put("message", message);
+            params.put("value", message);
             actions.add(new PhaseAction(PhaseActionType.ANNOUNCE, params));
             return this;
         }
@@ -729,9 +836,22 @@ public class PhaseBuilder {
         public PhaseActionsBuilder sound(@NotNull Sound sound, float volume, float pitch) {
             Objects.requireNonNull(sound, "Sound cannot be null");
             Map<String, Object> params = new HashMap<>();
-            params.put("sound", sound.name());
+            params.put("name", soundName(sound));
             params.put("volume", volume);
             params.put("pitch", pitch);
+            actions.add(new PhaseAction(PhaseActionType.SOUND, params));
+            return this;
+        }
+
+        @NotNull
+        public PhaseActionsBuilder sound(@NotNull Sound sound, float volume, float pitch, int delaySeconds) {
+            if (delaySeconds < 0) throw new IllegalArgumentException("Sound delay cannot be negative");
+            Objects.requireNonNull(sound, "Sound cannot be null");
+            Map<String, Object> params = new HashMap<>();
+            params.put("name", soundName(sound));
+            params.put("volume", volume);
+            params.put("pitch", pitch);
+            params.put("delay", delaySeconds);
             actions.add(new PhaseAction(PhaseActionType.SOUND, params));
             return this;
         }
@@ -745,7 +865,7 @@ public class PhaseBuilder {
         @NotNull
         public PhaseActionsBuilder togglePvP(boolean enable) {
             Map<String, Object> params = new HashMap<>();
-            params.put("enabled", enable);
+            params.put("enable", enable);
             actions.add(new PhaseAction(PhaseActionType.TOGGLE_PVP, params));
             return this;
         }
@@ -779,7 +899,7 @@ public class PhaseBuilder {
         public PhaseActionsBuilder giveItem(@NotNull String itemId) {
             Objects.requireNonNull(itemId, "Item ID cannot be null");
             Map<String, Object> params = new HashMap<>();
-            params.put("item", itemId);
+            params.put("itemId", itemId);
             actions.add(new PhaseAction(PhaseActionType.GIVE_ITEM, params));
             return this;
         }
@@ -794,7 +914,7 @@ public class PhaseBuilder {
         public PhaseActionsBuilder command(@NotNull String command) {
             Objects.requireNonNull(command, "Command cannot be null");
             Map<String, Object> params = new HashMap<>();
-            params.put("command", command);
+            params.put("value", command);
             actions.add(new PhaseAction(PhaseActionType.COMMAND, params));
             return this;
         }
@@ -807,6 +927,12 @@ public class PhaseBuilder {
         @NotNull
         public PhaseActionsBuilder startDeathmatch() {
             actions.add(new PhaseAction(PhaseActionType.START_DEATHMATCH, new HashMap<>()));
+            return this;
+        }
+
+        @NotNull
+        public PhaseActionsBuilder toggleNether(@NotNull NetherToggleRequest request) {
+            actions.add(new PhaseAction(PhaseActionType.TOGGLE_NETHER, netherParameters(request)));
             return this;
         }
 

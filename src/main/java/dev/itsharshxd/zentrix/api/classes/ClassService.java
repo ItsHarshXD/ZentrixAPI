@@ -34,6 +34,22 @@ import java.util.UUID;
  */
 public interface ClassService {
 
+    @NotNull
+    default Collection<PlayerClass> getEnabledClasses() {
+        return getAvailableClasses().stream().filter(PlayerClass::isEnabled).toList();
+    }
+
+    @NotNull
+    default Collection<PlayerClass> getSelectableClasses(@NotNull Player player) {
+        return getAvailableClasses().stream().filter(playerClass -> playerClass.canSelect(player)).toList();
+    }
+
+    default boolean hasExplicitClassSelection(@NotNull Player player) {
+        return hasExplicitClassSelection(player.getUniqueId());
+    }
+
+    default boolean hasExplicitClassSelection(@NotNull UUID playerId) { return false; }
+
     /**
      * Gets all available player classes.
      * <p>

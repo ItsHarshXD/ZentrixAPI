@@ -1,9 +1,11 @@
 package dev.itsharshxd.zentrix.api.phase;
 
+import dev.itsharshxd.zentrix.api.nether.NetherToggleRequest;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
+import java.util.List;
 
 /**
  * Represents a read-only view of a game phase configuration.
@@ -85,7 +87,7 @@ public interface GamePhase {
      * Returns 0 if no border shrinkage is configured.
      * </p>
      *
-     * @return Target border diameter in blocks
+     * @return Target border radius in blocks
      */
     double getBorderTargetSize();
 
@@ -108,6 +110,9 @@ public interface GamePhase {
      * @return Damage per block per second
      */
     double getBorderDamagePerBlock();
+
+    /** Border-safe-zone distance in blocks before damage begins. */
+    default double getBorderDamageBuffer() { return 5.0; }
 
     /**
      * Gets the warning time before the phase ends, in seconds.
@@ -143,6 +148,14 @@ public interface GamePhase {
      * @return The action count
      */
     int getOnStartActionCount();
+
+    /** Immutable action view using canonical parameter keys. */
+    @NotNull
+    default List<PhaseBuilder.PhaseAction> getOnStartActions() { return List.of(); }
+
+    /** Parsed Nether toggle metadata, when this phase includes one. */
+    @NotNull
+    default Optional<NetherToggleRequest> getToggleNether() { return Optional.empty(); }
 
     /**
      * Gets the time remaining in this phase.

@@ -6,11 +6,12 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Service for game management and query operations.
  * <p>
- * This service provides read-only access to game state and information.
+ * This service provides game queries plus the validated force-start operation.
  * Use the events system to react to game state changes.
  * </p>
  *
@@ -52,6 +53,38 @@ public interface GameService {
      */
     @NotNull
     Optional<ZentrixGame> getGame(@NotNull String gameId);
+
+    /** Resolves a game by its canonical copied {@code game-*} runtime ID. */
+    @NotNull
+    default Optional<ZentrixGame> getGameByRuntimeId(@NotNull String runtimeId) {
+        return getActiveGames().stream()
+            .filter(game -> game.getRuntimeId().equalsIgnoreCase(runtimeId))
+            .findFirst();
+    }
+
+    /** Gets every active copy created from a source/template arena. */
+    @NotNull
+    default Collection<ZentrixGame> getGamesForSourceArena(@NotNull String sourceArenaName) {
+        return getActiveGames().stream()
+            .filter(game -> game.getSourceArenaName()
+                .map(source -> source.equalsIgnoreCase(sourceArenaName))
+                .orElse(false))
+            .toList();
+    }
+
+    /** Requests a force-start. Completion may occur on the server main thread. */
+    @NotNull
+    default CompletableFuture<ForceStartResult> forceStart(@NotNull ZentrixGame game) {
+        return CompletableFuture.completedFuture(ForceStartResult.UNSUPPORTED);
+    }
+
+    /** Requests a force-start by canonical runtime ID. */
+    @NotNull
+    default CompletableFuture<ForceStartResult> forceStart(@NotNull String runtimeId) {
+        return getGameByRuntimeId(runtimeId)
+            .map(this::forceStart)
+            .orElseGet(() -> CompletableFuture.completedFuture(ForceStartResult.GAME_NOT_FOUND));
+    }
 
     /**
      * Gets the game a player is currently in.

@@ -80,7 +80,7 @@ public interface CurrencyService {
     /**
      * Gets the currency display name.
      * <p>
-     * Example: "&6Coins" or "&#FFD700Gold"
+     * Example: {@code &6Coins} or {@code &#FFD700Gold}
      * </p>
      *
      * @return The display name with color codes (never null)

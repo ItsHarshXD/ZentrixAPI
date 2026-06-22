@@ -83,7 +83,7 @@ public class GameEndEvent extends ZentrixGameEvent {
         super(game);
         this.endReason = endReason;
         this.winningTeam = winningTeam;
-        this.winners = winners != null ? Collections.unmodifiableCollection(winners) : Collections.emptyList();
+        this.winners = winners != null ? java.util.List.copyOf(winners) : Collections.emptyList();
         this.gameDuration = gameDuration;
     }
 

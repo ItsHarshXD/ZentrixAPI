@@ -88,6 +88,14 @@ public abstract class ZentrixGameEvent extends ZentrixEvent {
         return game.getGameId();
     }
 
+    /** Canonical copied {@code game-*} runtime identifier. */
+    @NotNull
+    public String getRuntimeId() { return game.getRuntimeId(); }
+
+    /** Source/template arena, when known. */
+    @NotNull
+    public java.util.Optional<String> getSourceArenaName() { return game.getSourceArenaName(); }
+
     /**
      * Gets the arena name this game is running on.
      * <p>
