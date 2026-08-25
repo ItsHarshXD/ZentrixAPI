@@ -18,10 +18,23 @@ import dev.itsharshxd.zentrix.api.recipe.RecipeService;
 import dev.itsharshxd.zentrix.api.team.TeamService;
 import dev.itsharshxd.zentrix.api.world.RuntimeWorldService;
 import dev.itsharshxd.zentrix.api.nether.NetherService;
+import dev.itsharshxd.zentrix.api.end.EndService;
 import dev.itsharshxd.zentrix.api.deathmatch.DeathmatchService;
 import dev.itsharshxd.zentrix.api.gamerule.GameRuleService;
 import dev.itsharshxd.zentrix.api.arena.ArenaSourceService;
 import dev.itsharshxd.zentrix.api.matchmaking.MatchmakingService;
+import dev.itsharshxd.zentrix.api.block.BlockMechanicsService;
+import dev.itsharshxd.zentrix.api.compass.CompassTrackerService;
+import dev.itsharshxd.zentrix.api.cornucopia.CornucopiaService;
+import dev.itsharshxd.zentrix.api.corpse.CorpseService;
+import dev.itsharshxd.zentrix.api.dragon.DragonTransportService;
+import dev.itsharshxd.zentrix.api.gui.BuiltInMenuService;
+import dev.itsharshxd.zentrix.api.gui.GuiLayoutService;
+import dev.itsharshxd.zentrix.api.loot.CornucopiaLootService;
+import dev.itsharshxd.zentrix.api.loot.GameLootService;
+import dev.itsharshxd.zentrix.api.loot.LootTableCatalogService;
+import dev.itsharshxd.zentrix.api.revival.RevivalService;
+import dev.itsharshxd.zentrix.api.scenario.ScenarioService;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -59,11 +72,27 @@ import org.jetbrains.annotations.NotNull;
  *   <li>{@link ChatChannelService} - Chat channel management (since 1.2.0)</li>
  *   <li>{@link RuntimeWorldService} - Runtime-world ownership and shared scopes (since 1.3.0)</li>
  *   <li>{@link NetherService} - Per-game Nether status and access (since 1.3.0)</li>
+ *   <li>{@link EndService} - Per-game End status and access (since 1.6.0)</li>
  *   <li>{@link DeathmatchService} - Deathmatch status and startup (since 1.3.0)</li>
  *   <li>{@link GameRuleService} - Typed dynamic game rules (since 1.3.0)</li>
  *   <li>{@link ArenaSourceService} - Dynamic source-arena registration (since 1.4.0)</li>
  *   <li>{@link MatchmakingService} - Atomic group matchmaking (since 1.4.0)</li>
  *   <li>{@link LocaleService} - Active locale and Zentrix text formatting for addons (since 1.5.0)</li>
+ *   <li>{@link RevivalService} - Teammate elimination and revival control (since 1.6.0)</li>
+ *   <li>{@link CornucopiaLootService} - Cornucopia loot-pool management (since 1.6.0)</li>
+ *   <li>{@link GameLootService} - Per-world lazy game-loot management (since 1.6.0)</li>
+ *   <li>{@link LootTableCatalogService} - Local and Minecraft loot-table discovery (since 1.6.0)</li>
+ *   <li>{@link CornucopiaService} - Cornucopia placement and podium lifecycle (since 1.6.0)</li>
+ *   <li>{@link BlockMechanicsService} - Cornucopia/deathmatch block mechanics (since 1.6.0)</li>
+ *   <li>{@link CorpseService} - Corpse lifecycle and stored loot (since 1.6.0)</li>
+ *   <li>{@link CompassTrackerService} - Teammate compass tracking (since 1.6.0)</li>
+ *   <li>{@link BuiltInMenuService} - Built-in menu opening and extensions (since 1.6.0)</li>
+ *   <li>{@link GuiLayoutService} - GUI layout resolution and registration (since 1.6.0)</li>
+ *   <li>{@link DragonTransportService} - Dragon bus transport and glider deployment (since 1.6.0)</li>
+ *   <li>{@link ScenarioService} - Scenario registration, selection, voting and overrides (since 1.7.0)</li>
+ *   <li>{@link dev.itsharshxd.zentrix.api.identity.IdentityService} - Packet-level player identity masking (since 1.9.0)</li>
+ *   <li>{@link dev.itsharshxd.zentrix.api.elimination.EliminationService} - Deathless eliminations (since 1.9.0)</li>
+ *   <li>{@link dev.itsharshxd.zentrix.api.world.SkyDropService} - Airborne player insertion and glider deployment (since 1.10.0)</li>
  * </ul>
  *
  * @author ItsHarshXD
@@ -391,6 +420,12 @@ public interface ZentrixAPI {
         throw new UnsupportedOperationException("NetherService requires Zentrix API 1.3.0");
     }
 
+    /** Per-game End lifecycle and access control. */
+    @NotNull
+    default EndService getEndService() {
+        throw new UnsupportedOperationException("EndService requires Zentrix API 1.6.0");
+    }
+
     /** Deathmatch status and start operations. */
     @NotNull
     default DeathmatchService getDeathmatchService() {
@@ -419,5 +454,95 @@ public interface ZentrixAPI {
     @NotNull
     default LocaleService getLocaleService() {
         throw new UnsupportedOperationException("LocaleService requires Zentrix API 1.5.0");
+    }
+
+    /** Teammate elimination records, revival overrides, and revival operations. */
+    @NotNull
+    default RevivalService getRevivalService() {
+        throw new UnsupportedOperationException("RevivalService requires Zentrix API 1.6.0");
+    }
+
+    /** Cornucopia loot-pool editing, validation, recovery, and eager generation. */
+    @NotNull
+    default CornucopiaLootService getCornucopiaLootService() {
+        throw new UnsupportedOperationException("CornucopiaLootService requires Zentrix API 1.6.0");
+    }
+
+    /** Independent main, Nether, End, and deathmatch loot pools. */
+    @NotNull
+    default GameLootService getGameLootService() {
+        throw new UnsupportedOperationException("GameLootService requires Zentrix API 1.6.0");
+    }
+
+    /** Local JSON and native Minecraft chest-loot-table catalog. */
+    @NotNull
+    default LootTableCatalogService getLootTableCatalogService() {
+        throw new UnsupportedOperationException("LootTableCatalogService requires Zentrix API 1.6.0");
+    }
+
+    /** Cornucopia schematic, podium, cage, countdown, and preparation operations. */
+    @NotNull
+    default CornucopiaService getCornucopiaService() {
+        throw new UnsupportedOperationException("CornucopiaService requires Zentrix API 1.6.0");
+    }
+
+    /** Original-block protection and placed-block decay in special arenas. */
+    @NotNull
+    default BlockMechanicsService getBlockMechanicsService() {
+        throw new UnsupportedOperationException("BlockMechanicsService requires Zentrix API 1.6.0");
+    }
+
+    /** Corpse spawning, lookup, loot, and removal operations. */
+    @NotNull
+    default CorpseService getCorpseService() {
+        throw new UnsupportedOperationException("CorpseService requires Zentrix API 1.6.0");
+    }
+
+    /** Teammate compass item and target operations. */
+    @NotNull
+    default CompassTrackerService getCompassTrackerService() {
+        throw new UnsupportedOperationException("CompassTrackerService requires Zentrix API 1.6.0");
+    }
+
+    /** Built-in menu discovery, opening, and addon extensions. */
+    @NotNull
+    default BuiltInMenuService getBuiltInMenuService() {
+        throw new UnsupportedOperationException("BuiltInMenuService requires Zentrix API 1.6.0");
+    }
+
+    /** GUI layout discovery, resolution, and runtime registration. */
+    @NotNull
+    default GuiLayoutService getGuiLayoutService() {
+        throw new UnsupportedOperationException("GuiLayoutService requires Zentrix API 1.6.0");
+    }
+
+    /** Dragon-bus flight, passenger, endpoint, and Matrix Gliders operations. */
+    @NotNull
+    default DragonTransportService getDragonTransportService() {
+        throw new UnsupportedOperationException("DragonTransportService requires Zentrix API 1.6.0");
+    }
+
+    /** Scenario registration, configuration, selection, voting, and gameplay overrides. */
+    @NotNull
+    default ScenarioService getScenarioService() {
+        throw new UnsupportedOperationException("ScenarioService requires Zentrix API 1.7.0");
+    }
+
+    /** Packet-level player identity masking: aliases, skins, and how Zentrix renders both. */
+    @NotNull
+    default dev.itsharshxd.zentrix.api.identity.IdentityService getIdentityService() {
+        throw new UnsupportedOperationException("IdentityService requires Zentrix API 1.9.0");
+    }
+
+    /** Ending a player's or a team's match without a death, through Zentrix's own pipeline. */
+    @NotNull
+    default dev.itsharshxd.zentrix.api.elimination.EliminationService getEliminationService() {
+        throw new UnsupportedOperationException("EliminationService requires Zentrix API 1.9.0");
+    }
+
+    /** Finding a safe point in the air above a world and dropping a player into it, glider and all. */
+    @NotNull
+    default dev.itsharshxd.zentrix.api.world.SkyDropService getSkyDropService() {
+        throw new UnsupportedOperationException("SkyDropService requires Zentrix API 1.10.0");
     }
 }

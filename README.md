@@ -3,7 +3,7 @@
 [![](https://jitpack.io/v/ItsHarshXD/ZentrixAPI.svg)](https://jitpack.io/#ItsHarshXD/ZentrixAPI)
 [![Javadoc](https://img.shields.io/badge/JavaDoc-Online-green)](https://ItsHarshXD.github.io/ZentrixAPI/)
 
-Developer API for creating Zentrix Battle Royale addons. Version 1.5.0 adds `LocaleService` for addon-safe access to Zentrix locale messages and text formatting while retaining the 1.4.0 binary surface.
+Developer API for creating Zentrix Battle Royale addons. Version 1.8.0 adds structured-list scenario settings whose fields a scenario declares itself, scenario capabilities that let scenarios rule each other out by the gameplay area they take charge of rather than by name, and world-lifecycle callbacks for scenarios that hold a world-level property in place — all while retaining the complete 1.7.0 binary surface.
 
 ## Resources
 
@@ -18,8 +18,11 @@ Developer API for creating Zentrix Battle Royale addons. Version 1.5.0 adds `Loc
 - React to gameplay via events
 - Register custom recipes with craft limits
 - Store addon data under `plugins/Zentrix/addons/<addon-id>/`
-- Resolve copied `game-*` instances and their waiting, Nether, and deathmatch worlds
-- Query and control Nether access, deathmatch startup, force-start, and dynamic game rules
+- Resolve copied `game-*` instances and their waiting, Nether, End, and deathmatch worlds
+- Query and control Nether/End access, revival, deathmatch startup, force-start, and dynamic game rules
+- Manage Cornucopia and per-world game-loot pools, loot-table imports, validation, and recovery
+- Control Cornucopia placement, corpse lifecycle, teammate compasses, dragon buses, and block mechanics
+- Open and extend every built-in menu, and register or resolve runtime GUI layouts
 - Use party and runtime-game-scoped chat services
 
 ## Installation
@@ -32,7 +35,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly("com.github.ItsHarshXD:ZentrixAPI:1.5.0")
+    compileOnly("com.github.ItsHarshXD:ZentrixAPI:1.8.0")
 }
 ```
 
@@ -44,7 +47,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'com.github.ItsHarshXD:ZentrixAPI:1.5.0'
+    compileOnly 'com.github.ItsHarshXD:ZentrixAPI:1.8.0'
 }
 ```
 
@@ -61,7 +64,7 @@ dependencies {
 <dependency>
     <groupId>com.github.ItsHarshXD</groupId>
     <artifactId>ZentrixAPI</artifactId>
-    <version>1.5.0</version>
+    <version>1.8.0</version>
     <scope>provided</scope>
 </dependency>
 ```
@@ -111,6 +114,9 @@ api.getCurrencyService().getBalance(player);
 | 1.3.0 | 1.3.0-capable development builds | Runtime worlds and typed controls |
 | 1.4.0 | 1.4.0+ | Dynamic sources and atomic matchmaking |
 | 1.5.0 | 1.5.0+ | LocaleService for addon text formatting |
+| 1.6.0 | 1.6.0+ | End worlds plus revival, loot, Cornucopia, corpse, GUI, compass, block, and dragon services |
+| 1.7.0 | 1.7.0+ | Scenario system: registration, selection, voting, settings, and gameplay hooks |
+| 1.8.0 | 1.8.0+ | Structured-list scenario settings with scenario-declared entry fields; scenario capabilities and capability conflicts; scenario world-prepared and world-change callbacks; LocaleService inline-flag delivery |
 
 ## Requirements
 

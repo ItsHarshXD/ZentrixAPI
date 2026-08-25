@@ -1,5 +1,6 @@
 package dev.itsharshxd.zentrix.api.phase;
 
+import dev.itsharshxd.zentrix.api.end.EndToggleRequest;
 import dev.itsharshxd.zentrix.api.nether.NetherToggleRequest;
 import org.bukkit.Sound;
 import org.bukkit.potion.PotionEffectType;
@@ -361,6 +362,31 @@ public class PhaseBuilder {
         return params;
     }
 
+    @NotNull
+    public PhaseBuilder addToggleEnd(@NotNull EndToggleRequest request) {
+        this.onStartActions.add(new PhaseAction(PhaseActionType.TOGGLE_END, endParameters(request)));
+        return this;
+    }
+
+    private static Map<String, Object> endParameters(EndToggleRequest request) {
+        Objects.requireNonNull(request, "request");
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put("enable", request.enabled());
+        request.pvp().ifPresent(value -> params.put("pvp", value));
+        request.border().ifPresent(border -> {
+            Map<String, Object> values = new LinkedHashMap<>();
+            border.getShrink().ifPresent(value -> values.put("doShrinkage", value));
+            border.getTargetRadius().ifPresent(value -> values.put("shrinkTo", value));
+            border.getDurationSeconds().ifPresent(value -> values.put("duration", value));
+            border.getDamageAmount().ifPresent(value -> values.put("damagePerBlock", value));
+            border.getDamageBuffer().ifPresent(value -> values.put("damageBuffer", value));
+            border.getWarningDistance().ifPresent(value -> values.put("warningDistance", value));
+            border.getWarningTime().ifPresent(value -> values.put("warningTime", value));
+            params.put("border", values);
+        });
+        return params;
+    }
+
     private static String soundName(Sound sound) {
         for (Field field : Sound.class.getFields()) {
             if (Modifier.isStatic(field.getModifiers()) && field.getType() == Sound.class) {
@@ -569,6 +595,7 @@ public class PhaseBuilder {
         COMMAND,
         TOGGLE_PVP,
         TOGGLE_NETHER,
+        TOGGLE_END,
         START_DEATHMATCH
     }
 
@@ -933,6 +960,12 @@ public class PhaseBuilder {
         @NotNull
         public PhaseActionsBuilder toggleNether(@NotNull NetherToggleRequest request) {
             actions.add(new PhaseAction(PhaseActionType.TOGGLE_NETHER, netherParameters(request)));
+            return this;
+        }
+
+        @NotNull
+        public PhaseActionsBuilder toggleEnd(@NotNull EndToggleRequest request) {
+            actions.add(new PhaseAction(PhaseActionType.TOGGLE_END, endParameters(request)));
             return this;
         }
 

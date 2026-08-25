@@ -80,6 +80,20 @@ public interface PhaseService {
     int getCurrentPhaseIndex(@NotNull ZentrixGame game);
 
     /**
+     * Gets the index of a configured phase by name (0-based).
+     * <p>
+     * The counterpart of {@link #getCurrentPhaseIndex(ZentrixGame)}: comparing the two is how a
+     * caller decides whether a match has reached a named point in its sequence yet, without
+     * assuming anything about how the server ordered or named its phases.
+     * </p>
+     *
+     * @param phaseName The phase name (case-insensitive)
+     * @return The phase index, or -1 when no phase of that name is configured
+     * @since 1.10.0
+     */
+    int getPhaseIndex(@NotNull String phaseName);
+
+    /**
      * Gets the time remaining in the current phase, in seconds.
      * <p>
      * Returns 0 if no phase is active.

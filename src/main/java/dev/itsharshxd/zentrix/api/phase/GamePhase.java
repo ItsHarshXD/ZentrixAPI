@@ -1,5 +1,6 @@
 package dev.itsharshxd.zentrix.api.phase;
 
+import dev.itsharshxd.zentrix.api.end.EndToggleRequest;
 import dev.itsharshxd.zentrix.api.nether.NetherToggleRequest;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -156,6 +157,10 @@ public interface GamePhase {
     /** Parsed Nether toggle metadata, when this phase includes one. */
     @NotNull
     default Optional<NetherToggleRequest> getToggleNether() { return Optional.empty(); }
+
+    /** Parsed End toggle metadata, when this phase includes one. */
+    @NotNull
+    default Optional<EndToggleRequest> getToggleEnd() { return Optional.empty(); }
 
     /**
      * Gets the time remaining in this phase.
