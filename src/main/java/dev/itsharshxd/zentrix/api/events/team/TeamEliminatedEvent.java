@@ -13,10 +13,10 @@ import java.util.Collections;
 import java.util.Optional;
 
 /**
- * Called when a team is eliminated from a Zentrix game.
+ * Fired when a team is eliminated from a Zentrix game.
  * <p>
- * This event is fired when all members of a team have been eliminated
- * (killed or left the game). At this point:
+ * The event fires after every team member has been eliminated, either by death
+ * or by leaving. At that time:
  * <ul>
  *   <li>All team members have been eliminated</li>
  *   <li>The team is marked as eliminated</li>
@@ -25,23 +25,23 @@ import java.util.Optional;
  * </ul>
  * </p>
  *
- * <p>This event is <b>NOT cancellable</b>.</p>
+ * <p>This event is <b>not cancellable</b>.</p>
  *
- * <h2>Example Usage</h2>
+ * <h2>Example</h2>
  * <pre>{@code
  * @EventHandler
  * public void onTeamEliminated(TeamEliminatedEvent event) {
  *     ZentrixTeam team = event.getTeam();
  *     ZentrixGame game = event.getGame();
  *
- *     // Announce team elimination
+ *     // Announce the elimination
  *     game.broadcast("&c" + team.getDisplayName() + " has been eliminated!");
  *
- *     // Check remaining teams
+ *     // Check the remaining teams
  *     int remaining = event.getRemainingTeamCount();
  *     game.broadcast("&7" + remaining + " teams remain!");
  *
- *     // Check if this triggers a win
+ *     // Check whether this triggers a win
  *     if (event.triggersWin()) {
  *         event.getWinningTeam().ifPresent(winner -> {
  *             game.broadcast("&6" + winner.getDisplayName() + " wins!");
@@ -112,7 +112,7 @@ public class TeamEliminatedEvent extends ZentrixGameEvent {
     /**
      * Gets the team's display name.
      * <p>
-     * Convenience method equivalent to {@code getTeam().getDisplayName()}.
+     * Returns {@code getTeam().getDisplayName()}.
      * </p>
      *
      * @return The team's display name (never null)
@@ -125,7 +125,7 @@ public class TeamEliminatedEvent extends ZentrixGameEvent {
     /**
      * Gets the team's ID.
      * <p>
-     * Convenience method equivalent to {@code getTeam().getTeamId()}.
+     * Returns {@code getTeam().getTeamId()}.
      * </p>
      *
      * @return The team ID (never null)
@@ -138,7 +138,7 @@ public class TeamEliminatedEvent extends ZentrixGameEvent {
     /**
      * Gets the team's number.
      * <p>
-     * Convenience method equivalent to {@code getTeam().getTeamNumber()}.
+     * Returns {@code getTeam().getTeamNumber()}.
      * </p>
      *
      * @return The team number

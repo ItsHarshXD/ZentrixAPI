@@ -1,10 +1,9 @@
 package dev.itsharshxd.zentrix.api.chat;
 
 /**
- * Represents the available chat channels for players.
+ * Chat channels available to players.
  * <p>
- * Players can switch between chat channels to communicate with
- * different groups:
+ * Players can switch channels to communicate with different groups:
  * <ul>
  *   <li>{@link #GLOBAL} - All players can see messages</li>
  *   <li>{@link #TEAM} - Only teammates in the same game can see messages</li>

@@ -10,45 +10,43 @@ import java.util.logging.Level;
 /**
  * Base class for Zentrix addons.
  * <p>
- * Extend this class in your addon's main class for automatic lifecycle management
- * and seamless integration with the ZentrixAPI. This class handles API availability
- * checks, version compatibility, and addon registration automatically.
+ * Extend this class from an addon's main class. It checks API availability,
+ * verifies the required version, and registers the addon during startup.
  * </p>
  *
- * <h2>Example Usage</h2>
+ * <h2>Example</h2>
  * <pre>{@code
  * public class MyAddon extends ZentrixAddon {
  *
  *     @Override
  *     protected void onAddonEnable() {
- *         // Your addon initialization code
+ *         // Initialize the addon
  *         getLogger().info("MyAddon enabled!");
  *
- *         // Access the API (within addon class)
+ *         // Access the API
  *         ZentrixAPI api = ZentrixAPI.get();
  *         api.getGameService().getActiveGames();
  *     }
  *
  *     @Override
  *     protected void onAddonDisable() {
- *         // Your addon cleanup code
+ *         // Clean up addon state
  *         getLogger().info("MyAddon disabled!");
  *     }
  *
  *     @Override
  *     protected String getRequiredAPIVersion() {
- *         return "1.0.0"; // Minimum API version required
+ *         return "1.0.0"; // Minimum required API version
  *     }
  * }
  * }</pre>
  *
- * <h2>API Access</h2>
+ * <h2>API access</h2>
  * <p>
- * Use {@link ZentrixAPI#get()} to access the API from anywhere in your addon.
- * This is the single recommended way to obtain the API instance.
+ * Use {@link ZentrixAPI#get()} to access the API from anywhere in the addon.
  * </p>
  *
- * <h2>plugin.yml Configuration</h2>
+ * <h2>plugin.yml configuration</h2>
  * <p>
  * Your addon's plugin.yml should declare Zentrix as a dependency:
  * </p>
@@ -70,16 +68,15 @@ public abstract class ZentrixAddon extends JavaPlugin {
     private boolean apiAvailable = false;
 
     /**
-     * Final implementation of onEnable.
+     * Final implementation of {@link #onEnable()}.
      * <p>
-     * This method handles ZentrixAPI availability checks, version compatibility,
-     * and addon registration. Override {@link #onAddonEnable()} instead to add
-     * your addon's initialization logic.
+     * It checks API availability and version compatibility, registers the addon,
+     * and then calls {@link #onAddonEnable()} for addon-specific initialization.
      * </p>
      */
     @Override
     public final void onEnable() {
-        // Check if ZentrixAPI is available
+        // Check API availability
         if (!ZentrixProvider.isAvailable()) {
             getLogger().severe("========================================");
             getLogger().severe("Zentrix is not loaded!");
@@ -93,7 +90,7 @@ public abstract class ZentrixAddon extends JavaPlugin {
 
         apiAvailable = true;
 
-        // Verify API version compatibility
+        // Verify API compatibility
         String requiredVersion = getRequiredAPIVersion();
         String currentVersion = ZentrixProvider.get().getAPIVersion();
 
@@ -109,7 +106,7 @@ public abstract class ZentrixAddon extends JavaPlugin {
             return;
         }
 
-        // Register with addon manager
+        // Register the addon
         try {
             ZentrixProvider.get().getAddonManager().registerAddon(this);
             zentrixEnabled = true;
@@ -119,7 +116,7 @@ public abstract class ZentrixAddon extends JavaPlugin {
             return;
         }
 
-        // Call addon-specific enable logic
+        // Run addon enable logic
         try {
             onAddonEnable();
             getLogger().info(getName() + " v" + getDescription().getVersion() + " has been enabled!");
@@ -130,24 +127,22 @@ public abstract class ZentrixAddon extends JavaPlugin {
     }
 
     /**
-     * Final implementation of onDisable.
+     * Final implementation of {@link #onDisable()}.
      * <p>
-     * This method handles addon unregistration and cleanup.
-     * Override {@link #onAddonDisable()} instead to add your addon's
-     * cleanup logic.
+     * It calls {@link #onAddonDisable()} and then unregisters the addon.
      * </p>
      */
     @Override
     public final void onDisable() {
         if (zentrixEnabled) {
-            // Call addon-specific disable logic first
+            // Run addon disable logic first
             try {
                 onAddonDisable();
             } catch (Exception e) {
                 getLogger().log(Level.WARNING, "Error during addon disable", e);
             }
 
-            // Unregister from addon manager
+            // Unregister the addon
             if (ZentrixProvider.isAvailable()) {
                 try {
                     ZentrixProvider.get().getAddonManager().unregisterAddon(this);
@@ -163,37 +158,36 @@ public abstract class ZentrixAddon extends JavaPlugin {
     }
 
     /**
-     * Called when the addon is enabled.
+     * Called after the addon passes the startup checks.
      * <p>
-     * Override this method to add your addon's initialization logic.
-     * This is called after ZentrixAPI availability and version checks pass,
-     * and after the addon has been registered with Zentrix.
+     * Override this method to initialize the addon. The API is available and
+     * the addon has already been registered with Zentrix.
      * </p>
      * <p>
-     * At this point, you can safely use {@link ZentrixAPI#get()} to access the API.
+     * Use {@link ZentrixAPI#get()} to access the API here.
      * </p>
      */
     protected abstract void onAddonEnable();
 
     /**
-     * Called when the addon is disabled.
+     * Called while the addon is being disabled.
      * <p>
-     * Override this method to add your addon's cleanup logic.
-     * This is called before the addon is unregistered from Zentrix.
+     * Override this method to clean up addon state. It runs before the addon is
+     * unregistered from Zentrix.
      * </p>
      * <p>
-     * The default implementation does nothing.
+     * The default implementation is empty.
      * </p>
      */
     protected void onAddonDisable() {
-        // Default implementation - override if needed
+        // No cleanup by default; subclasses may override
     }
 
     /**
-     * Gets the addon's unique identifier.
+     * Returns the addon's unique identifier.
      * <p>
-     * By default, this returns the plugin name in lowercase.
-     * Override this method to provide a custom identifier.
+     * The default is the plugin name in lowercase. Override this method to use
+     * a different identifier.
      * </p>
      *
      * @return The addon ID (never null)
@@ -204,10 +198,10 @@ public abstract class ZentrixAddon extends JavaPlugin {
     }
 
     /**
-     * Gets the minimum required ZentrixAPI version.
+     * Returns the minimum required ZentrixAPI version.
      * <p>
-     * Override this method to specify the minimum API version your addon
-     * requires. The default is "1.0.0".
+     * Override this method to specify the minimum API version the addon needs.
+     * The default is "1.0.0".
      * </p>
      * <p>
      * Version format follows semantic versioning: MAJOR.MINOR.PATCH
@@ -222,11 +216,10 @@ public abstract class ZentrixAddon extends JavaPlugin {
     }
 
     /**
-     * Gets the ZentrixAPI instance.
+     * Returns the ZentrixAPI instance.
      * <p>
-     * <b>Prefer using {@link ZentrixAPI#get()} instead.</b>
-     * This method is kept for backwards compatibility but using the static
-     * method on ZentrixAPI directly is the recommended approach.
+     * Use {@link ZentrixAPI#get()} instead. This method remains for backwards
+     * compatibility.
      * </p>
      *
      * @return The ZentrixAPI instance (never null)
@@ -245,10 +238,10 @@ public abstract class ZentrixAddon extends JavaPlugin {
     }
 
     /**
-     * Checks if the ZentrixAPI is currently available.
+     * Returns whether the ZentrixAPI is currently available.
      * <p>
-     * <b>Prefer using {@link ZentrixAPI#isAvailable()} instead.</b>
-     * This is useful for checking API availability outside of the enable phase.
+     * Use {@link ZentrixAPI#isAvailable()} when checking availability outside
+     * the enable phase.
      * </p>
      *
      * @return {@code true} if the API is available
@@ -259,7 +252,7 @@ public abstract class ZentrixAddon extends JavaPlugin {
     }
 
     /**
-     * Checks if this addon has been successfully registered with Zentrix.
+     * Returns whether this addon is registered with Zentrix.
      *
      * @return {@code true} if the addon is registered and enabled
      */
@@ -268,7 +261,7 @@ public abstract class ZentrixAddon extends JavaPlugin {
     }
 
     /**
-     * Checks if two version strings are compatible.
+     * Compares two version strings for compatibility.
      * <p>
      * Compatibility is determined by comparing major version numbers.
      * A current version is compatible if its major version is greater than
@@ -287,12 +280,12 @@ public abstract class ZentrixAddon extends JavaPlugin {
             int reqMajor = Integer.parseInt(reqParts[0]);
             int curMajor = Integer.parseInt(curParts[0]);
 
-            // Major version must be compatible
+            // Compare major versions
             if (curMajor < reqMajor) {
                 return false;
             }
 
-            // If same major version, check minor version
+            // Compare minor versions when the major versions match
             if (curMajor == reqMajor && reqParts.length > 1 && curParts.length > 1) {
                 int reqMinor = Integer.parseInt(reqParts[1]);
                 int curMinor = Integer.parseInt(curParts[1]);
@@ -301,7 +294,7 @@ public abstract class ZentrixAddon extends JavaPlugin {
 
             return true;
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
-            // If parsing fails, assume compatible and log warning
+            // Treat unparsable versions as compatible and log a warning
             getLogger().warning("Could not parse version strings for compatibility check. " +
                     "Required: " + required + ", Current: " + current);
             return true;

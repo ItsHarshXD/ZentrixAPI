@@ -6,13 +6,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 /**
- * Fluent builder for creating custom broadcasts dynamically.
+ * Fluent builder for creating custom broadcasts.
  * <p>
- * This builder allows addon developers to create broadcasts that integrate
- * with the Zentrix broadcast system, supporting CHAT, TITLE, and ACTIONBAR types.
+ * Use it to define CHAT, TITLE, and ACTIONBAR broadcasts for Zentrix.
  * </p>
  *
- * <h2>Example Usage - Chat Broadcast</h2>
+ * <h2>Chat broadcast example</h2>
  * <pre>{@code
  * BroadcastBuilder tips = new BroadcastBuilder()
  *     .id("gameplay-tips")
@@ -28,7 +27,7 @@ import java.util.*;
  * broadcastService.registerBroadcast(tips);
  * }</pre>
  *
- * <h2>Example Usage - Title Broadcast</h2>
+ * <h2>Title broadcast example</h2>
  * <pre>{@code
  * BroadcastBuilder alert = new BroadcastBuilder()
  *     .id("phase-reminder")
@@ -55,17 +54,17 @@ public class BroadcastBuilder {
     private final Set<GameState> showIn = EnumSet.noneOf(GameState.class);
     private BroadcastType type = BroadcastType.CHAT;
 
-    // CHAT type fields
+    // CHAT fields
     private final List<String> messages = new ArrayList<>();
 
-    // TITLE type fields
+    // TITLE fields
     private String title;
     private String subtitle;
     private int fadeIn = 10;
     private int stay = 70;
     private int fadeOut = 20;
 
-    // ACTIONBAR type fields
+    // ACTIONBAR fields
     private String actionBar;
 
     // Metadata
@@ -78,7 +77,7 @@ public class BroadcastBuilder {
     public BroadcastBuilder() {}
 
     // ==========================================
-    // Core Properties
+    // Core properties
     // ==========================================
 
     /**
@@ -180,7 +179,7 @@ public class BroadcastBuilder {
     }
 
     // ==========================================
-    // CHAT Type Configuration
+    // CHAT type configuration
     // ==========================================
 
     /**
@@ -220,7 +219,7 @@ public class BroadcastBuilder {
     }
 
     // ==========================================
-    // TITLE Type Configuration
+    // TITLE type configuration
     // ==========================================
 
     /**
@@ -268,7 +267,7 @@ public class BroadcastBuilder {
     }
 
     // ==========================================
-    // ACTIONBAR Type Configuration
+    // ACTIONBAR type configuration
     // ==========================================
 
     /**
@@ -320,7 +319,7 @@ public class BroadcastBuilder {
     }
 
     // ==========================================
-    // Getters (for Service implementation)
+    // Getters used by the service
     // ==========================================
 
     @Nullable
@@ -442,7 +441,7 @@ public class BroadcastBuilder {
     }
 
     /**
-     * Creates a copy of this builder.
+     * Copies this builder.
      *
      * @return A new BroadcastBuilder with the same configuration
      */

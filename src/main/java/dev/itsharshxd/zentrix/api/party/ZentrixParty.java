@@ -8,13 +8,13 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * Represents a player party in Zentrix.
+ * Player party in Zentrix.
  * <p>
- * Parties are pre-game groups that allow players to queue and join
- * games together. Each party has a leader who can invite/kick members.
+ * A party groups players before a game so they can queue and join together.
+ * The leader can invite and remove members.
  * </p>
  *
- * <h2>Example Usage</h2>
+ * <h2>Example</h2>
  * <pre>{@code
  * PartyService partyService = ZentrixAPI.get().getPartyService();
  * Optional<ZentrixParty> party = partyService.getParty(player);

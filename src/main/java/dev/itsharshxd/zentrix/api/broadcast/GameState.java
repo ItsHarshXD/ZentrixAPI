@@ -1,7 +1,7 @@
 package dev.itsharshxd.zentrix.api.broadcast;
 
 /**
- * Enum representing game states for broadcast filtering.
+ * Game state used to filter broadcasts.
  *
  * @author ItsHarshXD
  * @since 1.1.0

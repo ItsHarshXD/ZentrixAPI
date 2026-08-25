@@ -5,14 +5,13 @@ import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Base class for all Zentrix events.
+ * Base class for Zentrix events.
  * <p>
- * All custom events fired by Zentrix extend this class, providing a common
- * base for addon developers to work with. Events allow addons to react to
- * game state changes, player actions, and other significant occurrences.
+ * All custom events fired by Zentrix extend this class. Addons can listen for
+ * game state changes, player actions, and other events through these types.
  * </p>
  *
- * <h2>Listening to Events</h2>
+ * <h2>Listening to events</h2>
  * <pre>{@code
  * public class MyListener implements Listener {
  *
@@ -25,7 +24,7 @@ import org.jetbrains.annotations.NotNull;
  * }
  * }</pre>
  *
- * <h2>Available Event Categories</h2>
+ * <h2>Event categories</h2>
  * <ul>
  *   <li><b>Game Events</b> - Game lifecycle events (start, end, phase changes)</li>
  *   <li><b>Player Events</b> - Player-specific events (join, leave, death, kill)</li>

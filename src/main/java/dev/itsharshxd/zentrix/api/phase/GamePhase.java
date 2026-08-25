@@ -9,17 +9,17 @@ import java.util.Optional;
 import java.util.List;
 
 /**
- * Represents a read-only view of a game phase configuration.
+ * Read-only view of a game phase configuration.
  * <p>
- * Game phases define the stages of a Battle Royale match, including
- * timing, border behavior, and actions that occur when the phase starts.
+ * A game phase defines part of a Battle Royale match, including its timing,
+ * border behavior, and start actions.
  * </p>
  *
- * <h2>Example Usage</h2>
+ * <h2>Example</h2>
  * <pre>{@code
  * PhaseService phaseService = ZentrixProvider.get().getPhaseService();
  *
- * // Get current phase for a game
+ * // Get the current phase
  * Optional<GamePhase> phase = phaseService.getCurrentPhase(game);
  * phase.ifPresent(p -> {
  *     String name = p.getName();
@@ -221,7 +221,7 @@ public interface GamePhase {
     boolean startsDeathmatch();
 
     // ==========================================
-    // Dynamic Registration Info (since 1.1.0)
+    // Dynamic registration info (since 1.1.0)
     // ==========================================
 
     /**

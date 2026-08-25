@@ -7,13 +7,13 @@ import java.util.UUID;
 import java.util.Optional;
 
 /**
- * Represents a read-only view of a team in a Zentrix game.
+ * Read-only view of a team in a Zentrix game.
  * <p>
- * Teams are created when players join a game and are used to group
- * players together. In solo games, each player is their own team.
+ * Teams are created as players join a game and group them together. In solo
+ * games, each player is their own team.
  * </p>
  *
- * <h2>Example Usage</h2>
+ * <h2>Example</h2>
  * <pre>{@code
  * ZentrixTeam team = ZentrixProvider.get()
  *     .getTeamService()

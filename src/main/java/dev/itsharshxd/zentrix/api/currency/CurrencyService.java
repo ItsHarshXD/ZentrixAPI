@@ -7,25 +7,24 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * Service for currency-related queries within Zentrix.
+ * Provides currency queries for Zentrix games.
  * <p>
- * This service provides access to player balances, currency configuration,
- * and reward information. Balance modifications should be done through
- * the event system.
+ * Use it to read player balances, currency configuration, and reward values.
+ * Change balances through the event system.
  * </p>
  *
- * <h2>Example Usage</h2>
+ * <h2>Example</h2>
  * <pre>{@code
  * CurrencyService currencyService = ZentrixProvider.get().getCurrencyService();
  *
- * // Get player's balance
+ * // Get the player's balance
  * double balance = currencyService.getCachedBalance(player);
  *
- * // Get formatted balance
+ * // Format the balance
  * String formatted = currencyService.formatBalance(balance);
  * // Result: "⛃ 150"
  *
- * // Check reward for an event
+ * // Check an event reward
  * double killReward = currencyService.getEventReward(CurrencyEventType.PLAYER_KILL);
  * }</pre>
  *
@@ -37,8 +36,8 @@ public interface CurrencyService {
     /**
      * Gets a player's balance asynchronously.
      * <p>
-     * This method fetches the balance from storage if not cached.
-     * For synchronous access, use {@link #getCachedBalance(UUID)}.
+     * If the balance is not cached, this loads it from storage. Use
+     * {@link #getCachedBalance(UUID)} for synchronous access.
      * </p>
      *
      * @param playerId The player's UUID
@@ -59,9 +58,8 @@ public interface CurrencyService {
     /**
      * Gets a player's cached balance for immediate access.
      * <p>
-     * Returns the cached value if available, or the starting balance
-     * if not yet cached. Use this for scoreboards and GUIs where
-     * async operations are not desirable.
+     * Returns the cached value when available, or the starting balance otherwise.
+     * Use this for scoreboards and GUIs that cannot wait for an async result.
      * </p>
      *
      * @param playerId The player's UUID

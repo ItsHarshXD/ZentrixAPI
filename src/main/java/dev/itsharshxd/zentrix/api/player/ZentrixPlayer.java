@@ -9,13 +9,13 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * Represents a read-only view of a player participating in a Zentrix game.
+ * Read-only view of a player in a Zentrix game.
  * <p>
- * This interface provides access to player information including their
- * identity, game statistics, team membership, and selected class.
+ * It exposes the player's identity, game statistics, team membership, and
+ * selected class.
  * </p>
  *
- * <h2>Example Usage</h2>
+ * <h2>Example</h2>
  * <pre>{@code
  * ZentrixPlayer zentrixPlayer = ZentrixProvider.get()
  *     .getPlayerService()
@@ -131,7 +131,7 @@ public interface ZentrixPlayer {
     boolean isSpectating();
 
     // ==========================================
-    // Per-Game Statistics
+    // Per-game statistics
     // ==========================================
 
     /**

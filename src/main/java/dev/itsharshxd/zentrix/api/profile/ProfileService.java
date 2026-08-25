@@ -7,17 +7,16 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * Service for accessing player profile statistics.
+ * Provides persistent player statistics.
  * <p>
- * This service provides access to persistent player statistics such as
- * wins, kills, deaths, and other lifetime achievements.
+ * It exposes wins, kills, deaths, and other lifetime totals.
  * </p>
  *
- * <h2>Example Usage</h2>
+ * <h2>Example</h2>
  * <pre>{@code
  * ProfileService profileService = ZentrixProvider.get().getProfileService();
  *
- * // Get player stats asynchronously
+ * // Load player stats asynchronously
  * profileService.getStats(player.getUniqueId()).thenAccept(stats -> {
  *     int wins = stats.getWins();
  *     int kills = stats.getKills();
@@ -26,7 +25,7 @@ import java.util.concurrent.CompletableFuture;
  *     player.sendMessage("Wins: " + wins + ", K/D: " + kd);
  * });
  *
- * // Or get cached stats synchronously
+ * // Or read cached stats synchronously
  * PlayerStats cached = profileService.getCachedStats(player.getUniqueId());
  * }</pre>
  *
@@ -38,8 +37,8 @@ public interface ProfileService {
     /**
      * Gets a player's statistics asynchronously.
      * <p>
-     * This method fetches stats from storage if not cached.
-     * For synchronous access, use {@link #getCachedStats(UUID)}.
+     * If the stats are not cached, this loads them from storage. Use
+     * {@link #getCachedStats(UUID)} for synchronous access.
      * </p>
      *
      * @param playerId The player's UUID
@@ -82,8 +81,7 @@ public interface ProfileService {
     /**
      * Preloads a player's statistics into the cache.
      * <p>
-     * Call this when a player joins the server to ensure their stats
-     * are available for quick access.
+     * Call this when a player joins so their stats are ready for quick access.
      * </p>
      *
      * @param playerId The player's UUID
@@ -129,7 +127,7 @@ public interface ProfileService {
     /**
      * Gets the total number of wins for a player (cached).
      * <p>
-     * Convenience method for quick access to win count.
+     * Returns the cached win count.
      * </p>
      *
      * @param playerId The player's UUID

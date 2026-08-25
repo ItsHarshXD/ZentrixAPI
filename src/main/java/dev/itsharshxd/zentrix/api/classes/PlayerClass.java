@@ -10,18 +10,18 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Represents a read-only view of a player class configuration.
+ * Read-only view of a player class configuration.
  * <p>
- * Player classes define starting equipment and passive abilities that
- * players can select before or during a game. Each class provides a
- * unique playstyle with different kit items and special abilities.
+ * A player class defines starting equipment and passive abilities that players
+ * can select before or during a game. Classes differ by their kits, abilities,
+ * and playstyles.
  * </p>
  *
- * <h2>Example Usage</h2>
+ * <h2>Example</h2>
  * <pre>{@code
  * ClassService classService = ZentrixProvider.get().getClassService();
  *
- * // Get a specific class
+ * // Get a class
  * Optional<PlayerClass> warrior = classService.getClass("warrior");
  * warrior.ifPresent(pc -> {
  *     String name = pc.getDisplayName();

@@ -77,10 +77,10 @@ dependencies {
 public final class MyAddon extends ZentrixAddon {
     @Override
     protected void onAddonEnable() {
-        // Access the API
+        // Get the API
         ZentrixAPI api = ZentrixAPI.get();
         
-        // Use services
+        // Use a service
         api.getGameService().getActiveGames();
         
         // Register listeners
@@ -102,7 +102,7 @@ api-version: '1.21'
 ### 3. Use the API Anywhere
 
 ```java
-// Single, simple way to access the API
+// Get the API from one place
 ZentrixAPI api = ZentrixAPI.get();
 api.getGameService().getActiveGames();
 api.getCurrencyService().getBalance(player);

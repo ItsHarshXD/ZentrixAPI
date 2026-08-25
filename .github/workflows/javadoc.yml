@@ -31,7 +31,7 @@ jobs:
       - name: Build Javadoc
         run: ./gradlew javadoc
 
-      # 🔹 Deploy versioned docs → /1.0.0
+      # Deploy versioned docs to /1.0.0
       - name: Deploy versioned Javadoc
         uses: JamesIves/github-pages-deploy-action@v4
         with:
@@ -39,7 +39,7 @@ jobs:
           folder: build/docs/javadoc
           target-folder: ${{ github.ref_name }}
 
-      # 🔹 Deploy latest docs → /
+      # Deploy the latest docs to /
       - name: Deploy latest Javadoc (root)
         uses: JamesIves/github-pages-deploy-action@v4
         with:

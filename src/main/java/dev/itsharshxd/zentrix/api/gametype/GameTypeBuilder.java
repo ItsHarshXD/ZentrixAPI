@@ -7,13 +7,13 @@ import java.util.*;
 import java.util.function.Consumer;
 
 /**
- * Fluent builder for creating custom game types dynamically.
+ * Fluent builder for creating custom game types.
  * <p>
- * This builder allows addon developers to create game types that integrate
- * with the Zentrix game type system, including scoreboards for different states.
+ * Use it to define team sizes, player limits, and scoreboards for each game
+ * state.
  * </p>
  *
- * <h2>Example Usage</h2>
+ * <h2>Example</h2>
  * <pre>{@code
  * GameTypeBuilder trios = new GameTypeBuilder()
  *     .name("trios")
@@ -57,7 +57,7 @@ public class GameTypeBuilder {
     public GameTypeBuilder() {}
 
     // ==========================================
-    // Core Properties
+    // Core properties
     // ==========================================
 
     /**
@@ -152,7 +152,7 @@ public class GameTypeBuilder {
     }
 
     // ==========================================
-    // Scoreboard Configuration
+    // Scoreboard configuration
     // ==========================================
 
     /**
@@ -228,7 +228,7 @@ public class GameTypeBuilder {
     }
 
     // ==========================================
-    // Getters (for Service implementation)
+    // Getters used by the service
     // ==========================================
 
     @Nullable
@@ -339,7 +339,7 @@ public class GameTypeBuilder {
     }
 
     // ==========================================
-    // Nested Classes
+    // Nested classes
     // ==========================================
 
     /**

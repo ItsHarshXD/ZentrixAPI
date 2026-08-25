@@ -9,20 +9,20 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * Service for game management and query operations.
+ * Manages and queries Zentrix games.
  * <p>
- * This service provides game queries plus the validated force-start operation.
- * Use the events system to react to game state changes.
+ * It also exposes the validated force-start operation. Use events to react to
+ * game state changes.
  * </p>
  *
- * <h2>Example Usage</h2>
+ * <h2>Example</h2>
  * <pre>{@code
  * GameService gameService = ZentrixProvider.get().getGameService();
  *
- * // Get all active games
+ * // List active games
  * Collection<ZentrixGame> games = gameService.getActiveGames();
  *
- * // Check if player is in a game
+ * // Check whether the player is in a game
  * if (gameService.isInGame(player)) {
  *     ZentrixGame game = gameService.getPlayerGame(player).orElseThrow();
  *     // Do something with the game

@@ -11,22 +11,21 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * Service for team-related queries within Zentrix games.
+ * Provides team queries for Zentrix games.
  * <p>
- * This service provides access to team information, membership,
- * and team status queries.
+ * Use it to inspect team information, membership, and status.
  * </p>
  *
- * <h2>Example Usage</h2>
+ * <h2>Example</h2>
  * <pre>{@code
  * TeamService teamService = ZentrixProvider.get().getTeamService();
  *
- * // Check if two players are teammates
+ * // Check whether two players are teammates
  * if (teamService.areTeammates(player1, player2)) {
  *     // Don't allow friendly fire, etc.
  * }
  *
- * // Get a player's team
+ * // Get the player's team
  * Optional<ZentrixTeam> team = teamService.getPlayerTeam(player);
  * team.ifPresent(t -> {
  *     String teamName = t.getDisplayName();

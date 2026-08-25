@@ -5,24 +5,23 @@ import dev.itsharshxd.zentrix.api.addon.ZentrixAddon;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Internal provider for the ZentrixAPI instance.
+ * Holds the ZentrixAPI implementation for the core plugin.
  * <p>
- * <b>For addon developers:</b> Use {@link ZentrixAPI#get()} instead of this class.
- * The static methods on {@link ZentrixAPI} are the recommended way to access the API.
+ * Addons should use {@link ZentrixAPI#get()} instead. This class is used by the
+ * core plugin and by {@link ZentrixAddon} during addon startup and shutdown.
  * </p>
  *
- * <h2>Recommended Usage</h2>
+ * <h2>Usage</h2>
  * <pre>{@code
- * // Use ZentrixAPI.get() instead (recommended)
+ * // Get the API instance
  * ZentrixAPI api = ZentrixAPI.get();
  * api.getGameService().getActiveGames();
  * }</pre>
  *
- * <h2>When to use ZentrixProvider directly</h2>
+ * <h2>Direct use</h2>
  * <p>
- * This class is primarily used internally by the Zentrix core plugin and the
- * {@link ZentrixAddon} base class. Direct usage is only needed for advanced
- * scenarios like manual API registration/unregistration.
+ * Direct use is limited to core startup and shutdown, or to advanced cases such
+ * as manual API registration and unregistration.
  * </p>
  *
  * @author ItsHarshXD
@@ -42,9 +41,9 @@ public final class ZentrixProvider {
     }
 
     /**
-     * Gets the ZentrixAPI instance.
+     * Returns the ZentrixAPI instance.
      * <p>
-     * <b>Prefer using {@link ZentrixAPI#get()} instead.</b>
+     * Addons should call {@link ZentrixAPI#get()} instead.
      * </p>
      *
      * @return The API instance
@@ -65,9 +64,9 @@ public final class ZentrixProvider {
     }
 
     /**
-     * Checks if the ZentrixAPI is available.
+     * Returns whether the ZentrixAPI is available.
      * <p>
-     * <b>Prefer using {@link ZentrixAPI#isAvailable()} instead.</b>
+     * Addons should call {@link ZentrixAPI#isAvailable()} instead.
      * </p>
      *
      * @return {@code true} if the API is initialized and ready to use
@@ -78,14 +77,13 @@ public final class ZentrixProvider {
     }
 
     /**
-     * Registers the API implementation.
+     * Registers the API implementation used by the core plugin.
      * <p>
-     * <b>Internal method - DO NOT CALL FROM ADDONS.</b>
+     * <b>Internal method. Addons must not call this.</b>
      * </p>
      * <p>
-     * This method is called by the Zentrix core plugin during startup
-     * to register the API implementation. Calling this from an addon
-     * will have no effect and may cause issues.
+     * The core plugin calls this during startup. Calling it from an addon has no
+     * useful effect and may cause problems.
      * </p>
      *
      * @param api The API implementation to register
@@ -103,13 +101,12 @@ public final class ZentrixProvider {
     }
 
     /**
-     * Unregisters the API implementation.
+     * Removes the API implementation.
      * <p>
-     * <b>Internal method - DO NOT CALL FROM ADDONS.</b>
+     * <b>Internal method. Addons must not call this.</b>
      * </p>
      * <p>
-     * This method is called by the Zentrix core plugin during shutdown
-     * to unregister the API implementation.
+     * The core plugin calls this during shutdown.
      * </p>
      */
     public static void unregister() {

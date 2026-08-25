@@ -12,25 +12,24 @@ import java.util.Optional;
 import java.util.Set;
 
 /**
- * Represents a read-only view of a custom item definition.
+ * Read-only view of a custom item definition.
  * <p>
- * Custom items can be registered by addons and used in game phases,
- * player classes, and other game mechanics. Items support external
- * sources like ItemsAdder and Nexo.
+ * Addons can register these items for use in phases, player classes, and other
+ * game mechanics. Items may come from ItemsAdder or Nexo.
  * </p>
  *
- * <h2>Example Usage</h2>
+ * <h2>Example</h2>
  * <pre>{@code
  * ItemService service = ZentrixAPI.get().getItemService();
  *
- * // Get an item definition
+ * // Get the item definition
  * Optional<ZentrixItem> item = service.getItemDefinition("tracking-compass");
  * item.ifPresent(def -> {
  *     System.out.println("Item: " + def.getId());
  *     System.out.println("Material: " + def.getMaterial());
  *     System.out.println("Display Name: " + def.getDisplayName());
  *
- *     // Create a usable ItemStack
+ *     // Create an ItemStack
  *     ItemStack stack = def.toItemStack();
  *     player.getInventory().addItem(stack);
  * });
@@ -159,7 +158,7 @@ public interface ZentrixItem {
     boolean isEnabled();
 
     // ==========================================
-    // ItemStack Creation
+    // ItemStack creation
     // ==========================================
 
     /**
@@ -198,7 +197,7 @@ public interface ZentrixItem {
     Optional<String> getAddonId();
 
     /**
-     * Checks if this item was dynamically registered by an addon.
+     * Returns whether an addon registered this item at runtime.
      *
      * @return {@code true} if dynamically registered
      */

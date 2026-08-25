@@ -11,10 +11,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * Called when a player's currency balance is about to change.
+ * Fired before a player's currency balance changes.
  * <p>
- * This event is fired <b>before</b> the balance modification is applied, allowing
- * addons to:
+ * Addons can use it to:
  * <ul>
  *   <li>Cancel the change entirely</li>
  *   <li>Modify the new balance amount</li>
@@ -23,9 +22,9 @@ import java.util.UUID;
  * </ul>
  * </p>
  *
- * <p>This event is <b>cancellable</b>. Cancelling prevents the balance change.</p>
+ * <p>This event is <b>cancellable</b>. Cancelling prevents the change.</p>
  *
- * <h2>Example Usage</h2>
+ * <h2>Example</h2>
  * <pre>{@code
  * @EventHandler
  * public void onCurrencyChange(CurrencyChangeEvent event) {
@@ -35,7 +34,7 @@ import java.util.UUID;
  *     double change = event.getChangeAmount();
  *     ChangeReason reason = event.getReason();
  *
- *     // Log all currency changes
+ *     // Log the currency change
  *     getLogger().info(String.format(
  *         "Currency change for %s: %.2f -> %.2f (%s%.2f) [%s]",
  *         event.getPlayerName(),
@@ -44,19 +43,19 @@ import java.util.UUID;
  *         reason.name()
  *     ));
  *
- *     // Prevent negative balance
+ *     // Prevent a negative balance
  *     if (newBalance < 0) {
  *         event.setNewBalance(0);
  *     }
  *
- *     // Block changes from certain sources
+ *     // Block changes from selected sources
  *     if (reason == ChangeReason.ADDON && !hasPermission(playerId)) {
  *         event.setCancelled(true);
  *         event.getPlayer().ifPresent(p ->
  *             p.sendMessage("Currency change blocked!"));
  *     }
  *
- *     // Apply tax on large gains
+ *     // Apply a tax to large gains
  *     if (change > 1000) {
  *         double taxedAmount = change * 0.9; // 10% tax
  *         event.setNewBalance(oldBalance + taxedAmount);
@@ -284,7 +283,7 @@ public class CurrencyChangeEvent extends ZentrixEvent implements Cancellable {
     /**
      * Adds a bonus amount to the new balance.
      * <p>
-     * Convenience method to add to the new balance without knowing the current value.
+     * Adds to the new balance without requiring its current value.
      * </p>
      *
      * @param bonus The amount to add (can be negative to reduce)

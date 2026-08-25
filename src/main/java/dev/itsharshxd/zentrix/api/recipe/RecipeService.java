@@ -9,34 +9,34 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Service for managing custom Zentrix recipes.
+ * Manages custom Zentrix recipes.
  * <p>
- * This service allows addon developers to create, register, and manage
- * custom crafting recipes that integrate with the Zentrix game system.
+ * Addons can use it to create, register, query, and remove custom crafting
+ * recipes.
  * </p>
  *
- * <h2>Features</h2>
+ * <h2>Operations</h2>
  * <ul>
  *   <li>Register shaped and shapeless recipes</li>
- *   <li>Set craft limits (GLOBAL per world/game, not per player!)</li>
+ *   <li>Set craft limits (global per world/game, not per player)</li>
  *   <li>Query existing recipes</li>
  *   <li>Remove recipes programmatically</li>
  *   <li>Check global craft availability</li>
  *   <li>Batch operations for multiple recipes</li>
  * </ul>
  *
- * <h2>IMPORTANT: Craft Limits are GLOBAL per World!</h2>
+ * <h2>Craft limits</h2>
  * <p>
- * Craft limits restrict how many TOTAL times a recipe can be crafted
- * in a world/game, not per player:
+ * Craft limits restrict the total number of crafts in a world or game, not the
+ * number per player:
  * <ul>
- *   <li><b>One-time ({@code oneTime()}):</b> Only 1 player total can craft it per world</li>
- *   <li><b>Craft limit ({@code craftLimit(9)}):</b> Only 9 total crafts per world (any players)</li>
- *   <li><b>Unlimited:</b> Any number of players can craft unlimited times</li>
+ *   <li><b>One-time ({@code oneTime()}):</b> One player total can craft it per world</li>
+ *   <li><b>Craft limit ({@code craftLimit(9)}):</b> Nine total crafts per world</li>
+ *   <li><b>Unlimited:</b> Players can craft it without a limit</li>
  * </ul>
  * </p>
  *
- * <h2>Creating and Registering a Recipe</h2>
+ * <h2>Creating and registering a recipe</h2>
  * <pre>{@code
  * RecipeService recipeService = api.getRecipeService();
  *
@@ -50,11 +50,11 @@ import org.jetbrains.annotations.NotNull;
  *     .ingredient('S', new ItemStack(Material.STICK))
  *     .craftLimit(1);
  *
- * // Register it
+ * // Register the recipe
  * boolean success = recipeService.registerRecipe(builder);
  * }</pre>
  *
- * <h2>Querying Recipes</h2>
+ * <h2>Querying recipes</h2>
  * <pre>{@code
  * // Get all recipes
  * Collection<ZentrixRecipe> recipes = recipeService.getAllRecipes();
@@ -73,7 +73,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface RecipeService {
     // ==========================================
-    // Recipe Registration
+    // Recipe registration
     // ==========================================
 
     /**
@@ -112,8 +112,8 @@ public interface RecipeService {
     /**
      * Registers multiple recipes at once.
      * <p>
-     * This is more efficient than calling {@link #registerRecipe(RecipeBuilder)}
-     * multiple times, especially for addons with many recipes.
+     * Use this when registering several recipes instead of calling
+     * {@link #registerRecipe(RecipeBuilder)} repeatedly.
      * </p>
      *
      * @param builders The recipe builders to register
@@ -210,7 +210,7 @@ public interface RecipeService {
     );
 
     // ==========================================
-    // Recipe Queries
+    // Recipe queries
     // ==========================================
 
     /**
@@ -287,52 +287,52 @@ public interface RecipeService {
     Collection<ZentrixRecipe> getLimitedRecipes();
 
     // ==========================================
-    // Craft Limit Checking (GLOBAL per world!)
+    // Craft limit checking (global per world)
     // ==========================================
 
     /**
      * Checks if a recipe can still be crafted in the player's current world.
      * <p>
-     * <b>IMPORTANT:</b> Craft limits are GLOBAL per world, not per player!
+     * <b>Note:</b> Craft limits apply globally per world, not per player.
      * <ul>
-     *   <li>One-time recipes: Only 1 player total can craft per world</li>
-     *   <li>Limited recipes: Only N total crafts allowed per world</li>
+     *   <li>One-time recipes: one player total can craft per world</li>
+     *   <li>Limited recipes: N total crafts are allowed per world</li>
      * </ul>
      * </p>
      *
      * @param player   The player (used to determine world)
      * @param recipeId The recipe ID
-     * @return true if the GLOBAL limit hasn't been reached
+     * @return true if the global limit has not been reached
      */
     boolean canPlayerCraft(@NotNull Player player, @NotNull String recipeId);
 
     /**
      * Checks if a recipe can still be crafted in the player's current world.
      * <p>
-     * <b>IMPORTANT:</b> Craft limits are GLOBAL per world, not per player!
+     * <b>Note:</b> Craft limits apply globally per world, not per player.
      * </p>
      * <p>
      * <b>Note:</b> If the player is offline (not found by UUID), this method
-     * returns false because the world cannot be determined. This does NOT mean
+     * returns false because the world cannot be determined. This does not mean
      * the recipe cannot be crafted - use {@link #canCraftInWorld(String, String)}
      * if you know the world name.
      * </p>
      *
      * @param playerId The player's UUID (used to determine world)
      * @param recipeId The recipe ID
-     * @return true if the GLOBAL limit hasn't been reached, false if limit reached OR player offline
+     * @return true if the global limit has not been reached, false if the limit is reached or the player is offline
      */
     boolean canPlayerCraft(@NotNull UUID playerId, @NotNull String recipeId);
 
     /**
      * Checks if a recipe can still be crafted in a specific world.
      * <p>
-     * <b>IMPORTANT:</b> Craft limits are GLOBAL per world, not per player!
+     * <b>Note:</b> Craft limits apply globally per world, not per player.
      * </p>
      *
      * @param worldName The world name to check
      * @param recipeId  The recipe ID
-     * @return true if the GLOBAL limit hasn't been reached
+     * @return true if the global limit has not been reached
      */
     boolean canCraftInWorld(
         @NotNull String worldName,
@@ -342,34 +342,34 @@ public interface RecipeService {
     /**
      * Gets how many times a specific player has crafted a recipe in the current game.
      * <p>
-     * <b>Note:</b> This is for statistics only! Craft limits are checked globally,
+     * <b>Note:</b> This is for statistics only. Craft limits are checked globally,
      * not per player. Use {@link #getRemainingCrafts(Player, String)} to check
      * if the recipe can still be crafted.
      * </p>
      *
      * @param player   The player
      * @param recipeId The recipe ID
-     * @return The number of times THIS player crafted it (for stats)
+     * @return The number of times this player crafted it (for stats)
      */
     int getPlayerCraftCount(@NotNull Player player, @NotNull String recipeId);
 
     /**
      * Gets how many times a specific player has crafted a recipe in the current game.
      * <p>
-     * <b>Note:</b> This is for statistics only! Craft limits are checked globally.
+     * <b>Note:</b> This is for statistics only. Craft limits are checked globally.
      * Returns 0 if the player is offline.
      * </p>
      *
      * @param playerId The player's UUID
      * @param recipeId The recipe ID
-     * @return The number of times THIS player crafted it (for stats), 0 if player offline
+     * @return The number of times this player crafted it (for stats), 0 if the player is offline
      */
     int getPlayerCraftCount(@NotNull UUID playerId, @NotNull String recipeId);
 
     /**
-     * Gets the GLOBAL craft count for a recipe in a specific world.
+     * Gets the global craft count for a recipe in a specific world.
      * <p>
-     * This returns the TOTAL number of times ANY player has crafted this
+     * This returns the total number of times any player has crafted this
      * recipe in the specified world.
      * </p>
      *
@@ -383,9 +383,9 @@ public interface RecipeService {
     );
 
     /**
-     * Gets the remaining GLOBAL crafts for a recipe in the player's world.
+     * Gets the remaining global crafts for a recipe in the player's world.
      * <p>
-     * <b>IMPORTANT:</b> This returns the GLOBAL remaining count, not per-player!
+     * <b>Note:</b> This returns the global remaining count, not a per-player count.
      * <ul>
      *   <li>One-time: Returns 1 if not crafted, 0 if someone crafted it</li>
      *   <li>Limited (e.g., 9): Returns 9 minus total crafts by ALL players</li>
@@ -395,14 +395,14 @@ public interface RecipeService {
      *
      * @param player   The player (used to determine world)
      * @param recipeId The recipe ID
-     * @return GLOBAL remaining crafts, -1 if unlimited, 0 if limit reached
+     * @return Global remaining crafts, -1 if unlimited, 0 if the limit is reached
      */
     int getRemainingCrafts(@NotNull Player player, @NotNull String recipeId);
 
     /**
-     * Gets the remaining GLOBAL crafts for a recipe in the player's world.
+     * Gets the remaining global crafts for a recipe in the player's world.
      * <p>
-     * <b>IMPORTANT:</b> This returns the GLOBAL remaining count, not per-player!
+     * <b>Note:</b> This returns the global remaining count, not a per-player count.
      * </p>
      * <p>
      * <b>Note:</b> If the player is offline, returns -1 (treated as unlimited/unknown).
@@ -411,16 +411,16 @@ public interface RecipeService {
      *
      * @param playerId The player's UUID (used to determine world)
      * @param recipeId The recipe ID
-     * @return GLOBAL remaining crafts, -1 if unlimited or player offline
+     * @return Global remaining crafts, -1 if unlimited or the player is offline
      */
     int getRemainingCrafts(@NotNull UUID playerId, @NotNull String recipeId);
 
     /**
-     * Gets the remaining GLOBAL crafts for a recipe in a specific world.
+     * Gets the remaining global crafts for a recipe in a specific world.
      *
      * @param worldName The world name
      * @param recipeId  The recipe ID
-     * @return GLOBAL remaining crafts, -1 if unlimited
+     * @return Global remaining crafts, -1 if unlimited
      */
     int getRemainingCraftsInWorld(
         @NotNull String worldName,
@@ -505,13 +505,13 @@ public interface RecipeService {
     CompletableFuture<Boolean> saveRecipe(@NotNull String recipeId);
 
     // ==========================================
-    // Utility Methods
+    // Utility methods
     // ==========================================
 
     /**
      * Reloads all recipes from disk.
      * <p>
-     * This clears the recipe registry and reloads from files.
+     * This clears the recipe registry, then reloads the files.
      * </p>
      */
     void reloadRecipes();
@@ -526,7 +526,7 @@ public interface RecipeService {
     /**
      * Creates a new RecipeBuilder instance.
      * <p>
-     * Convenience method for creating builders.
+     * Convenience method for creating a builder.
      * </p>
      *
      * @return A new RecipeBuilder
@@ -548,7 +548,7 @@ public interface RecipeService {
     }
 
     // ==========================================
-    // Cleanup Methods
+    // Cleanup methods
     // ==========================================
 
     /**

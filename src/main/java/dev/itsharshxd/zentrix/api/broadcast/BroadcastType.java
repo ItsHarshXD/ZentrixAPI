@@ -1,7 +1,7 @@
 package dev.itsharshxd.zentrix.api.broadcast;
 
 /**
- * Enum representing the type of broadcast message.
+ * Broadcast output format.
  *
  * @author ItsHarshXD
  * @since 1.1.0

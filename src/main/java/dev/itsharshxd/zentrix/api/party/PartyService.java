@@ -7,17 +7,16 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * Service for party-related operations in Zentrix.
+ * Provides party operations in Zentrix.
  * <p>
- * Provides access to the in-memory party system, allowing addons to
- * query party state, membership, and perform party operations.
+ * Addons can use it to query party state and membership, and to manage parties.
  * </p>
  *
- * <h2>Example Usage</h2>
+ * <h2>Example</h2>
  * <pre>{@code
  * PartyService partyService = ZentrixAPI.get().getPartyService();
  *
- * // Check if player is in a party
+ * // Check whether the player is in a party
  * if (partyService.isInParty(player)) {
  *     ZentrixParty party = partyService.getParty(player).orElse(null);
  *     if (party != null) {
@@ -25,7 +24,7 @@ import java.util.UUID;
  *     }
  * }
  *
- * // Check if player is a party leader
+ * // Check whether the player leads a party
  * if (partyService.isPartyLeader(player)) {
  *     player.sendMessage("You are the party leader!");
  * }

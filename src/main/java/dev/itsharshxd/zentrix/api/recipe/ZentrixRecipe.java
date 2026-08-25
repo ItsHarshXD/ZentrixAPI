@@ -8,30 +8,30 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Represents a custom recipe registered with Zentrix.
+ * Custom recipe registered with Zentrix.
  * <p>
- * This interface provides read-only access to recipe information.
- * To create new recipes, use {@link RecipeBuilder}.
+ * Use {@link RecipeBuilder} to create recipes; this interface exposes their
+ * configuration.
  * </p>
  *
- * <h2>IMPORTANT: Craft Limits are GLOBAL per World!</h2>
+ * <h2>Craft limits</h2>
  * <p>
- * Craft limits restrict how many TOTAL times a recipe can be crafted
- * in a world/game, <b>not per player</b>:
+ * Craft limits restrict the total number of crafts in a world or game, <b>not
+ * per player</b>:
  * <ul>
- *   <li><b>One-time:</b> Only 1 player total can craft it per world</li>
- *   <li><b>Craft limit (e.g., 9):</b> Only 9 total crafts per world (any players)</li>
- *   <li><b>Unlimited:</b> Any number of players can craft unlimited times</li>
+ *   <li><b>One-time:</b> One player total can craft it per world</li>
+ *   <li><b>Craft limit (e.g., 9):</b> Nine total crafts per world</li>
+ *   <li><b>Unlimited:</b> Players can craft it without a limit</li>
  * </ul>
  * </p>
  *
- * <h2>Recipe Types</h2>
+ * <h2>Recipe types</h2>
  * <ul>
  *   <li>{@link RecipeType#SHAPED} - Ingredients must be in specific positions</li>
  *   <li>{@link RecipeType#SHAPELESS} - Ingredients can be in any position</li>
  * </ul>
  *
- * <h2>Example Usage</h2>
+ * <h2>Example</h2>
  * <pre>{@code
  * RecipeService recipeService = api.getRecipeService();
  * Optional<ZentrixRecipe> recipe = recipeService.getRecipe("my-recipe");
@@ -54,7 +54,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public interface ZentrixRecipe {
     /**
-     * Recipe type enumeration.
+     * Available recipe types.
      */
     enum RecipeType {
         /**
@@ -155,8 +155,8 @@ public interface ZentrixRecipe {
     /**
      * Checks if this recipe is a one-time recipe.
      * <p>
-     * <b>IMPORTANT:</b> One-time means only 1 player TOTAL can craft this
-     * recipe per world/game, not once per player!
+     * <b>Note:</b> One-time means one player total can craft this recipe per
+     * world or game, not once per player.
      * </p>
      * <p>
      * Example: If Player A crafts a one-time recipe, Player B cannot
@@ -168,28 +168,27 @@ public interface ZentrixRecipe {
     boolean isOneTime();
 
     /**
-     * Gets the GLOBAL craft limit for this recipe.
+     * Gets the global craft limit for this recipe.
      * <p>
-     * <b>IMPORTANT:</b> The craft limit is GLOBAL per world/game, not per player!
-     * This restricts how many TOTAL times the recipe can be crafted
-     * in a world by ANY players combined.
+     * <b>Note:</b> The craft limit is global per world or game, not per player.
+     * It restricts the total number of crafts by all players in that world.
      * </p>
      * <p>
-     * Example: If craft limit is 9, only 9 total crafts are allowed
+     * Example: A craft limit of 9 allows nine total crafts
      * in the world, regardless of which players craft it.
      * </p>
      *
-     * @return The GLOBAL craft limit, or -1 if unlimited
+     * @return The global craft limit, or -1 if unlimited
      */
     int getCraftLimit();
 
     /**
-     * Checks if this recipe has a GLOBAL craft limit.
+     * Checks if this recipe has a global craft limit.
      * <p>
-     * <b>Note:</b> Craft limits are GLOBAL per world, not per player!
+     * <b>Note:</b> Craft limits apply globally per world, not per player.
      * </p>
      *
-     * @return true if this recipe has a GLOBAL craft limit (> 0)
+     * @return true if this recipe has a global craft limit (> 0)
      */
     default boolean hasCraftLimit() {
         return getCraftLimit() > 0;

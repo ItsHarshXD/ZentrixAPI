@@ -1,13 +1,12 @@
 package dev.itsharshxd.zentrix.api.profile;
 
 /**
- * Represents a player's lifetime statistics in Zentrix.
+ * A player's lifetime statistics in Zentrix.
  * <p>
- * This interface provides access to persistent statistics that are
- * accumulated across all games a player has participated in.
+ * The values cover every game the player has participated in.
  * </p>
  *
- * <h2>Example Usage</h2>
+ * <h2>Example</h2>
  * <pre>{@code
  * PlayerStats stats = ZentrixProvider.get()
  *     .getProfileService()
@@ -27,7 +26,7 @@ package dev.itsharshxd.zentrix.api.profile;
 public interface PlayerStats {
 
     // ==========================================
-    // Core Statistics
+    // Core statistics
     // ==========================================
 
     /**
@@ -59,7 +58,7 @@ public interface PlayerStats {
     int getDeaths();
 
     // ==========================================
-    // Damage Statistics
+    // Damage statistics
     // ==========================================
 
     /**
@@ -77,7 +76,7 @@ public interface PlayerStats {
     double getDamageTaken();
 
     // ==========================================
-    // Record Statistics
+    // Record statistics
     // ==========================================
 
     /**
@@ -109,7 +108,7 @@ public interface PlayerStats {
     double getLongestSurvivalTime();
 
     // ==========================================
-    // Win Streak Statistics
+    // Win streak statistics
     // ==========================================
 
     /**
@@ -130,7 +129,7 @@ public interface PlayerStats {
     int getHighestWinStreak();
 
     // ==========================================
-    // Calculated Statistics
+    // Calculated statistics
     // ==========================================
 
     /**

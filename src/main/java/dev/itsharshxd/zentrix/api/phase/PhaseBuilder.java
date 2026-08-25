@@ -13,14 +13,12 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 /**
- * Fluent builder for creating custom game phases dynamically.
+ * Fluent builder for creating custom game phases.
  * <p>
- * This builder allows addon developers to create phases that integrate
- * with the Zentrix phase system, including border configuration and
- * on-start actions.
+ * Use it to define border settings and actions that run when a phase starts.
  * </p>
  *
- * <h2>Example Usage</h2>
+ * <h2>Example</h2>
  * <pre>{@code
  * PhaseBuilder bloodMoon = new PhaseBuilder()
  *     .name("blood_moon")
@@ -60,13 +58,13 @@ public class PhaseBuilder {
     public PhaseBuilder() {}
 
     // ==========================================
-    // Core Properties
+    // Core properties
     // ==========================================
 
     /**
      * Sets the internal name of the phase.
      * <p>
-     * This is the unique identifier used in configuration and queries.
+     * The name is the unique identifier used in configuration and queries.
      * Must only contain lowercase letters, numbers, and underscores.
      * </p>
      *
@@ -93,8 +91,8 @@ public class PhaseBuilder {
     /**
      * Sets the display name of the phase.
      * <p>
-     * This is the formatted name shown to players, with color code support
-     * (both legacy {@code &c} and hex {@code &#RRGGBB} formats).
+     * The formatted name shown to players supports both legacy {@code &c} and
+     * hex {@code &#RRGGBB} color formats.
      * </p>
      *
      * @param displayName The display name (for example, {@code &#990000&l BLOOD MOON})
@@ -124,7 +122,7 @@ public class PhaseBuilder {
     }
 
     // ==========================================
-    // Border Configuration
+    // Border configuration
     // ==========================================
 
     /**
@@ -164,7 +162,7 @@ public class PhaseBuilder {
     }
 
     // ==========================================
-    // On-Start Actions (Consumer Pattern)
+    // On-start actions
     // ==========================================
 
     /**
@@ -191,7 +189,7 @@ public class PhaseBuilder {
     }
 
     // ==========================================
-    // Direct Action Methods
+    // Direct action methods
     // ==========================================
 
     /**
@@ -393,7 +391,7 @@ public class PhaseBuilder {
                 try {
                     if (field.get(null) == sound) return field.getName();
                 } catch (IllegalAccessException ignored) {
-                    // Public Bukkit sound fields are accessible; continue for custom implementations.
+                    // Public Bukkit sound fields are available to custom implementations.
                 }
             }
         }
@@ -407,8 +405,7 @@ public class PhaseBuilder {
     /**
      * Sets the addon ID that owns this phase.
      * <p>
-     * This is used for tracking which addon registered the phase and for
-     * querying phases by addon.
+     * Zentrix uses it to track and query phases by addon.
      * </p>
      *
      * @param addonId The addon identifier
@@ -440,7 +437,7 @@ public class PhaseBuilder {
     }
 
     // ==========================================
-    // Getters (for Service implementation)
+    // Getters used by the service
     // ==========================================
 
     /**
@@ -548,7 +545,7 @@ public class PhaseBuilder {
     }
 
     /**
-     * Creates a copy of this builder.
+     * Copies this builder.
      *
      * @return A new PhaseBuilder with the same configuration
      */
@@ -580,11 +577,11 @@ public class PhaseBuilder {
     }
 
     // ==========================================
-    // Nested Classes
+    // Nested classes
     // ==========================================
 
     /**
-     * Enum representing the types of phase actions.
+     * Types of phase actions.
      */
     public enum PhaseActionType {
         ANNOUNCE,
@@ -600,7 +597,7 @@ public class PhaseBuilder {
     }
 
     /**
-     * Represents a single phase action with its type and parameters.
+     * One phase action with its type and parameters.
      */
     public static class PhaseAction {
         private final PhaseActionType type;
@@ -783,7 +780,7 @@ public class PhaseBuilder {
             return copy;
         }
 
-        // Getters for implementation
+        // Accessors used by the implementation
         public boolean isDoShrinkage() { return doShrinkage; }
         public double getShrinkTo() { return shrinkTo; }
         public int getShrinkDuration() { return shrinkDuration; }

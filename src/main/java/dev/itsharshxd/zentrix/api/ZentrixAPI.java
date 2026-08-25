@@ -38,23 +38,23 @@ import dev.itsharshxd.zentrix.api.scenario.ScenarioService;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Main entry point for the Zentrix Developer API.
+ * Entry point for the Zentrix developer API.
  * <p>
- * This API allows third-party developers to create addons that interact
- * with Zentrix Battle Royale games without accessing the core plugin source code.
+ * Addons use this API to query and control Zentrix Battle Royale games without
+ * depending on the core plugin's implementation.
  * </p>
  *
- * <h2>Getting Started</h2>
+ * <h2>Usage</h2>
  * <pre>{@code
- * // Get the API instance (recommended)
+ * // Get the API instance
  * ZentrixAPI api = ZentrixAPI.get();
  *
- * // Access services
+ * // Use a service
  * GameService gameService = api.getGameService();
  * Collection<ZentrixGame> games = gameService.getActiveGames();
  * }</pre>
  *
- * <h2>Available Services</h2>
+ * <h2>Services</h2>
  * <ul>
  *   <li>{@link GameService} - Game management and queries</li>
  *   <li>{@link PlayerService} - Player-related operations</li>
@@ -101,17 +101,17 @@ import org.jetbrains.annotations.NotNull;
 public interface ZentrixAPI {
 
     /**
-     * Gets the ZentrixAPI instance.
+     * Returns the ZentrixAPI instance.
      * <p>
-     * This is the recommended way to access the Zentrix API from anywhere in your addon.
+     * Use this method to access the API from anywhere in an addon.
      * </p>
      *
-     * <h3>Usage Example</h3>
+     * <h3>Example</h3>
      * <pre>{@code
      * // Get the API instance
      * ZentrixAPI api = ZentrixAPI.get();
      *
-     * // Use services
+     * // Use services through the API
      * api.getGameService().getActiveGames();
      * api.getCurrencyService().getBalance(player);
      * }</pre>
@@ -133,11 +133,11 @@ public interface ZentrixAPI {
      * before calling {@link #get()}.
      * </p>
      *
-     * <h3>Usage Example</h3>
+     * <h3>Example</h3>
      * <pre>{@code
      * if (ZentrixAPI.isAvailable()) {
      *     ZentrixAPI api = ZentrixAPI.get();
-     *     // Safe to use API
+     *     // Use the API
      * }
      * }</pre>
      *

@@ -11,10 +11,10 @@ import org.jetbrains.annotations.NotNull;
 /**
  * The shape of every entry in a {@link ScenarioSettingType#STRUCTURED_LIST} setting.
  *
- * <p>A schema is just an ordered list of {@link ScenarioEntryField}s, and that is what makes the
- * setting type domain-independent: one field describes a plain list of values, two describe a list of
- * pairs, and more describe whatever the scenario actually needs. Zentrix never interprets what a
- * field means — it only validates it, renders it, stores it and hands it back.
+ * <p>A schema is an ordered list of {@link ScenarioEntryField}s. That keeps the setting type
+ * domain-independent: one field describes a plain list of values, two describe a list of pairs, and
+ * more describe whatever the scenario needs. Zentrix never interprets a field's meaning; it only
+ * validates it, renders it, stores it, and hands it back.
  *
  * <p>Field order is the order an administrator sees in the entry editor, so declare the field that
  * identifies an entry first: the GUI uses {@link #primary()} as the headline of every entry it lists.

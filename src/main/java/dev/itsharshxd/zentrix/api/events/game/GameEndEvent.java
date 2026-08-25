@@ -13,10 +13,9 @@ import java.util.Collections;
 import java.util.Optional;
 
 /**
- * Called when a Zentrix game ends.
+ * Fired when a Zentrix game ends.
  * <p>
- * This event is fired when a game concludes, either because a winner has been
- * determined or the game was forcibly ended. At this point:
+ * The event fires when a game has a winner or is ended by force. At that time:
  * <ul>
  *   <li>The winning team/player has been determined (if any)</li>
  *   <li>Game phases have stopped</li>
@@ -25,9 +24,9 @@ import java.util.Optional;
  * </ul>
  * </p>
  *
- * <p>This event is <b>NOT cancellable</b>.</p>
+ * <p>This event is <b>not cancellable</b>.</p>
  *
- * <h2>Example Usage</h2>
+ * <h2>Example</h2>
  * <pre>{@code
  * @EventHandler
  * public void onGameEnd(GameEndEvent event) {
@@ -39,7 +38,7 @@ import java.util.Optional;
  *             getLogger().info("Team " + team.getDisplayName() + " won!");
  *         });
  *
- *         // Announce winners
+ *         // Announce the winners
  *         for (ZentrixPlayer winner : event.getWinners()) {
  *             winner.getBukkitPlayer().ifPresent(p -> {
  *                 Bukkit.broadcastMessage(p.getName() + " is victorious!");

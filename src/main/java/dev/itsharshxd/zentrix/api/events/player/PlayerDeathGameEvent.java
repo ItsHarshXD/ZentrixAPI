@@ -13,10 +13,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 
 /**
- * Called when a player is eliminated (dies) in a Zentrix game.
+ * Fired when a player is eliminated in a Zentrix game.
  * <p>
- * This event is fired after a player dies and is about to be converted
- * to a spectator. At this point:
+ * The event fires after the death and before the player becomes a spectator.
+ * At that time:
  * <ul>
  *   <li>The player has died</li>
  *   <li>Death message has been prepared</li>
@@ -25,16 +25,16 @@ import java.util.Optional;
  * </ul>
  * </p>
  *
- * <p>This event is <b>NOT cancellable</b>.</p>
+ * <p>This event is <b>not cancellable</b>.</p>
  *
- * <h2>Example Usage</h2>
+ * <h2>Example</h2>
  * <pre>{@code
  * @EventHandler
  * public void onPlayerDeath(PlayerDeathGameEvent event) {
  *     ZentrixPlayer victim = event.getVictim();
  *     ZentrixGame game = event.getGame();
  *
- *     // Check if killed by another player
+ *     // Check whether another player got the kill
  *     if (event.hasKiller()) {
  *         ZentrixPlayer killer = event.getKiller().get();
  *         getLogger().info(victim.getName() + " was killed by " + killer.getName());
@@ -42,14 +42,14 @@ import java.util.Optional;
  *         getLogger().info(victim.getName() + " died to environmental damage");
  *     }
  *
- *     // Check if this death eliminates a team
+ *     // Check whether this death eliminates a team
  *     if (event.eliminatesTeam()) {
  *         event.getVictimTeam().ifPresent(team -> {
  *             game.broadcast("&c" + team.getDisplayName() + " has been eliminated!");
  *         });
  *     }
  *
- *     // Get death location for custom effects
+ *     // Get the death location for custom effects
  *     Location deathLoc = event.getDeathLocation();
  *     deathLoc.getWorld().strikeLightningEffect(deathLoc);
  * }
@@ -163,7 +163,7 @@ public class PlayerDeathGameEvent extends ZentrixGameEvent {
     /**
      * Gets the victim's name.
      * <p>
-     * Convenience method equivalent to {@code getVictim().getName()}.
+     * Returns {@code getVictim().getName()}.
      * </p>
      *
      * @return The victim's name (never null)

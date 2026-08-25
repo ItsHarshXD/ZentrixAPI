@@ -6,26 +6,25 @@ import org.jetbrains.annotations.NotNull;
 import java.util.UUID;
 
 /**
- * Service for managing player chat channels in Zentrix.
+ * Manages player chat channels in Zentrix.
  * <p>
- * Players can switch between global, team, and party chat channels.
- * Channel availability depends on the player's current state (in-game,
- * in a party, etc.).
+ * Players can switch between global, team, and party chat. Available channels
+ * depend on the player's current state, such as being in a game or party.
  * </p>
  *
- * <h2>Example Usage</h2>
+ * <h2>Example</h2>
  * <pre>{@code
  * ChatChannelService chatService = ZentrixAPI.get().getChatChannelService();
  *
- * // Get a player's current channel
+ * // Get the player's current channel
  * ChatChannel channel = chatService.getChannel(player);
  *
- * // Switch to team chat
+ * // Switch to team chat when available
  * if (chatService.canUseTeamChat(player)) {
  *     chatService.setChannel(player, ChatChannel.TEAM);
  * }
  *
- * // Toggle through available channels
+ * // Move to the next available channel
  * ChatChannel newChannel = chatService.toggleChannel(player);
  * player.sendMessage("Switched to " + newChannel.getId() + " chat");
  * }</pre>

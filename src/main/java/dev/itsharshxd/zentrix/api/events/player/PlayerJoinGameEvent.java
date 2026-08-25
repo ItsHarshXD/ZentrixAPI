@@ -9,10 +9,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Called when a player attempts to join a Zentrix game.
+ * Fired when a player attempts to join a Zentrix game.
  * <p>
- * This event is fired before the player is added to the game, allowing
- * addons to prevent the join or perform setup tasks. At this point:
+ * The event fires before the player is added, so addons can reject the join or
+ * perform setup. At that time:
  * <ul>
  *   <li>The player has requested to join (via command, GUI, etc.)</li>
  *   <li>Basic validation has passed (player not already in a game)</li>
@@ -20,16 +20,16 @@ import org.jetbrains.annotations.Nullable;
  * </ul>
  * </p>
  *
- * <p>This event is <b>cancellable</b>. Cancelling prevents the player from joining.</p>
+ * <p>This event is <b>cancellable</b>. Cancelling prevents the join.</p>
  *
- * <h2>Example Usage</h2>
+ * <h2>Example</h2>
  * <pre>{@code
  * @EventHandler
  * public void onPlayerJoinGame(PlayerJoinGameEvent event) {
  *     Player player = event.getPlayer();
  *     ZentrixGame game = event.getGame();
  *
- *     // Check custom permission
+ *     // Check the addon permission
  *     if (!player.hasPermission("myaddon.play")) {
  *         event.setCancelled(true);
  *         event.setCancelReason("You don't have permission to play!");
@@ -39,7 +39,7 @@ import org.jetbrains.annotations.Nullable;
  *     // Log the join
  *     getLogger().info(player.getName() + " is joining game in " + event.getArenaName());
  *
- *     // Check if joining as spectator
+ *     // Check whether the player is joining as a spectator
  *     if (event.isSpectator()) {
  *         player.sendMessage("You're joining as a spectator!");
  *     }
@@ -143,7 +143,7 @@ public class PlayerJoinGameEvent extends ZentrixGameEvent implements Cancellable
     /**
      * Cancels the event with a reason.
      * <p>
-     * Convenience method that sets both cancelled state and reason.
+     * Sets both the cancelled state and reason.
      * </p>
      *
      * @param reason The reason for cancelling
@@ -156,7 +156,7 @@ public class PlayerJoinGameEvent extends ZentrixGameEvent implements Cancellable
     /**
      * Gets the player's name.
      * <p>
-     * Convenience method equivalent to {@code getPlayer().getName()}.
+     * Returns {@code getPlayer().getName()}.
      * </p>
      *
      * @return The player's name (never null)

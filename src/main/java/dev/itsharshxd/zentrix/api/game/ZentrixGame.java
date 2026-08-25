@@ -12,25 +12,24 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * Represents a read-only view of a Zentrix Battle Royale game instance.
+ * Read-only view of a Zentrix Battle Royale game instance.
  * <p>
- * This interface provides access to game state, players, teams, and other
- * game-related information. Addons cannot directly modify game state through
- * this interface - use events and services instead.
+ * It exposes game state, players, teams, and other game information. Addons
+ * cannot modify game state through this interface; use events and services.
  * </p>
  *
- * <h2>Example Usage</h2>
+ * <h2>Example</h2>
  * <pre>{@code
  * ZentrixGame game = ZentrixProvider.get().getGameService()
  *     .getPlayerGame(player).orElse(null);
  *
  * if (game != null) {
- *     // Get game information
+ *     // Read game information
  *     String arena = game.getArenaName();
  *     int playerCount = game.getPlayerCount();
  *     GameState state = game.getState();
  *
- *     // Check phase
+ *     // Check the phase
  *     game.getCurrentPhase().ifPresent(phase -> {
  *         String phaseName = phase.getName();
  *         int timeLeft = phase.getTimeRemaining();

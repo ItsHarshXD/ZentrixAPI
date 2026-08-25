@@ -7,13 +7,13 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * Represents a read-only view of a game type configuration.
+ * Read-only view of a game type configuration.
  * <p>
- * Game types define different modes of play (e.g., Solos, Duos, Squads)
- * with their own team sizes, player limits, and scoreboards.
+ * A game type defines a mode of play, such as Solos, Duos, or Squads, with its
+ * team size, player limits, and scoreboards.
  * </p>
  *
- * <h2>Example Usage</h2>
+ * <h2>Example</h2>
  * <pre>{@code
  * GameTypeService service = ZentrixAPI.get().getGameTypeService();
  *
@@ -77,7 +77,7 @@ public interface ZentrixGameType {
     int getStartTime();
 
     // ==========================================
-    // Scoreboard Information
+    // Scoreboard information
     // ==========================================
 
     /**

@@ -4,17 +4,17 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Represents the types of events that can trigger currency rewards or penalties.
+ * Events that can trigger currency rewards or penalties.
  * <p>
- * Each event type corresponds to a specific in-game action that may
- * award or deduct currency from a player's balance.
+ * Each value corresponds to an in-game action that may add to or subtract from
+ * a player's balance.
  * </p>
  *
- * <h2>Example Usage</h2>
+ * <h2>Example</h2>
  * <pre>{@code
  * CurrencyService currencyService = ZentrixProvider.get().getCurrencyService();
  *
- * // Check if kills award currency
+ * // Check whether kills award currency
  * if (currencyService.isEventEnabled(CurrencyEventType.PLAYER_KILL)) {
  *     double reward = currencyService.getEventReward(CurrencyEventType.PLAYER_KILL);
  *     player.sendMessage("Kills award " + reward + " coins!");
@@ -26,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public enum CurrencyEventType {
     // ==========================================
-    // Game Lifecycle Events
+    // Game lifecycle events
     // ==========================================
 
     /**
@@ -35,17 +35,17 @@ public enum CurrencyEventType {
     GAME_WIN("game-win"),
 
     /**
-     * Awarded/deducted when a player joins a game.
+     * Applies when a player joins a game; the configured amount may be negative.
      */
     GAME_JOIN("game-join"),
 
     /**
-     * Applied when a player leaves during active gameplay (can be negative).
+     * Applies when a player leaves during active gameplay; the amount may be negative.
      */
     GAME_LEAVE("game-leave"),
 
     // ==========================================
-    // Combat Events
+    // Combat events
     // ==========================================
 
     /**
@@ -54,7 +54,7 @@ public enum CurrencyEventType {
     PLAYER_KILL("player-kill"),
 
     /**
-     * Applied when a player dies (can be a penalty/negative value).
+     * Applies when a player dies; the amount may be a penalty.
      */
     PLAYER_DEATH("player-death"),
 
@@ -64,7 +64,7 @@ public enum CurrencyEventType {
     FIRST_BLOOD("first-blood"),
 
     // ==========================================
-    // Position/Survival Events
+    // Position and survival events
     // ==========================================
 
     /**
@@ -85,7 +85,7 @@ public enum CurrencyEventType {
     TOP_3("reaches-top-3"),
 
     // ==========================================
-    // Class System Events
+    // Class system events
     // ==========================================
 
     /**
@@ -109,7 +109,7 @@ public enum CurrencyEventType {
     ARCHER_BOW_BUFF("archer-bow-buff"),
 
     /**
-     * Awarded when Looter gets bonus item from chest.
+     * Awarded when Looter gets a bonus item from a chest.
      */
     LOOTER_CHEST_BONUS("looter-chest-bonus"),
 
@@ -129,7 +129,7 @@ public enum CurrencyEventType {
     MINER_AUTO_SMELT("miner-auto-smelt"),
 
     // ==========================================
-    // Crafting Events
+    // Crafting events
     // ==========================================
 
     /**
@@ -143,7 +143,7 @@ public enum CurrencyEventType {
     CRAFTS_FIRST_TIME("crafts-first-time"),
 
     // ==========================================
-    // Other Events
+    // Other events
     // ==========================================
 
     /**
@@ -168,9 +168,9 @@ public enum CurrencyEventType {
     }
 
     /**
-     * Gets the configuration key for this event type.
+     * Returns the configuration key for this event type.
      * <p>
-     * This is the key used in {@code currency.yml} to configure rewards.
+     * This is the key used in {@code currency.yml} for reward settings.
      * </p>
      *
      * @return The config key (e.g., "player-kill", "first-blood")
@@ -181,7 +181,7 @@ public enum CurrencyEventType {
     }
 
     /**
-     * Checks if this is a combat-related event.
+     * Returns whether this is a combat event.
      *
      * @return {@code true} if this event relates to combat
      */
@@ -192,7 +192,7 @@ public enum CurrencyEventType {
     }
 
     /**
-     * Checks if this is a class ability event.
+     * Returns whether this is a class ability event.
      *
      * @return {@code true} if this event relates to class abilities
      */
@@ -210,7 +210,7 @@ public enum CurrencyEventType {
     }
 
     /**
-     * Checks if this is a milestone/position event.
+     * Returns whether this is a milestone or position event.
      *
      * @return {@code true} if this event is a milestone achievement
      */
@@ -224,7 +224,7 @@ public enum CurrencyEventType {
     }
 
     /**
-     * Checks if this is a game lifecycle event.
+     * Returns whether this is a game lifecycle event.
      *
      * @return {@code true} if this event relates to game lifecycle
      */
@@ -233,7 +233,7 @@ public enum CurrencyEventType {
     }
 
     /**
-     * Gets a CurrencyEventType from its configuration key.
+     * Returns the event type for a configuration key.
      *
      * @param key The configuration key
      * @return The matching event type, or null if not found
@@ -252,7 +252,7 @@ public enum CurrencyEventType {
     }
 
     /**
-     * Gets a CurrencyEventType from its name (case-insensitive).
+     * Returns the event type with the given name, ignoring case.
      *
      * @param name The enum name
      * @return The matching event type, or null if not found
