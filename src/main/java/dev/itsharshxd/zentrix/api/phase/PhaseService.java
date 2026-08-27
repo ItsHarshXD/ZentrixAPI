@@ -8,20 +8,20 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * Service for accessing game phase information within Zentrix.
+ * Provides game phase information for Zentrix games.
  * <p>
- * This service provides access to phase configurations, current phase state,
- * and phase-related queries for active games.
+ * Use it to read phase configurations, current phase state, and other phase
+ * data for active games.
  * </p>
  *
- * <h2>Example Usage</h2>
+ * <h2>Example</h2>
  * <pre>{@code
  * PhaseService phaseService = ZentrixProvider.get().getPhaseService();
  *
- * // Get all configured phases
+ * // List configured phases
  * Collection<GamePhase> phases = phaseService.getAllPhases();
  *
- * // Get current phase for a game
+ * // Get the current phase
  * Optional<GamePhase> currentPhase = phaseService.getCurrentPhase(game);
  * currentPhase.ifPresent(phase -> {
  *     String name = phase.getName();
@@ -78,6 +78,20 @@ public interface PhaseService {
      * @return The phase index, or -1 if not in a phase
      */
     int getCurrentPhaseIndex(@NotNull ZentrixGame game);
+
+    /**
+     * Gets the index of a configured phase by name (0-based).
+     * <p>
+     * The counterpart of {@link #getCurrentPhaseIndex(ZentrixGame)}: comparing the two is how a
+     * caller decides whether a match has reached a named point in its sequence yet, without
+     * assuming anything about how the server ordered or named its phases.
+     * </p>
+     *
+     * @param phaseName The phase name (case-insensitive)
+     * @return The phase index, or -1 when no phase of that name is configured
+     * @since 1.6.0
+     */
+    int getPhaseIndex(@NotNull String phaseName);
 
     /**
      * Gets the time remaining in the current phase, in seconds.
@@ -198,14 +212,14 @@ public interface PhaseService {
     double getTargetBorderSize(@NotNull ZentrixGame game);
 
     // ==========================================
-    // Dynamic Phase Registration (since 1.1.0)
+    // Dynamic phase registration (since 1.1.0)
     // ==========================================
 
     /**
      * Registers a custom phase from a builder.
      * <p>
      * The phase is added at the end of the phase sequence.
-     * This method performs in-memory registration only.
+     * The registration is kept in memory only.
      * </p>
      *
      * @param builder The phase builder with configuration
@@ -247,7 +261,7 @@ public interface PhaseService {
     /**
      * Unregisters a phase by name.
      * <p>
-     * This method performs in-memory removal only.
+     * The removal affects memory only.
      * </p>
      *
      * @param phaseName The name of the phase to unregister
@@ -269,8 +283,8 @@ public interface PhaseService {
     /**
      * Updates an existing phase with new configuration.
      * <p>
-     * The phase must already exist. This replaces the phase configuration
-     * while maintaining its position in the sequence.
+     * The phase must already exist. Its configuration is replaced without changing
+     * its position in the sequence.
      * </p>
      *
      * @param builder The phase builder with updated configuration
@@ -292,7 +306,7 @@ public interface PhaseService {
     /**
      * Creates a new PhaseBuilder instance.
      * <p>
-     * Convenience method for creating builders.
+     * Convenience method for creating a builder.
      * </p>
      *
      * @return A new PhaseBuilder

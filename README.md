@@ -3,7 +3,7 @@
 [![](https://jitpack.io/v/ItsHarshXD/ZentrixAPI.svg)](https://jitpack.io/#ItsHarshXD/ZentrixAPI)
 [![Javadoc](https://img.shields.io/badge/JavaDoc-Online-green)](https://ItsHarshXD.github.io/ZentrixAPI/)
 
-Developer API for creating Zentrix Battle Royale addons. Version 1.5.0 adds `LocaleService` for addon-safe access to Zentrix locale messages and text formatting while retaining the 1.4.0 binary surface.
+Developer API for creating Zentrix Battle Royale addons.
 
 ## Resources
 
@@ -18,8 +18,11 @@ Developer API for creating Zentrix Battle Royale addons. Version 1.5.0 adds `Loc
 - React to gameplay via events
 - Register custom recipes with craft limits
 - Store addon data under `plugins/Zentrix/addons/<addon-id>/`
-- Resolve copied `game-*` instances and their waiting, Nether, and deathmatch worlds
-- Query and control Nether access, deathmatch startup, force-start, and dynamic game rules
+- Resolve copied `game-*` instances and their waiting, Nether, End, and deathmatch worlds
+- Query and control Nether/End access, revival, deathmatch startup, force-start, and dynamic game rules
+- Manage Cornucopia and per-world game-loot pools, loot-table imports, validation, and recovery
+- Control Cornucopia placement, corpse lifecycle, teammate compasses, dragon buses, and block mechanics
+- Open and extend every built-in menu, and register or resolve runtime GUI layouts
 - Use party and runtime-game-scoped chat services
 
 ## Installation
@@ -32,7 +35,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly("com.github.ItsHarshXD:ZentrixAPI:1.5.0")
+    compileOnly("com.github.ItsHarshXD:ZentrixAPI:1.6.0")
 }
 ```
 
@@ -44,7 +47,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'com.github.ItsHarshXD:ZentrixAPI:1.5.0'
+    compileOnly 'com.github.ItsHarshXD:ZentrixAPI:1.6.0'
 }
 ```
 
@@ -61,7 +64,7 @@ dependencies {
 <dependency>
     <groupId>com.github.ItsHarshXD</groupId>
     <artifactId>ZentrixAPI</artifactId>
-    <version>1.5.0</version>
+    <version>1.6.0</version>
     <scope>provided</scope>
 </dependency>
 ```
@@ -74,10 +77,10 @@ dependencies {
 public final class MyAddon extends ZentrixAddon {
     @Override
     protected void onAddonEnable() {
-        // Access the API
+        // Get the API
         ZentrixAPI api = ZentrixAPI.get();
         
-        // Use services
+        // Use a service
         api.getGameService().getActiveGames();
         
         // Register listeners
@@ -99,18 +102,11 @@ api-version: '1.21'
 ### 3. Use the API Anywhere
 
 ```java
-// Single, simple way to access the API
+// Get the API from one place
 ZentrixAPI api = ZentrixAPI.get();
 api.getGameService().getActiveGames();
 api.getCurrencyService().getBalance(player);
 ```
-
-| API | Compatible plugin | Notes |
-|---|---|---|
-| 1.1.x | Zentrix 1.2.x+ | Legacy services |
-| 1.3.0 | 1.3.0-capable development builds | Runtime worlds and typed controls |
-| 1.4.0 | 1.4.0+ | Dynamic sources and atomic matchmaking |
-| 1.5.0 | 1.5.0+ | LocaleService for addon text formatting |
 
 ## Requirements
 

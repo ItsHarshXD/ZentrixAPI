@@ -9,18 +9,17 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * Service for managing custom items within Zentrix.
+ * Manages custom items within Zentrix.
  * <p>
- * This service allows registration, querying, and retrieval of custom items.
- * It supports vanilla items, custom items, and external items from plugins
- * like ItemsAdder and Nexo.
+ * It registers and resolves vanilla, custom, and external items from plugins
+ * such as ItemsAdder and Nexo.
  * </p>
  *
- * <h2>Example Usage</h2>
+ * <h2>Example</h2>
  * <pre>{@code
  * ItemService itemService = ZentrixAPI.get().getItemService();
  *
- * // Register a custom item
+ * // Register an item
  * ItemBuilder compass = new ItemBuilder()
  *     .id("tracking-compass")
  *     .material(Material.COMPASS)
@@ -39,10 +38,10 @@ import java.util.concurrent.CompletableFuture;
  *     player.getInventory().addItem(item);
  * });
  *
- * // Identify items for custom behavior
+ * // Identify an item for custom behavior
  * itemService.identifyItem(heldItem).ifPresent(itemId -> {
  *     if (itemId.equals("tracking-compass")) {
- *         // Custom tracking logic
+ *         // Apply tracking behavior
  *     }
  * });
  * }</pre>
@@ -59,7 +58,7 @@ public interface ItemService {
     /**
      * Registers a custom item from a builder.
      * <p>
-     * This method performs in-memory registration only.
+     * The registration is kept in memory only.
      * </p>
      *
      * @param builder The item builder with configuration
@@ -71,7 +70,7 @@ public interface ItemService {
     /**
      * Registers a custom item asynchronously with persistence.
      * <p>
-     * The item is registered and saved to the items.yml configuration file.
+     * The item is registered and saved to {@code items.yml}.
      * </p>
      *
      * @param builder The item builder with configuration
@@ -84,7 +83,7 @@ public interface ItemService {
     /**
      * Registers multiple items at once.
      * <p>
-     * This method performs in-memory registration only.
+     * The registrations are kept in memory only.
      * </p>
      *
      * @param builders Collection of item builders
@@ -95,7 +94,7 @@ public interface ItemService {
     /**
      * Unregisters an item by ID.
      * <p>
-     * This method performs in-memory removal only.
+     * The removal affects memory only.
      * </p>
      *
      * @param itemId The ID of the item to unregister
@@ -144,7 +143,7 @@ public interface ItemService {
     ItemStack getItemOrDefault(@NotNull String itemId, @NotNull Material fallback);
 
     // ==========================================
-    // Universal Resolver
+    // Universal resolver
     // ==========================================
 
     /**
@@ -247,7 +246,7 @@ public interface ItemService {
     Optional<String> identifyItem(@NotNull ItemStack itemStack);
 
     // ==========================================
-    // Slot Configuration
+    // Slot configuration
     // ==========================================
 
     /**
@@ -267,11 +266,11 @@ public interface ItemService {
     boolean isItemEnabled(@NotNull String itemId);
 
     // ==========================================
-    // Convenience Methods
+    // Convenience methods
     // ==========================================
 
     /**
-     * Creates a new ItemBuilder instance.
+     * Creates an {@link ItemBuilder}.
      *
      * @return A new ItemBuilder
      */

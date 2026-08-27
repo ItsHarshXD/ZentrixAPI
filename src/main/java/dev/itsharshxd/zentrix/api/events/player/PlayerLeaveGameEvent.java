@@ -11,9 +11,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 
 /**
- * Called when a player leaves a Zentrix game.
+ * Fired when a player leaves a Zentrix game.
  * <p>
- * This event is fired after a player has left the game, either by:
+ * The event fires after the player leaves, whether they:
  * <ul>
  *   <li>Using the leave command</li>
  *   <li>Disconnecting from the server</li>
@@ -22,9 +22,9 @@ import java.util.Optional;
  * </ul>
  * </p>
  *
- * <p>This event is <b>NOT cancellable</b> - the player has already left.</p>
+ * <p>This event is <b>not cancellable</b>; the player has already left.</p>
  *
- * <h2>Example Usage</h2>
+ * <h2>Example</h2>
  * <pre>{@code
  * @EventHandler
  * public void onPlayerLeaveGame(PlayerLeaveGameEvent event) {
@@ -39,11 +39,11 @@ import java.util.Optional;
  *         case KICK -> getLogger().info(player.getName() + " was kicked");
  *     }
  *
- *     // Check remaining players
+ *     // Check the remaining players
  *     int remaining = event.getRemainingPlayers();
  *     game.broadcast("&7" + remaining + " players remain!");
  *
- *     // Check if this triggers a win condition
+ *     // Check whether this may trigger a win condition
  *     if (event.couldTriggerWin()) {
  *         getLogger().info("This leave may end the game!");
  *     }
@@ -110,7 +110,7 @@ public class PlayerLeaveGameEvent extends ZentrixGameEvent {
     /**
      * Gets the player's name.
      * <p>
-     * Convenience method equivalent to {@code getPlayer().getName()}.
+     * Returns {@code getPlayer().getName()}.
      * </p>
      *
      * @return The player's name (never null)
@@ -283,7 +283,7 @@ public class PlayerLeaveGameEvent extends ZentrixGameEvent {
         /**
          * Player was eliminated (died in game).
          * <p>
-         * Note: This converts the player to a spectator, they don't
+         * This converts the player to a spectator; they do not
          * fully leave unless they also disconnect or use a command.
          * </p>
          */

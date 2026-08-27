@@ -7,18 +7,18 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * Service for managing game types within Zentrix.
+ * Manages game types within Zentrix.
  * <p>
- * Game types define different modes of play (e.g., Solos, Duos, Squads)
- * with their own team sizes, player limits, and scoreboards.
- * This service allows registration, querying, and management of game types.
+ * A game type defines a mode of play, such as Solos, Duos, or Squads, with its
+ * team size, player limits, and scoreboards. The service registers and queries
+ * game types.
  * </p>
  *
- * <h2>Example Usage</h2>
+ * <h2>Example</h2>
  * <pre>{@code
  * GameTypeService gameTypeService = ZentrixAPI.get().getGameTypeService();
  *
- * // Register a new game type
+ * // Register a game type
  * GameTypeBuilder trios = new GameTypeBuilder()
  *     .name("trios")
  *     .teamSize(3)
@@ -32,7 +32,7 @@ import java.util.concurrent.CompletableFuture;
  *
  * gameTypeService.registerGameType(trios);
  *
- * // Query game types
+ * // List game types
  * Collection<ZentrixGameType> allTypes = gameTypeService.getAllGameTypes();
  * }</pre>
  *
@@ -48,7 +48,7 @@ public interface GameTypeService {
     /**
      * Registers a custom game type from a builder.
      * <p>
-     * This method performs in-memory registration only.
+     * The registration is kept in memory only.
      * </p>
      *
      * @param builder The game type builder with configuration
@@ -60,7 +60,7 @@ public interface GameTypeService {
     /**
      * Registers a custom game type asynchronously with persistence.
      * <p>
-     * The game type is registered and saved to the game-types.yml configuration file.
+     * The game type is registered and saved to {@code game-types.yml}.
      * </p>
      *
      * @param builder The game type builder with configuration
@@ -73,7 +73,7 @@ public interface GameTypeService {
     /**
      * Unregisters a game type by name.
      * <p>
-     * This method performs in-memory removal only.
+     * The removal affects memory only.
      * Built-in game types cannot be unregistered.
      * </p>
      *
@@ -148,7 +148,7 @@ public interface GameTypeService {
     boolean isBuiltIn(@NotNull String name);
 
     // ==========================================
-    // Convenience Methods
+    // Convenience methods
     // ==========================================
 
     /**

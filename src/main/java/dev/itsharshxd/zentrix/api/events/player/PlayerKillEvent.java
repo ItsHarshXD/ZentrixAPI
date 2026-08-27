@@ -11,10 +11,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 
 /**
- * Called when a player kills another player in a Zentrix game.
+ * Fired when a player kills another player in a Zentrix game.
  * <p>
- * This event is fired after a player has killed another player but before
- * kill rewards and statistics are processed. At this point:
+ * The event fires after the kill but before rewards and statistics are processed.
+ * At that time:
  * <ul>
  *   <li>The victim has been eliminated</li>
  *   <li>Kill credit has not yet been awarded</li>
@@ -23,10 +23,10 @@ import java.util.Optional;
  * </ul>
  * </p>
  *
- * <p>This event is <b>cancellable</b>. Cancelling prevents kill credit,
- * currency rewards, and statistic updates from being processed.</p>
+ * <p>This event is <b>cancellable</b>. Cancelling prevents kill credit, currency
+ * rewards, and statistic updates.</p>
  *
- * <h2>Example Usage</h2>
+ * <h2>Example</h2>
  * <pre>{@code
  * @EventHandler
  * public void onPlayerKill(PlayerKillEvent event) {
@@ -38,7 +38,7 @@ import java.util.Optional;
  *     getLogger().info(killer.getName() + " killed " + victim.getName() +
  *                      " in arena " + event.getArenaName());
  *
- *     // Double rewards during final phase
+ *     // Double rewards during the final phase
  *     game.getCurrentPhase().ifPresent(phase -> {
  *         if (phase.getName().contains("final")) {
  *             event.setCurrencyReward(event.getCurrencyReward() * 2);
@@ -48,7 +48,7 @@ import java.util.Optional;
  *         }
  *     });
  *
- *     // Award bonus for first blood
+ *     // Add the first-blood bonus
  *     if (event.isFirstBlood()) {
  *         event.setCurrencyReward(event.getCurrencyReward() + 50);
  *     }
@@ -135,7 +135,7 @@ public class PlayerKillEvent extends ZentrixGameEvent implements Cancellable {
     /**
      * Gets the killer's name.
      * <p>
-     * Convenience method equivalent to {@code getKiller().getName()}.
+     * Returns {@code getKiller().getName()}.
      * </p>
      *
      * @return The killer's name (never null)
@@ -148,7 +148,7 @@ public class PlayerKillEvent extends ZentrixGameEvent implements Cancellable {
     /**
      * Gets the victim's name.
      * <p>
-     * Convenience method equivalent to {@code getVictim().getName()}.
+     * Returns {@code getVictim().getName()}.
      * </p>
      *
      * @return The victim's name (never null)
@@ -196,7 +196,7 @@ public class PlayerKillEvent extends ZentrixGameEvent implements Cancellable {
     /**
      * Adds to the currency reward for this kill.
      * <p>
-     * Convenience method to add a bonus without knowing the current reward.
+     * Adds a bonus without requiring the current reward.
      * </p>
      *
      * @param bonus The amount to add (can be negative to reduce)
@@ -208,7 +208,7 @@ public class PlayerKillEvent extends ZentrixGameEvent implements Cancellable {
     /**
      * Multiplies the currency reward for this kill.
      * <p>
-     * Convenience method to apply a multiplier to the current reward.
+     * Applies a multiplier to the current reward.
      * </p>
      *
      * @param multiplier The multiplier to apply
@@ -220,7 +220,7 @@ public class PlayerKillEvent extends ZentrixGameEvent implements Cancellable {
     /**
      * Gets the killer's current kill count in this game (before this kill).
      * <p>
-     * Convenience method equivalent to {@code getKiller().getGameKills()}.
+     * Returns {@code getKiller().getGameKills()}.
      * </p>
      *
      * @return The killer's current kill count
@@ -241,7 +241,7 @@ public class PlayerKillEvent extends ZentrixGameEvent implements Cancellable {
     /**
      * Gets the killer's current kill streak.
      * <p>
-     * Convenience method equivalent to {@code getKiller().getKillStreak()}.
+     * Returns {@code getKiller().getKillStreak()}.
      * </p>
      *
      * @return The killer's current kill streak

@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "com.github.ItsHarshXD"
-version = "1.5.0"
+version = "1.6.0"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_21
@@ -38,7 +38,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:5.11.4")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.11.4")
     testImplementation("io.papermc.paper:paper-api:1.21.9-R0.1-SNAPSHOT")
-    baselineApi("com.github.ItsHarshXD:ZentrixAPI:1.4.0")
+    baselineApi("com.github.ItsHarshXD:ZentrixAPI:1.5.0")
 }
 
 tasks.test {
@@ -47,7 +47,7 @@ tasks.test {
 
 tasks.register("verifyBinaryCompatibility") {
     group = "verification"
-    description = "Checks that every public 1.4.0 API declaration remains in 1.5.0."
+    description = "Checks that every public baseline API declaration still exists in this build."
     dependsOn(tasks.jar)
     doLast {
         val oldJar = baselineApi.singleFile

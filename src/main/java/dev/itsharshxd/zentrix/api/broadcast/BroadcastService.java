@@ -7,17 +7,17 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * Service for managing broadcasts within Zentrix.
+ * Manages broadcasts within Zentrix.
  * <p>
  * Broadcasts are periodic messages sent to players in specific game states.
- * This service allows registration, querying, and control of broadcasts.
+ * The service registers, queries, and controls them.
  * </p>
  *
- * <h2>Example Usage</h2>
+ * <h2>Example</h2>
  * <pre>{@code
  * BroadcastService broadcastService = ZentrixAPI.get().getBroadcastService();
  *
- * // Register a new broadcast
+ * // Register a broadcast
  * BroadcastBuilder tips = new BroadcastBuilder()
  *     .id("gameplay-tips")
  *     .type(BroadcastType.CHAT)
@@ -31,7 +31,7 @@ import java.util.concurrent.CompletableFuture;
  *
  * broadcastService.registerBroadcast(tips);
  *
- * // Query broadcasts
+ * // List broadcasts
  * Collection<ZentrixBroadcast> playingBroadcasts =
  *     broadcastService.getBroadcastsForState(GameState.PLAYING);
  * }</pre>
@@ -48,7 +48,7 @@ public interface BroadcastService {
     /**
      * Registers a custom broadcast from a builder.
      * <p>
-     * This method performs in-memory registration only.
+     * The registration is kept in memory only.
      * </p>
      *
      * @param builder The broadcast builder with configuration
@@ -60,7 +60,7 @@ public interface BroadcastService {
     /**
      * Registers a custom broadcast asynchronously with persistence.
      * <p>
-     * The broadcast is registered and saved to the broadcasts.yml configuration file.
+     * The broadcast is registered and saved to {@code broadcasts.yml}.
      * </p>
      *
      * @param builder The broadcast builder with configuration
@@ -73,7 +73,7 @@ public interface BroadcastService {
     /**
      * Unregisters a broadcast by ID.
      * <p>
-     * This method performs in-memory removal only.
+     * The removal affects memory only.
      * </p>
      *
      * @param broadcastId The ID of the broadcast to unregister
@@ -162,7 +162,7 @@ public interface BroadcastService {
     /**
      * Triggers a broadcast immediately for the given game state.
      * <p>
-     * This bypasses the normal interval timer and sends the broadcast now.
+     * This bypasses the interval timer and sends the broadcast immediately.
      * </p>
      *
      * @param broadcastId The broadcast ID to trigger
@@ -172,7 +172,7 @@ public interface BroadcastService {
     boolean triggerBroadcastNow(@NotNull String broadcastId, @NotNull GameState state);
 
     /**
-     * Resets the timer for a broadcast.
+     * Resets a broadcast's timer.
      * <p>
      * The next broadcast will occur after the full interval.
      * </p>
@@ -182,11 +182,11 @@ public interface BroadcastService {
     void resetBroadcastTimer(@NotNull String broadcastId);
 
     // ==========================================
-    // Convenience Methods
+    // Convenience methods
     // ==========================================
 
     /**
-     * Creates a new BroadcastBuilder instance.
+     * Creates a {@link BroadcastBuilder}.
      *
      * @return A new BroadcastBuilder
      */

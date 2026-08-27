@@ -9,9 +9,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Service for accessing Zentrix's data folder and managing addon configurations.
+ * Manages Zentrix data folders and addon configurations.
  * <p>
- * This service allows addon developers to:
+ * Addons can use it to:
  * <ul>
  *   <li>Access the main Zentrix data folder</li>
  *   <li>Create and manage addon-specific data folders</li>
@@ -20,26 +20,26 @@ import org.jetbrains.annotations.Nullable;
  * </ul>
  * </p>
  *
- * <h2>Usage Example</h2>
+ * <h2>Usage example</h2>
  * <pre>{@code
  * DataService dataService = api.getDataService();
  *
- * // Get your addon's data folder (creates if not exists)
+ * // Get or create the addon's data folder
  * File myAddonFolder = dataService.getAddonDataFolder("my-addon");
  *
- * // Create a config file in your addon folder
+ * // Load a config file from the addon folder
  * File configFile = new File(myAddonFolder, "config.yml");
  * FileConfiguration config = dataService.loadYamlConfiguration(configFile);
  *
- * // Read/write values
+ * // Read and write values
  * config.set("my-setting", true);
  * dataService.saveYamlConfiguration(config, configFile);
  *
- * // Or use the helper method for quick config access
+ * // Or use the helper for quick access
  * FileConfiguration quickConfig = dataService.getOrCreateConfig("my-addon", "settings.yml");
  * }</pre>
  *
- * <h2>Directory Structure</h2>
+ * <h2>Directory layout</h2>
  * <pre>
  * plugins/Zentrix/
  * ├── config.yml          (main plugin config - READ ONLY for addons)
@@ -58,15 +58,14 @@ import org.jetbrains.annotations.Nullable;
 public interface DataService {
 
     // ==========================================
-    // Data Folder Access
+    // Data folder access
     // ==========================================
 
     /**
-     * Gets the main Zentrix plugin data folder.
+     * Returns the main Zentrix plugin data folder.
      * <p>
-     * This is the root folder where Zentrix stores all its data.
-     * Addons should generally use {@link #getAddonDataFolder(String)}
-     * instead to keep their data organized.
+     * This is the root folder for Zentrix data. Addons should generally use
+     * {@link #getAddonDataFolder(String)} instead.
      * </p>
      *
      * <p><b>Warning:</b> Modifying core Zentrix config files may cause
@@ -78,9 +77,9 @@ public interface DataService {
     File getPluginDataFolder();
 
     /**
-     * Gets the root folder where all addon data is stored.
+     * Returns the root folder for addon data.
      * <p>
-     * This folder is: {@code plugins/Zentrix/addons/}
+     * The folder is {@code plugins/Zentrix/addons/}.
      * </p>
      *
      * @return The addons data folder root
@@ -89,12 +88,12 @@ public interface DataService {
     File getAddonsFolder();
 
     /**
-     * Gets (or creates) a dedicated data folder for a specific addon.
+     * Returns the dedicated data folder for an addon, creating it if needed.
      * <p>
-     * This creates a folder at: {@code plugins/Zentrix/addons/{addonId}/}
+     * The folder is {@code plugins/Zentrix/addons/{addonId}/}.
      * </p>
      *
-     * <p>The folder is automatically created if it doesn't exist.</p>
+     * <p>The folder is created when it does not exist.</p>
      *
      * @param addonId The unique identifier for your addon (lowercase, no spaces)
      * @return The addon's dedicated data folder
@@ -118,7 +117,7 @@ public interface DataService {
     File getAddonSubfolder(@NotNull String addonId, @NotNull String subfolder);
 
     // ==========================================
-    // Configuration File Management
+    // Configuration file management
     // ==========================================
 
     /**
@@ -145,7 +144,7 @@ public interface DataService {
     /**
      * Gets or creates a configuration file for an addon.
      * <p>
-     * This is a convenience method that:
+     * This method:
      * <ol>
      *   <li>Gets the addon's data folder</li>
      *   <li>Creates the config file if it doesn't exist</li>
@@ -191,7 +190,7 @@ public interface DataService {
     );
 
     // ==========================================
-    // File Operations
+    // File operations
     // ==========================================
 
     /**
@@ -242,11 +241,11 @@ public interface DataService {
     String[] listAddonFiles(@NotNull String addonId, @NotNull String subfolder);
 
     // ==========================================
-    // Zentrix Config Access (Read-Only)
+    // Read-only Zentrix config access
     // ==========================================
 
     /**
-     * Gets a read-only copy of a Zentrix configuration file.
+     * Returns a read-only copy of a Zentrix configuration file.
      * <p>
      * Available config names:
      * <ul>
@@ -260,8 +259,8 @@ public interface DataService {
      * </ul>
      * </p>
      *
-     * <p><b>Note:</b> These are read-only snapshots. Modifications won't
-     * affect the actual plugin configuration.</p>
+     * <p><b>Note:</b> These are read-only snapshots. Changes do not affect the
+     * plugin's configuration.</p>
      *
      * @param configName The config name (without .yml extension)
      * @return The configuration, or empty if not found
@@ -270,9 +269,9 @@ public interface DataService {
     Optional<YamlConfiguration> getZentrixConfig(@NotNull String configName);
 
     /**
-     * Gets a value from a Zentrix configuration file.
+     * Returns a value from a Zentrix configuration file.
      * <p>
-     * Convenience method for quick config value access.
+     * Use this for quick config value access.
      * </p>
      *
      * @param configName The config name (without .yml extension)

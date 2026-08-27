@@ -7,14 +7,13 @@ import java.util.Collection;
 import java.util.Optional;
 
 /**
- * Manages Zentrix addon lifecycle and registration.
+ * Tracks addon registration and lifecycle state in Zentrix.
  * <p>
- * This manager handles the registration of third-party addons that extend
- * Zentrix functionality. Addons can register themselves to be tracked and
- * managed by the Zentrix plugin.
+ * Addons can register themselves here so the Zentrix plugin can track them.
+ * {@link ZentrixAddon} performs this registration during its lifecycle.
  * </p>
  *
- * <h2>Example Usage</h2>
+ * <h2>Example</h2>
  * <pre>{@code
  * AddonManager addonManager = ZentrixProvider.get().getAddonManager();
  *
@@ -38,8 +37,8 @@ public interface AddonManager {
     /**
      * Registers an addon with Zentrix.
      * <p>
-     * <b>Note:</b> If you extend {@link ZentrixAddon}, registration is handled
-     * automatically. Only call this directly if you're not using the base class.
+     * If you extend {@link ZentrixAddon}, the base class registers the addon.
+     * Call this directly only for addons that do not use the base class.
      * </p>
      *
      * @param plugin The addon plugin to register
@@ -51,8 +50,8 @@ public interface AddonManager {
     /**
      * Unregisters an addon from Zentrix.
      * <p>
-     * <b>Note:</b> If you extend {@link ZentrixAddon}, unregistration is handled
-     * automatically. Only call this directly if you're not using the base class.
+     * If you extend {@link ZentrixAddon}, the base class unregisters the addon.
+     * Call this directly only for addons that do not use the base class.
      * </p>
      *
      * @param plugin The addon plugin to unregister

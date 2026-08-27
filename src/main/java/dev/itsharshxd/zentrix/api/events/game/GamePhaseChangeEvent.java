@@ -10,9 +10,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 
 /**
- * Called when a game phase changes in a Zentrix Battle Royale game.
+ * Fired when a game phase changes in a Zentrix Battle Royale game.
  * <p>
- * This event is fired whenever a phase transition occurs, including:
+ * The event fires for each phase transition, including:
  * <ul>
  *   <li>Normal phase progression (one phase ending and the next starting)</li>
  *   <li>Phase system being paused</li>
@@ -21,9 +21,9 @@ import java.util.Optional;
  * </ul>
  * </p>
  *
- * <p>This event is <b>NOT cancellable</b>.</p>
+ * <p>This event is <b>not cancellable</b>.</p>
  *
- * <h2>Example Usage</h2>
+ * <h2>Example</h2>
  * <pre>{@code
  * @EventHandler
  * public void onPhaseChange(GamePhaseChangeEvent event) {
@@ -37,7 +37,7 @@ import java.util.Optional;
  *
  *         getLogger().info("New phase: " + phaseName + " (" + duration + "s)");
  *
- *         // Check if this is the final shrink phase
+ *         // Check whether this is the final shrink phase
  *         if (newPhase.getName().contains("final")) {
  *             game.broadcast("&c&lFINAL PHASE! Get ready for the final fight!");
  *         }
@@ -131,7 +131,7 @@ public class GamePhaseChangeEvent extends ZentrixGameEvent {
     /**
      * Gets the name of the new phase.
      * <p>
-     * Convenience method equivalent to {@code getNewPhase().getName()}.
+     * Returns {@code getNewPhase().getName()}.
      * </p>
      *
      * @return The phase name (never null)
@@ -144,7 +144,7 @@ public class GamePhaseChangeEvent extends ZentrixGameEvent {
     /**
      * Gets the display name of the new phase.
      * <p>
-     * Convenience method equivalent to {@code getNewPhase().getDisplayName()}.
+     * Returns {@code getNewPhase().getDisplayName()}.
      * </p>
      *
      * @return The phase display name (never null)
@@ -157,7 +157,7 @@ public class GamePhaseChangeEvent extends ZentrixGameEvent {
     /**
      * Gets the duration of the new phase in seconds.
      * <p>
-     * Convenience method equivalent to {@code getNewPhase().getDuration()}.
+     * Returns {@code getNewPhase().getDuration()}.
      * </p>
      *
      * @return Duration in seconds
@@ -169,7 +169,7 @@ public class GamePhaseChangeEvent extends ZentrixGameEvent {
     /**
      * Checks if the new phase has border shrinkage enabled.
      * <p>
-     * Convenience method equivalent to {@code getNewPhase().hasBorderShrinkage()}.
+     * Returns {@code getNewPhase().hasBorderShrinkage()}.
      * </p>
      *
      * @return {@code true} if the border will shrink during this phase
@@ -193,7 +193,7 @@ public class GamePhaseChangeEvent extends ZentrixGameEvent {
     /**
      * Checks if the new phase starts a deathmatch.
      * <p>
-     * Convenience method equivalent to {@code getNewPhase().startsDeathmatch()}.
+     * Returns {@code getNewPhase().startsDeathmatch()}.
      * </p>
      *
      * @return {@code true} if this phase triggers deathmatch

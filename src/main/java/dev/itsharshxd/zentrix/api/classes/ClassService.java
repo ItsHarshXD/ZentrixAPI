@@ -8,20 +8,20 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * Service for accessing player class information within Zentrix.
+ * Provides player class information for Zentrix games.
  * <p>
- * This service provides access to available player classes, their configurations,
- * and player class selections. Classes define starting kits and passive abilities.
+ * It exposes available classes, their configurations, and player selections.
+ * Classes define starting kits and passive abilities.
  * </p>
  *
- * <h2>Example Usage</h2>
+ * <h2>Example</h2>
  * <pre>{@code
  * ClassService classService = ZentrixProvider.get().getClassService();
  *
- * // Get all available classes
+ * // List available classes
  * Collection<PlayerClass> classes = classService.getAvailableClasses();
  *
- * // Check player's selected class
+ * // Check the player's selected class
  * Optional<PlayerClass> selected = classService.getSelectedClass(player);
  * selected.ifPresent(playerClass -> {
  *     String name = playerClass.getDisplayName();

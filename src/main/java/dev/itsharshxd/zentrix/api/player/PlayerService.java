@@ -9,17 +9,16 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * Service for player-related queries within Zentrix games.
+ * Provides player queries for Zentrix games.
  * <p>
- * This service provides access to player information, including their
- * game state, statistics, and team membership.
+ * Use it to inspect player state, statistics, and team membership.
  * </p>
  *
- * <h2>Example Usage</h2>
+ * <h2>Example</h2>
  * <pre>{@code
  * PlayerService playerService = ZentrixProvider.get().getPlayerService();
  *
- * // Get a player's game representation
+ * // Get the player's game representation
  * Optional<ZentrixPlayer> zentrixPlayer = playerService.getPlayer(player);
  *
  * zentrixPlayer.ifPresent(zp -> {

@@ -9,14 +9,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 /**
- * Fluent builder for creating custom items dynamically.
+ * Fluent builder for creating custom items.
  * <p>
- * This builder allows addon developers to create items that integrate
- * with the Zentrix item system, supporting vanilla items and external
- * sources like ItemsAdder and Nexo.
+ * Use it to define vanilla items or items supplied by ItemsAdder and Nexo.
  * </p>
  *
- * <h2>Example Usage - Vanilla Item</h2>
+ * <h2>Vanilla item example</h2>
  * <pre>{@code
  * ItemBuilder compass = new ItemBuilder()
  *     .id("tracking-compass")
@@ -38,7 +36,7 @@ import java.util.*;
  * itemService.registerItem(compass);
  * }</pre>
  *
- * <h2>Example Usage - External Item</h2>
+ * <h2>External item example</h2>
  * <pre>{@code
  * ItemBuilder customSword = new ItemBuilder()
  *     .id("custom-diamond-sword")
@@ -77,7 +75,7 @@ public class ItemBuilder {
     public ItemBuilder() {}
 
     // ==========================================
-    // Core Properties
+    // Core properties
     // ==========================================
 
     /**
@@ -335,11 +333,11 @@ public class ItemBuilder {
     }
 
     // ==========================================
-    // Utility Methods
+    // Utility methods
     // ==========================================
 
     /**
-     * Creates a copy of this builder.
+     * Copies this builder.
      *
      * @return A new ItemBuilder with the same configuration
      */
@@ -365,7 +363,7 @@ public class ItemBuilder {
     }
 
     // ==========================================
-    // Getters (for Service implementation)
+    // Getters used by the service
     // ==========================================
 
     @Nullable

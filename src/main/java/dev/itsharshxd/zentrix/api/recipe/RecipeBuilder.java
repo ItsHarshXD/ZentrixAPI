@@ -14,22 +14,21 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Fluent builder for creating custom Zentrix recipes.
  * <p>
- * This builder allows addon developers to create shaped or shapeless
- * crafting recipes that integrate with the Zentrix recipe system.
+ * Use it to define shaped or shapeless recipes for Zentrix.
  * </p>
  *
- * <h2>IMPORTANT: Craft Limits are GLOBAL per World!</h2>
+ * <h2>Craft limits</h2>
  * <p>
- * Craft limits restrict how many TOTAL times a recipe can be crafted
- * in a world/game, not per player:
+ * Craft limits restrict the total number of crafts in a world or game, not the
+ * number per player:
  * <ul>
- *   <li><b>One-time ({@code oneTime()}):</b> Only 1 player total can craft it per world</li>
- *   <li><b>Craft limit ({@code craftLimit(9)}):</b> Only 9 total crafts per world (any players)</li>
- *   <li><b>Unlimited:</b> Any number of players can craft unlimited times</li>
+ *   <li><b>One-time ({@code oneTime()}):</b> One player total can craft it per world</li>
+ *   <li><b>Craft limit ({@code craftLimit(9)}):</b> Nine total crafts per world</li>
+ *   <li><b>Unlimited:</b> Players can craft it without a limit</li>
  * </ul>
  * </p>
  *
- * <h2>Craft Limit Rules</h2>
+ * <h2>Craft limit rules</h2>
  * <ul>
  *   <li>{@code oneTime()} and {@code craftLimit(n)} are <b>mutually exclusive</b></li>
  *   <li>Setting {@code oneTime(true)} clears any previously set craft limit</li>
@@ -37,7 +36,7 @@ import org.jetbrains.annotations.Nullable;
  *   <li>Use {@code unlimited()} to remove all limits</li>
  * </ul>
  *
- * <h2>Creating a Shaped Recipe</h2>
+ * <h2>Creating a shaped recipe</h2>
  * <pre>{@code
  * RecipeBuilder builder = new RecipeBuilder()
  *     .id("super-sword")
@@ -46,13 +45,13 @@ import org.jetbrains.annotations.Nullable;
  *     .pattern("DDD", "DSD", "DDD")
  *     .ingredient('D', new ItemStack(Material.DIAMOND))
  *     .ingredient('S', new ItemStack(Material.STICK))
- *     .craftLimit(5);  // Only 5 total crafts per world
+ *     .craftLimit(5);  // Five total crafts per world
  *
- * // Register via RecipeService
+ * // Register through RecipeService
  * recipeService.registerRecipe(builder);
  * }</pre>
  *
- * <h2>Creating a Shapeless Recipe</h2>
+ * <h2>Creating a shapeless recipe</h2>
  * <pre>{@code
  * RecipeBuilder builder = new RecipeBuilder()
  *     .id("quick-diamonds")
@@ -60,7 +59,7 @@ import org.jetbrains.annotations.Nullable;
  *     .result(new ItemStack(Material.DIAMOND, 4))
  *     .addIngredient(new ItemStack(Material.COAL, 8))
  *     .addIngredient(new ItemStack(Material.IRON_INGOT, 4))
- *     .oneTime();  // Only 1 player can craft this per world
+ *     .oneTime();  // One player can craft this per world
  *
  * recipeService.registerRecipe(builder);
  * }</pre>
@@ -88,14 +87,14 @@ public class RecipeBuilder {
     public RecipeBuilder() {}
 
     // ==========================================
-    // Core Properties
+    // Core properties
     // ==========================================
 
     /**
      * Sets the unique identifier for this recipe.
      * <p>
      * Recipe IDs must only contain lowercase letters, numbers, hyphens, and underscores.
-     * The ID will be automatically converted to lowercase.
+     * The ID is converted to lowercase.
      * </p>
      *
      * @param id The recipe ID (e.g., "super-sword", "magic_potion")
@@ -144,7 +143,7 @@ public class RecipeBuilder {
      * to define the crafting pattern.
      * </p>
      * <p>
-     * Note: Calling this clears any shapeless ingredients previously added.
+     * Calling this clears any shapeless ingredients previously added.
      * </p>
      *
      * @return This builder for chaining
@@ -162,7 +161,7 @@ public class RecipeBuilder {
      * Use {@link #addIngredient(ItemStack)} to add required ingredients.
      * </p>
      * <p>
-     * Note: Calling this clears any shaped pattern/ingredients previously set.
+     * Calling this clears any shaped pattern and ingredients previously set.
      * </p>
      *
      * @return This builder for chaining
@@ -174,7 +173,7 @@ public class RecipeBuilder {
     }
 
     // ==========================================
-    // Shaped Recipe Configuration
+    // Shaped recipe configuration
     // ==========================================
 
     /**
@@ -252,7 +251,7 @@ public class RecipeBuilder {
     }
 
     // ==========================================
-    // Shapeless Recipe Configuration
+    // Shapeless recipe configuration
     // ==========================================
 
     /**
@@ -301,7 +300,7 @@ public class RecipeBuilder {
     }
 
     /**
-     * Adds an ingredient using just a Material type.
+     * Adds an ingredient from a Material type.
      *
      * @param material The ingredient material
      * @return This builder for chaining
@@ -328,14 +327,14 @@ public class RecipeBuilder {
     }
 
     // ==========================================
-    // Recipe Limits and Restrictions
+    // Recipe limits and restrictions
     // ==========================================
 
     /**
      * Sets whether this recipe can only be crafted once per world/game.
      * <p>
-     * <b>IMPORTANT:</b> One-time means only 1 player TOTAL can craft this
-     * recipe per world/game, not once per player!
+     * <b>Note:</b> One-time means one player total can craft this recipe per
+     * world or game, not once per player.
      * </p>
      * <p>
      * Example: If one-time is enabled and Player A crafts it, Player B
@@ -353,7 +352,7 @@ public class RecipeBuilder {
     public RecipeBuilder oneTime(boolean oneTime) {
         this.oneTime = oneTime;
         if (oneTime) {
-            // Clear craft limit - oneTime and craftLimit are mutually exclusive
+            // Clear the craft limit; oneTime and craftLimit are mutually exclusive
             this.craftLimit = -1;
         }
         return this;
@@ -363,7 +362,7 @@ public class RecipeBuilder {
      * Marks this recipe as a one-time recipe.
      * <p>
      * Equivalent to {@code oneTime(true)}.
-     * Only 1 player TOTAL can craft this recipe per world/game!
+     * One player total can craft this recipe per world or game.
      * </p>
      * <p>
      * <b>Note:</b> This will clear any previously set craft limit,
@@ -378,10 +377,10 @@ public class RecipeBuilder {
     }
 
     /**
-     * Sets the maximum number of TOTAL crafts for this recipe per world/game.
+     * Sets the maximum number of crafts for this recipe per world or game.
      * <p>
-     * <b>IMPORTANT:</b> This is a GLOBAL limit, not per player!
-     * If set to 9, only 9 total crafts by ANY players are allowed per world.
+     * <b>Note:</b> This is a global limit, not per player. If set to 9, the
+     * recipe can be crafted nine times total per world.
      * </p>
      * <p>
      * <b>Note:</b> Setting a craft limit will clear the one-time flag,
@@ -392,7 +391,7 @@ public class RecipeBuilder {
      * Use -1 or {@link #unlimited()} for no limit.
      * </p>
      *
-     * @param limit The GLOBAL craft limit (must be -1 or positive)
+     * @param limit The global craft limit (must be -1 or positive)
      * @return This builder for chaining
      * @throws IllegalArgumentException if limit is less than -1 or zero
      */
@@ -411,12 +410,12 @@ public class RecipeBuilder {
             );
         }
         if (limit == 1) {
-            // If limit is 1, use oneTime for clarity
+            // Use oneTime for a limit of 1
             return oneTime(true);
         }
         this.craftLimit = limit;
         if (limit > 0) {
-            // Clear oneTime - craftLimit and oneTime are mutually exclusive
+            // Clear oneTime; craftLimit and oneTime are mutually exclusive
             this.oneTime = false;
         }
         return this;
@@ -467,7 +466,7 @@ public class RecipeBuilder {
     }
 
     // ==========================================
-    // Custom Metadata
+    // Custom metadata
     // ==========================================
 
     /**
@@ -537,7 +536,7 @@ public class RecipeBuilder {
     }
 
     // ==========================================
-    // Getters (for RecipeService implementation)
+    // Getters used by RecipeService
     // ==========================================
 
     /**
@@ -700,11 +699,11 @@ public class RecipeBuilder {
             );
         }
 
-        // Warn about unused ingredient mappings (not an error, just inefficient)
+        // Warn about unused ingredient mappings; this is not an error
         for (char c : ingredientMap.keySet()) {
             if (!patternChars.contains(c)) {
-                // This is just a warning, not an error
-                // Could log this if we had a logger
+                // This is a warning, not an error
+                // A logger could report this
             }
         }
     }
@@ -786,11 +785,11 @@ public class RecipeBuilder {
     }
 
     // ==========================================
-    // Copy and Reset
+    // Copy and reset
     // ==========================================
 
     /**
-     * Creates a copy of this builder.
+     * Copies this builder.
      *
      * @return A new RecipeBuilder with the same configuration
      */

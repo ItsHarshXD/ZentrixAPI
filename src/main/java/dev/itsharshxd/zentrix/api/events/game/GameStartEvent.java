@@ -9,10 +9,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 
 /**
- * Called when a Zentrix game starts (transitions to PLAYING state).
+ * Fired when a Zentrix game enters the PLAYING state.
  * <p>
- * This event is fired after all players have been teleported to the arena
- * and the game officially begins. At this point:
+ * The event fires after all players have been teleported to the arena and play
+ * has begun. At that time:
  * <ul>
  *   <li>All players are in the game world</li>
  *   <li>Teams have been assigned</li>
@@ -21,9 +21,9 @@ import java.util.Collection;
  * </ul>
  * </p>
  *
- * <p>This event is <b>NOT cancellable</b>.</p>
+ * <p>This event is <b>not cancellable</b>.</p>
  *
- * <h2>Example Usage</h2>
+ * <h2>Example</h2>
  * <pre>{@code
  * @EventHandler
  * public void onGameStart(GameStartEvent event) {
@@ -34,7 +34,7 @@ import java.util.Collection;
  *     getLogger().info("Game started in " + event.getArenaName() +
  *                      " with " + players + " players in " + teams + " teams!");
  *
- *     // Give all players a starting bonus
+ *     // Give each player a starting bonus
  *     for (ZentrixPlayer player : game.getPlayers()) {
  *         player.getBukkitPlayer().ifPresent(p -> {
  *             p.sendMessage("Good luck!");
@@ -95,7 +95,7 @@ public class GameStartEvent extends ZentrixGameEvent {
     /**
      * Gets all teams in the game at start.
      * <p>
-     * Convenience method equivalent to {@code getGame().getTeams()}.
+     * Returns the teams from {@code getGame().getTeams()}.
      * </p>
      *
      * @return An unmodifiable collection of teams

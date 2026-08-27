@@ -5,14 +5,13 @@ import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Base class for all Zentrix events that are associated with a specific game.
+ * Base class for Zentrix events associated with a specific game.
  * <p>
- * This class provides common functionality for events that occur within the
- * context of a Zentrix game, such as game lifecycle events, player events
- * within games, and team events.
+ * It stores the shared game reference used by lifecycle, player, and team
+ * events.
  * </p>
  *
- * <h2>Example Usage</h2>
+ * <h2>Example</h2>
  * <pre>{@code
  * @EventHandler
  * public void onAnyGameEvent(ZentrixGameEvent event) {
@@ -78,7 +77,7 @@ public abstract class ZentrixGameEvent extends ZentrixEvent {
     /**
      * Gets the unique identifier of the game.
      * <p>
-     * Convenience method equivalent to {@code getGame().getGameId()}.
+     * Returns {@code getGame().getGameId()}.
      * </p>
      *
      * @return The game ID (never null)
@@ -99,7 +98,7 @@ public abstract class ZentrixGameEvent extends ZentrixEvent {
     /**
      * Gets the arena name this game is running on.
      * <p>
-     * Convenience method equivalent to {@code getGame().getArenaName()}.
+     * Returns {@code getGame().getArenaName()}.
      * </p>
      *
      * @return The arena name (never null)
@@ -112,7 +111,7 @@ public abstract class ZentrixGameEvent extends ZentrixEvent {
     /**
      * Gets the current number of alive players in the game.
      * <p>
-     * Convenience method equivalent to {@code getGame().getPlayerCount()}.
+     * Returns {@code getGame().getPlayerCount()}.
      * </p>
      *
      * @return The player count
@@ -124,7 +123,7 @@ public abstract class ZentrixGameEvent extends ZentrixEvent {
     /**
      * Gets the current game state.
      * <p>
-     * Convenience method equivalent to {@code getGame().getState()}.
+     * Returns {@code getGame().getState()}.
      * </p>
      *
      * @return The game state (never null)
@@ -137,7 +136,7 @@ public abstract class ZentrixGameEvent extends ZentrixEvent {
     /**
      * Gets the game type name (e.g., "solo", "duo", "squad").
      * <p>
-     * Convenience method equivalent to {@code getGame().getGameTypeName()}.
+     * Returns {@code getGame().getGameTypeName()}.
      * </p>
      *
      * @return The game type name (never null)

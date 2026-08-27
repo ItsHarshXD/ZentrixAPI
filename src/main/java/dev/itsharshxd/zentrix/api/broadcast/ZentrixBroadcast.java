@@ -8,13 +8,13 @@ import java.util.Optional;
 import java.util.Set;
 
 /**
- * Represents a read-only view of a broadcast configuration.
+ * Read-only view of a broadcast configuration.
  * <p>
- * Broadcasts are periodic messages sent to players in specific game states.
- * They support different formats including chat messages, titles, and action bars.
+ * A broadcast sends periodic chat, title, or action-bar messages in selected
+ * game states.
  * </p>
  *
- * <h2>Example Usage</h2>
+ * <h2>Example</h2>
  * <pre>{@code
  * BroadcastService service = ZentrixAPI.get().getBroadcastService();
  *
@@ -79,7 +79,7 @@ public interface ZentrixBroadcast {
     BroadcastType getType();
 
     // ==========================================
-    // CHAT Type Properties
+    // CHAT type properties
     // ==========================================
 
     /**
@@ -94,7 +94,7 @@ public interface ZentrixBroadcast {
     List<String> getMessages();
 
     // ==========================================
-    // TITLE Type Properties
+    // TITLE type properties
     // ==========================================
 
     /**
@@ -135,7 +135,7 @@ public interface ZentrixBroadcast {
     int getFadeOut();
 
     // ==========================================
-    // ACTIONBAR Type Properties
+    // ACTIONBAR type properties
     // ==========================================
 
     /**

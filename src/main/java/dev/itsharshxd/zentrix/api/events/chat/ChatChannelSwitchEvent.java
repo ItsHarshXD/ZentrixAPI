@@ -10,17 +10,17 @@ import org.jetbrains.annotations.NotNull;
 import java.util.UUID;
 
 /**
- * Called when a player switches their chat channel.
+ * Fired when a player switches chat channels.
  * <p>
- * This event is <b>cancellable</b>. Cancelling prevents the channel change.
+ * This event is <b>cancellable</b>. Cancelling prevents the change.
  * </p>
  *
- * <h2>Example Usage</h2>
+ * <h2>Example</h2>
  * <pre>{@code
  * @EventHandler
  * public void onChannelSwitch(ChatChannelSwitchEvent event) {
  *     if (event.getNewChannel() == ChatChannel.PARTY) {
- *         // Block switching to party chat for certain players
+ *         // Block party chat for selected players
  *         if (!hasPermission(event.getPlayer())) {
  *             event.setCancelled(true);
  *         }
