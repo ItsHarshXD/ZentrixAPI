@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * <p>Every method that touches entities, worlds, or endpoint chunk state must be called on the
  * Bukkit main thread. That includes {@link #getFlight(UUID)} and {@link #getFlights()}, which read
- * live chunk load and plugin-ticket state for each route endpoint.</p>
+ * live chunk load state for each route endpoint.</p>
  *
  * @since 1.6.0
  */

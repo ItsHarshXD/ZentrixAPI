@@ -12,7 +12,7 @@ public record DragonFlight(
         @NotNull Location start,
         @NotNull Location destination,
         @NotNull Set<UUID> passengers,
-        @NotNull List<DragonEndpointChunk> endpointChunks,
+        @Deprecated @NotNull List<DragonEndpointChunk> endpointChunks,
         @NotNull DragonFlightStatus status,
         long startedAtMillis,
         long completedAtMillis) {
@@ -25,6 +25,9 @@ public record DragonFlight(
     }
     @Override public Location start() { return start.clone(); }
     @Override public Location destination() { return destination.clone(); }
+    /** @deprecated Dragon endpoint chunk ticket retention has been removed. */
+    @Deprecated
+    @Override public List<DragonEndpointChunk> endpointChunks() { return endpointChunks; }
     public boolean active() { return status == DragonFlightStatus.FLYING; }
     public boolean arrived() { return status == DragonFlightStatus.ARRIVED; }
 }

@@ -36,6 +36,16 @@ import org.jetbrains.annotations.Nullable;
  *   <li>Use {@code unlimited()} to remove all limits</li>
  * </ul>
  *
+ * <h2>Ingredient matching</h2>
+ * <p>
+ * Every ingredient fills one crafting slot and accepts only that item. A custom item, one with
+ * lore, custom or persistent data, a model or attributes, still matches after it has been
+ * damaged, enchanted or renamed, but an ordinary item renamed to look like it does not. An item
+ * with only a name and enchantments has nothing a player cannot copy, so it must match exactly.
+ * The amount of an ingredient stack is ignored; add an ingredient several times, or use
+ * {@link #addIngredient(ItemStack, int)}, when a recipe needs more than one.
+ * </p>
+ *
  * <h2>Creating a shaped recipe</h2>
  * <pre>{@code
  * RecipeBuilder builder = new RecipeBuilder()
@@ -57,8 +67,8 @@ import org.jetbrains.annotations.Nullable;
  *     .id("quick-diamonds")
  *     .shapeless()
  *     .result(new ItemStack(Material.DIAMOND, 4))
- *     .addIngredient(new ItemStack(Material.COAL, 8))
- *     .addIngredient(new ItemStack(Material.IRON_INGOT, 4))
+ *     .addIngredient(new ItemStack(Material.COAL), 5)
+ *     .addIngredient(new ItemStack(Material.IRON_INGOT), 4)
  *     .oneTime();  // One player can craft this per world
  *
  * recipeService.registerRecipe(builder);
@@ -261,7 +271,7 @@ public class RecipeBuilder {
      * The same ingredient can be added multiple times if multiple are required.
      * </p>
      *
-     * @param item The ingredient item
+     * @param item The ingredient item; it fills one slot, whatever its amount
      * @return This builder for chaining
      * @throws IllegalArgumentException if item is null or AIR
      */
