@@ -34,6 +34,20 @@ import org.jetbrains.annotations.NotNull;
  * delivery. Only reach for {@link #isDisabled(String)} when the message has to be
  * assembled by hand, such as when click or hover components are appended to it.</p>
  *
+ * <h2>Multi-line chat messages</h2>
+ *
+ * <p>From 1.7.0 a server owner may write a chat message as a list, one chat line
+ * per entry in order, blank entries included. The prefix leads only the first
+ * line, {@code !disabled} or {@code !no-prefix} on any line applies to the whole
+ * message, and {@code !no-small-caps} and center tags affect only their own line.
+ * {@link #send(Audience, String, Object...)} and
+ * {@link #sendWithoutPrefix(Audience, String, Object...)} handle this on their own.
+ * To assemble such a message by hand, use
+ * {@link #getChatComponents(String, Object...)} or
+ * {@link #getChatComponentsWithoutPrefix(String, Object...)}. The single-value
+ * getters are unchanged and keep treating every value as one string, since they
+ * also serve GUI, item, and title text.</p>
+ *
  * @since 1.5.0
  */
 public interface LocaleService {
@@ -85,6 +99,45 @@ public interface LocaleService {
      */
     @NotNull
     String getMessageWithoutPrefix(@NotNull String key, Object... placeholders);
+
+    /**
+     * Resolves a chat message as one prefixed component per chat line.
+     *
+     * <p>A list-valued key yields one component per entry, with the Zentrix prefix
+     * on the first line only. A single value yields one component, equal to
+     * {@link #getComponent(String, Object...)}. Like the other getters this ignores
+     * {@code !disabled}, so check {@link #isDisabled(String)} before sending.</p>
+     *
+     * <p>A Zentrix build older than 1.7.0 has no multi-line messages, so it returns
+     * {@link #getComponent(String, Object...)} as the only line.</p>
+     *
+     * @param key locale key
+     * @param placeholders placeholder key/value pairs
+     * @return the formatted lines, in order, never null
+     * @since 1.7.0
+     */
+    @NotNull
+    default java.util.List<Component> getChatComponents(@NotNull String key, Object... placeholders) {
+        return java.util.List.of(getComponent(key, placeholders));
+    }
+
+    /**
+     * Resolves a chat message as one unprefixed component per chat line.
+     *
+     * <p>The unprefixed counterpart to {@link #getChatComponents(String, Object...)}.
+     * A Zentrix build older than 1.7.0 returns
+     * {@link #getComponentWithoutPrefix(String, Object...)} as the only line.</p>
+     *
+     * @param key locale key
+     * @param placeholders placeholder key/value pairs
+     * @return the formatted lines, in order, never null
+     * @since 1.7.0
+     */
+    @NotNull
+    default java.util.List<Component> getChatComponentsWithoutPrefix(
+            @NotNull String key, Object... placeholders) {
+        return java.util.List.of(getComponentWithoutPrefix(key, placeholders));
+    }
 
     /**
      * The lines a list-valued locale key holds, unformatted.
@@ -154,6 +207,9 @@ public interface LocaleService {
      * service keeps returning the formatted text, so the same key still works in
      * GUIs, item text, titles, and subtitles.</p>
      *
+     * <p>For a multi-line chat message, the flag on any line disables the whole
+     * message.</p>
+     *
      * <p>A Zentrix build older than 1.6.0 has no inline flags, so it reports every
      * key as enabled.</p>
      *
@@ -183,7 +239,8 @@ public interface LocaleService {
 
     /**
      * Sends a prefixed locale message to a player or the console, unless the value
-     * opted out with {@code !disabled}.
+     * opted out with {@code !disabled}. A multi-line message is sent one chat line
+     * per entry, with the prefix on the first line only.
      *
      * @param recipient player, console, or any other Adventure audience
      * @param key locale key
@@ -192,13 +249,14 @@ public interface LocaleService {
      */
     default void send(@NotNull Audience recipient, @NotNull String key, Object... placeholders) {
         if (!isDisabled(key)) {
-            recipient.sendMessage(getComponent(key, placeholders));
+            getChatComponents(key, placeholders).forEach(recipient::sendMessage);
         }
     }
 
     /**
      * Sends an unprefixed locale message to a player or the console, unless the
-     * value opted out with {@code !disabled}.
+     * value opted out with {@code !disabled}. A multi-line message is sent one
+     * chat line per entry.
      *
      * @param recipient player, console, or any other Adventure audience
      * @param key locale key
@@ -207,7 +265,7 @@ public interface LocaleService {
      */
     default void sendWithoutPrefix(@NotNull Audience recipient, @NotNull String key, Object... placeholders) {
         if (!isDisabled(key)) {
-            recipient.sendMessage(getComponentWithoutPrefix(key, placeholders));
+            getChatComponentsWithoutPrefix(key, placeholders).forEach(recipient::sendMessage);
         }
     }
 }
