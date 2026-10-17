@@ -1,5 +1,8 @@
 package dev.itsharshxd.zentrix.api.profile;
 
+import java.util.List;
+import org.jetbrains.annotations.NotNull;
+
 /**
  * A player's lifetime statistics in Zentrix.
  * <p>
@@ -201,6 +204,163 @@ public interface PlayerStats {
      *
      * @return Damage ratio
      */
+    // ==========================================
+    // Placement, assist, revival and ranged statistics (since 1.8.0)
+    // ==========================================
+
+    /**
+     * Matches finished in the top three.
+     *
+     * @return Top-three finishes
+     * @since 1.8.0
+     */
+    default int getTopThreeFinishes() {
+        return 0;
+    }
+
+    /**
+     * Matches whose placement was recorded. Matches played before Zentrix tracked placements are
+     * not counted, so rates based on placements are not diluted by them.
+     *
+     * @return Matches with a recorded placement
+     * @since 1.8.0
+     */
+    default int getPlacedMatches() {
+        return 0;
+    }
+
+    /**
+     * Share of placed matches finished in the top three, as a percentage with two decimals.
+     *
+     * @return Top-three rate, or 0 without a placed match
+     * @since 1.8.0
+     */
+    default double getTopThreeRate() {
+        int placed = getPlacedMatches();
+        return placed <= 0 ? 0 : Math.round((double) getTopThreeFinishes() / placed * 10000.0) / 100.0;
+    }
+
+    /**
+     * Lifetime assists.
+     *
+     * @return Assists
+     * @since 1.8.0
+     */
+    default int getAssists() {
+        return 0;
+    }
+
+    /**
+     * Assists per match played, with two decimals.
+     *
+     * @return Average assists, or 0 without matches
+     * @since 1.8.0
+     */
+    default double getAverageAssists() {
+        int matches = getMatchesPlayed();
+        return matches <= 0 ? 0 : Math.round((double) getAssists() / matches * 100.0) / 100.0;
+    }
+
+    /**
+     * Teammates this player revived.
+     *
+     * @return Teammates revived
+     * @since 1.8.0
+     */
+    default int getTeammatesRevived() {
+        return 0;
+    }
+
+    /**
+     * Kills whose killing blow was a projectile.
+     *
+     * @return Ranged kills
+     * @since 1.8.0
+     */
+    default int getRangedKills() {
+        return 0;
+    }
+
+    /**
+     * Longest ranged kill, in blocks from where the shot was fired.
+     *
+     * @return The distance, or 0 without a ranged kill
+     * @since 1.8.0
+     */
+    default double getLongestRangedKill() {
+        return 0;
+    }
+
+    /**
+     * Share of kills that were ranged, as a percentage with two decimals.
+     *
+     * @return Ranged kill share, or 0 without kills
+     * @since 1.8.0
+     */
+    default double getRangedKillShare() {
+        int kills = getKills();
+        return kills <= 0 ? 0
+                : Math.round((double) Math.min(getRangedKills(), kills) / kills * 10000.0) / 100.0;
+    }
+
+    /**
+     * Most damage dealt in a single match.
+     *
+     * @return Highest damage in one match
+     * @since 1.8.0
+     */
+    default double getHighestDamageGame() {
+        return 0;
+    }
+
+    /**
+     * Damage taken per match played, with two decimals.
+     *
+     * @return Average damage taken, or 0 without matches
+     * @since 1.8.0
+     */
+    default double getAverageDamageTaken() {
+        int matches = getMatchesPlayed();
+        return matches <= 0 ? 0 : Math.round(getDamageTaken() / matches * 100.0) / 100.0;
+    }
+
+    // ==========================================
+    // Modes and history (since 1.8.0)
+    // ==========================================
+
+    /**
+     * Solo matches only.
+     *
+     * @return The solo share of this profile
+     * @since 1.8.0
+     */
+    @NotNull
+    default ModeStats getSoloStats() {
+        return ModeStats.EMPTY;
+    }
+
+    /**
+     * Team matches only.
+     *
+     * @return The team share of this profile
+     * @since 1.8.0
+     */
+    @NotNull
+    default ModeStats getTeamStats() {
+        return ModeStats.EMPTY;
+    }
+
+    /**
+     * The player's most recent matches, newest first, as many as Zentrix keeps.
+     *
+     * @return An unmodifiable list (never null, may be empty)
+     * @since 1.8.0
+     */
+    @NotNull
+    default List<RecentMatch> getRecentMatches() {
+        return List.of();
+    }
+
     default double getDamageRatio() {
         double taken = getDamageTaken();
         if (taken == 0) {

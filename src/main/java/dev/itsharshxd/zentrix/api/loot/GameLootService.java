@@ -64,4 +64,32 @@ public interface GameLootService {
     @NotNull Optional<LootGenerationResult> handleDestruction(
             @NotNull Block block,
             boolean generateDrops);
+
+    /**
+     * Starts a new refill cycle for every pool of a running match, exactly like a phase's
+     * {@code refill} action with scope {@code all}.
+     * <p>
+     * Refills are lazy: each container is filled again the next time a participant opens it. A
+     * replacing refill clears a container's loot slots first; otherwise new loot tops it up.
+     * Fires {@link dev.itsharshxd.zentrix.api.events.loot.LootRefillEvent}. Main thread only; a
+     * match without prepared loot is left alone.
+     * </p>
+     *
+     * @param replace whether containers are cleared before being filled again
+     * @since 1.8.0
+     */
+    default void refill(@NotNull ZentrixGame game, boolean replace) {
+        throw new UnsupportedOperationException("refill requires Zentrix API 1.8.0");
+    }
+
+    /**
+     * The refill cycle a match's pool is in: 0 until the first refill, then one more per refill.
+     *
+     * @return the cycle; empty when the match has no state for that pool
+     * @since 1.8.0
+     */
+    @NotNull
+    default java.util.OptionalLong getRefillCycle(@NotNull ZentrixGame game, @NotNull LootPool pool) {
+        throw new UnsupportedOperationException("getRefillCycle requires Zentrix API 1.8.0");
+    }
 }

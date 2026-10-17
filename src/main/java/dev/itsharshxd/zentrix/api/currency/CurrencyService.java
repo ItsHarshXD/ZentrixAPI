@@ -9,8 +9,11 @@ import java.util.concurrent.CompletableFuture;
 /**
  * Provides currency queries for Zentrix games.
  * <p>
- * Use it to read player balances, currency configuration, and reward values.
- * Change balances through the event system.
+ * Use it to read player balances, currency configuration, and reward values, and since 1.8.0
+ * to change balances with {@link #deposit}, {@link #withdraw}, {@link #setBalance} and
+ * {@link #resetBalance}. Built-in rewards can be adjusted or withheld through
+ * {@link dev.itsharshxd.zentrix.api.events.currency.CurrencyRewardEvent}, and every committed
+ * change is reported by {@link dev.itsharshxd.zentrix.api.events.currency.CurrencyTransactionEvent}.
  * </p>
  *
  * <h2>Example</h2>
@@ -165,4 +168,90 @@ public interface CurrencyService {
      * @param player The player
      */
     void refreshCache(@NotNull Player player);
+
+    // ==========================================
+    // Balance changes (since 1.8.0)
+    // ==========================================
+
+    /**
+     * Adds currency to a player's balance.
+     * <p>
+     * The change goes through the same pipeline as Zentrix's own: it is queued behind the player's
+     * other changes, {@link dev.itsharshxd.zentrix.api.events.currency.CurrencyChangeEvent} fires
+     * before it is applied with reason {@code ADDON} and the given source, and the future completes
+     * with what was really committed. No message is sent to the player. Any thread; the future may
+     * complete on any thread.
+     * </p>
+     *
+     * @param playerId The player's UUID; the player does not need to be online
+     * @param amount   The amount to add; must be positive and finite
+     * @param source   What the change is for, such as {@code "myaddon:quest-reward"}
+     * @return The committed change
+     * @since 1.8.0
+     */
+    @NotNull
+    default CompletableFuture<CurrencyTransaction> deposit(
+            @NotNull UUID playerId, double amount, @NotNull String source) {
+        return CompletableFuture.completedFuture(CurrencyTransaction.refused(
+                playerId, CurrencyTransaction.Status.UNAVAILABLE, getCachedBalance(playerId), amount,
+                source, "Balance changes require Zentrix API 1.8.0"));
+    }
+
+    /**
+     * Takes currency from a player's balance, only when they have at least that much.
+     * <p>
+     * The balance is checked and changed as one step of the player's queue, so two withdrawals
+     * racing each other on this server can never take more than the player holds: one completes
+     * with
+     * {@link CurrencyTransaction.Status#INSUFFICIENT_FUNDS} and changes nothing. Otherwise it
+     * behaves like {@link #deposit(UUID, double, String)}.
+     * </p>
+     *
+     * @param playerId The player's UUID
+     * @param amount   The amount to take; must be positive and finite
+     * @param source   What the change is for, such as {@code "myaddon:shop"}
+     * @return The committed change
+     * @since 1.8.0
+     */
+    @NotNull
+    default CompletableFuture<CurrencyTransaction> withdraw(
+            @NotNull UUID playerId, double amount, @NotNull String source) {
+        return CompletableFuture.completedFuture(CurrencyTransaction.refused(
+                playerId, CurrencyTransaction.Status.UNAVAILABLE, getCachedBalance(playerId), -amount,
+                source, "Balance changes require Zentrix API 1.8.0"));
+    }
+
+    /**
+     * Sets a player's balance outright. Otherwise behaves like
+     * {@link #deposit(UUID, double, String)}.
+     *
+     * @param playerId The player's UUID
+     * @param balance  The new balance; must be zero or more and finite
+     * @param source   What the change is for
+     * @return The committed change
+     * @since 1.8.0
+     */
+    @NotNull
+    default CompletableFuture<CurrencyTransaction> setBalance(
+            @NotNull UUID playerId, double balance, @NotNull String source) {
+        double current = getCachedBalance(playerId);
+        return CompletableFuture.completedFuture(CurrencyTransaction.refused(
+                playerId, CurrencyTransaction.Status.UNAVAILABLE, current, balance - current,
+                source, "Balance changes require Zentrix API 1.8.0"));
+    }
+
+    /**
+     * Sets a player's balance back to {@link #getStartingBalance()}. Otherwise behaves like
+     * {@link #deposit(UUID, double, String)}.
+     *
+     * @param playerId The player's UUID
+     * @param source   What the change is for
+     * @return The committed change
+     * @since 1.8.0
+     */
+    @NotNull
+    default CompletableFuture<CurrencyTransaction> resetBalance(
+            @NotNull UUID playerId, @NotNull String source) {
+        return setBalance(playerId, getStartingBalance(), source);
+    }
 }

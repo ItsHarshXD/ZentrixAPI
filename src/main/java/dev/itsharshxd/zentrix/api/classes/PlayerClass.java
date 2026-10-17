@@ -165,7 +165,11 @@ public interface PlayerClass {
     /**
      * Gets the ability type for this class.
      * <p>
-     * Returns null if the class has no ability configured.
+     * This is the type the class's ability resolves to - one of {@link ClassAbilities#TYPES} -
+     * with legacy names already resolved to the ability Zentrix runs, so a class configured with
+     * {@code ORE_DOUBLE_DROP} reports {@link ClassAbilities#AUTO_SMELT}. Returns null if the class
+     * has no ability configured or its configured type is not recognized; see
+     * {@link #getDeclaredAbilityType()} for what was configured.
      * </p>
      *
      * @return The ability type, or null if none
@@ -174,9 +178,36 @@ public interface PlayerClass {
     String getAbilityType();
 
     /**
+     * Gets the ability type exactly as {@code content/classes.yml} declares it, before legacy
+     * names are resolved.
+     *
+     * @return The declared ability type, or null when none is declared
+     * @since 1.8.0
+     */
+    @Nullable
+    default String getDeclaredAbilityType() {
+        return getAbilityType();
+    }
+
+    /**
+     * Whether the class declares an ability type Zentrix does not recognize.
+     * <p>
+     * An unrecognized type is reported rather than hidden: {@link #getAbilityType()} is null for
+     * it, while {@link #getDeclaredAbilityType()} still shows what was configured.
+     * </p>
+     *
+     * @return {@code true} when a declared ability type is not recognized
+     * @since 1.8.0
+     */
+    default boolean hasUnrecognizedAbility() {
+        return getDeclaredAbilityType() != null && getAbilityType() == null;
+    }
+
+    /**
      * Gets a description of the class's passive ability.
      * <p>
-     * Returns an empty string if no ability is configured.
+     * Describes the mechanic Zentrix actually runs for the resolved {@link #getAbilityType()}.
+     * Returns an empty string if no ability is configured or it is not recognized.
      * </p>
      *
      * @return The ability description (never null)

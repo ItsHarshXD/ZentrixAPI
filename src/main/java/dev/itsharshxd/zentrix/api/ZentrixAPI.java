@@ -93,6 +93,16 @@ import org.jetbrains.annotations.NotNull;
  *   <li>{@link dev.itsharshxd.zentrix.api.identity.IdentityService} - Packet-level player identity masking (since 1.6.0)</li>
  *   <li>{@link dev.itsharshxd.zentrix.api.elimination.EliminationService} - Deathless eliminations (since 1.6.0)</li>
  *   <li>{@link dev.itsharshxd.zentrix.api.world.SkyDropService} - Airborne player insertion and glider deployment (since 1.6.0)</li>
+ *   <li>{@link dev.itsharshxd.zentrix.api.platform.PlatformService} - Installed version, edition, server, integrations and capabilities (since 1.8.0)</li>
+ *   <li>{@link dev.itsharshxd.zentrix.api.rejoin.RejoinService} - Corpse-backed rejoin status and operations (since 1.8.0)</li>
+ *   <li>{@link dev.itsharshxd.zentrix.api.placeholder.PlaceholderService} - Addon values in {@code %zentrix_...%} placeholders (since 1.8.0)</li>
+ *   <li>{@link dev.itsharshxd.zentrix.api.cosmetics.CosmeticsService} - Cosmetic ownership and choices (since 1.8.0)</li>
+ *   <li>{@link dev.itsharshxd.zentrix.api.glider.GliderService} - Glider catalog, glides and previews (since 1.8.0)</li>
+ *   <li>{@link dev.itsharshxd.zentrix.api.scenario.hook.GameplayHookService} - Gameplay hooks without a scenario (since 1.8.0)</li>
+ *   <li>{@link dev.itsharshxd.zentrix.api.celebration.CelebrationService} - Victory celebration catalog and previews (since 1.8.0)</li>
+ *   <li>{@link dev.itsharshxd.zentrix.api.customgame.CustomGameService} - Player-hosted custom games (since 1.8.0)</li>
+ *   <li>{@link dev.itsharshxd.zentrix.api.scoreboard.ScoreboardService} - Sidebar contributions (since 1.8.0)</li>
+ *   <li>{@link dev.itsharshxd.zentrix.api.settings.SettingsService} - Editable settings, validated and applied (since 1.8.0)</li>
  * </ul>
  *
  * @author ItsHarshXD
@@ -147,11 +157,13 @@ public interface ZentrixAPI {
     static boolean isAvailable() {
         return ZentrixProvider.isAvailable();
     }
+
     /**
      * Gets the API version for compatibility checks.
      * <p>
-     * Addons should check this version to ensure compatibility
-     * with the installed Zentrix version.
+     * This is the contract the installed Zentrix implements, the same as
+     * {@link ApiVersion#CURRENT} of the API classes it ships. Compare versions with
+     * {@link ApiVersion#check(String, String)} rather than as strings.
      * </p>
      *
      * @return Semantic version string (e.g., "1.0.0")
@@ -516,7 +528,7 @@ public interface ZentrixAPI {
         throw new UnsupportedOperationException("GuiLayoutService requires Zentrix API 1.6.0");
     }
 
-    /** Dragon-bus flight, passenger, endpoint, and Matrix Gliders operations. */
+    /** Dragon-bus flight, passenger, endpoint, and built-in glider deployment operations. */
     @NotNull
     default DragonTransportService getDragonTransportService() {
         throw new UnsupportedOperationException("DragonTransportService requires Zentrix API 1.6.0");
@@ -544,5 +556,105 @@ public interface ZentrixAPI {
     @NotNull
     default dev.itsharshxd.zentrix.api.world.SkyDropService getSkyDropService() {
         throw new UnsupportedOperationException("SkyDropService requires Zentrix API 1.6.0");
+    }
+
+    /**
+     * The installed version, edition, server, integrations and capabilities.
+     *
+     * @since 1.8.0
+     */
+    @NotNull
+    default dev.itsharshxd.zentrix.api.platform.PlatformService getPlatformService() {
+        throw new UnsupportedOperationException("PlatformService requires Zentrix API 1.8.0");
+    }
+
+    /**
+     * Returning to a running match through the corpse a player left behind.
+     *
+     * @since 1.8.0
+     */
+    @NotNull
+    default dev.itsharshxd.zentrix.api.rejoin.RejoinService getRejoinService() {
+        throw new UnsupportedOperationException("RejoinService requires Zentrix API 1.8.0");
+    }
+
+    /**
+     * Addon values in Zentrix's {@code %zentrix_...%} placeholders.
+     *
+     * @since 1.8.0
+     */
+    @NotNull
+    default dev.itsharshxd.zentrix.api.placeholder.PlaceholderService getPlaceholderService() {
+        throw new UnsupportedOperationException("PlaceholderService requires Zentrix API 1.8.0");
+    }
+
+    /**
+     * Cosmetics players own and choose: victory effects and gliders.
+     *
+     * @since 1.8.0
+     */
+    @NotNull
+    default dev.itsharshxd.zentrix.api.cosmetics.CosmeticsService getCosmeticsService() {
+        throw new UnsupportedOperationException("CosmeticsService requires Zentrix API 1.8.0");
+    }
+
+    /**
+     * The built-in glider catalog, glide sessions and previews.
+     *
+     * @since 1.8.0
+     */
+    @NotNull
+    default dev.itsharshxd.zentrix.api.glider.GliderService getGliderService() {
+        throw new UnsupportedOperationException("GliderService requires Zentrix API 1.8.0");
+    }
+
+    /**
+     * Gameplay hooks for addons that are not scenarios, consulted in every match.
+     *
+     * @since 1.8.0
+     */
+    @NotNull
+    default dev.itsharshxd.zentrix.api.scenario.hook.GameplayHookService getGameplayHookService() {
+        throw new UnsupportedOperationException("GameplayHookService requires Zentrix API 1.8.0");
+    }
+
+    /**
+     * The victory celebration catalog and previews.
+     *
+     * @since 1.8.0
+     */
+    @NotNull
+    default dev.itsharshxd.zentrix.api.celebration.CelebrationService getCelebrationService() {
+        throw new UnsupportedOperationException("CelebrationService requires Zentrix API 1.8.0");
+    }
+
+    /**
+     * Player-hosted custom games: listing, joining and moderating them.
+     *
+     * @since 1.8.0
+     */
+    @NotNull
+    default dev.itsharshxd.zentrix.api.customgame.CustomGameService getCustomGameService() {
+        throw new UnsupportedOperationException("CustomGameService requires Zentrix API 1.8.0");
+    }
+
+    /**
+     * Addon contributions to the lobby and match sidebars.
+     *
+     * @since 1.8.0
+     */
+    @NotNull
+    default dev.itsharshxd.zentrix.api.scoreboard.ScoreboardService getScoreboardService() {
+        throw new UnsupportedOperationException("ScoreboardService requires Zentrix API 1.8.0");
+    }
+
+    /**
+     * The editable {@code settings.yml} values of the settings menu, validated and applied live.
+     *
+     * @since 1.8.0
+     */
+    @NotNull
+    default dev.itsharshxd.zentrix.api.settings.SettingsService getSettingsService() {
+        throw new UnsupportedOperationException("SettingsService requires Zentrix API 1.8.0");
     }
 }

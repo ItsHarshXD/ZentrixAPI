@@ -91,6 +91,27 @@ public interface IdentityService {
     boolean unmask(@NotNull UUID playerId);
 
     /**
+     * Removes a player's mask only when the given plugin applied it, so an addon can take back its
+     * own mask without removing one another addon or a scenario put on since.
+     *
+     * @return true when a mask of that owner was removed
+     * @since 1.8.0
+     */
+    default boolean unmask(@NotNull UUID playerId, @NotNull Plugin owner) {
+        throw new UnsupportedOperationException("Owner-scoped unmasking requires Zentrix API 1.8.0");
+    }
+
+    /**
+     * The plugin that applied a player's current mask, when they wear one.
+     *
+     * @since 1.8.0
+     */
+    @NotNull
+    default Optional<Plugin> getMaskOwner(@NotNull UUID playerId) {
+        throw new UnsupportedOperationException("getMaskOwner requires Zentrix API 1.8.0");
+    }
+
+    /**
      * Removes every mask belonging to one match.
      *
      * @return how many masks were removed

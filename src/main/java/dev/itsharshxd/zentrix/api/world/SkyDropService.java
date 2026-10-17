@@ -49,8 +49,9 @@ public interface SkyDropService {
      * Places a player at a drop point and optionally starts their glider.
      *
      * <p>The player is taken off any vehicle first, so the drop is never swallowed by whatever they
-     * were riding. Asking for a glider on a server without Matrix Gliders places the player anyway
-     * and reports {@link SkyDropResult#PLACED_WITHOUT_GLIDER}.
+     * were riding. Gliders are built into Zentrix; when the player's glider cannot be opened - see
+     * {@link dev.itsharshxd.zentrix.api.platform.ZentrixCapabilities#GLIDER_DEPLOYMENT} - the player
+     * is placed anyway and {@link SkyDropResult#PLACED_WITHOUT_GLIDER} is reported.
      *
      * @param player       the player to move
      * @param dropPoint    where to put them, normally from {@link #findDropPoint(SkyDropRequest)}

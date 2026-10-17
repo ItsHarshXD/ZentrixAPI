@@ -1,7 +1,10 @@
 package dev.itsharshxd.zentrix.api.locale;
 
+import dev.itsharshxd.zentrix.api.addon.Registration;
+import java.util.Map;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -267,5 +270,54 @@ public interface LocaleService {
         if (!isDisabled(key)) {
             getChatComponentsWithoutPrefix(key, placeholders).forEach(recipient::sendMessage);
         }
+    }
+
+    // ==========================================
+    // Addon messages (since 1.8.0)
+    // ==========================================
+
+    /**
+     * Registers an addon's own messages, so they resolve through every method of this service
+     * exactly like Zentrix's: prefix, small caps, colours, inline flags and multi-line lists.
+     *
+     * <p>Keys are dotted paths under the addon's own top-level section, such as
+     * {@code myaddon.welcome}; values are a string or a list of strings. They are defaults: a
+     * server owner who adds the same key to the active locale file overrides them, and nothing is
+     * ever written to that file. A key Zentrix's own locale already defines is ignored, so an
+     * addon cannot change a built-in message this way; see {@link #registerOverrides}.
+     *
+     * @param owner    the registering plugin; the messages are removed when it is disabled
+     * @param messages the messages, by key
+     * @return the registration, to remove the messages early
+     * @throws IllegalArgumentException if a key's top-level section is one Zentrix uses itself, or
+     *                                  a value is neither a string nor a list of strings
+     * @since 1.8.0
+     */
+    @NotNull
+    default Registration registerMessages(
+            @NotNull Plugin owner, @NotNull Map<String, ?> messages) {
+        throw new UnsupportedOperationException("Addon messages require Zentrix API 1.8.0");
+    }
+
+    /**
+     * Replaces some of Zentrix's own messages while the registration lasts.
+     *
+     * <p>An override wins over the active locale file, so use it deliberately - for an addon that
+     * reworks a feature and needs its messages to match. When several addons override the same
+     * key, the highest priority wins, and on equal priority the earliest registration. Removing an
+     * override restores the next one, or the server's own text; the locale file is never changed.
+     *
+     * @param owner     the registering plugin; the overrides are removed when it is disabled
+     * @param overrides the replacement values, by key; each a string or a list of strings
+     * @param priority  higher wins over other addons' overrides of the same key
+     * @return the registration, to remove the overrides early
+     * @throws IllegalArgumentException if a value is neither a string nor a list of strings
+     * @since 1.8.0
+     */
+    @NotNull
+    default Registration registerOverrides(
+            @NotNull Plugin owner, @NotNull Map<String, ?> overrides,
+            int priority) {
+        throw new UnsupportedOperationException("Message overrides require Zentrix API 1.8.0");
     }
 }

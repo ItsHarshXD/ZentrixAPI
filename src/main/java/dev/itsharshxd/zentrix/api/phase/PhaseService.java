@@ -316,4 +316,33 @@ public interface PhaseService {
     default PhaseBuilder createPhaseBuilder() {
         return new PhaseBuilder();
     }
+
+    /**
+     * Where a match is in the phase timeline it captured, with timing read at one moment.
+     *
+     * @param game The match
+     * @return The match's timeline state; {@link PhaseRuntimeState.Status#NOT_RUNNING} for a
+     *         match that is not running its phases
+     * @since 1.8.0
+     */
+    @NotNull
+    default PhaseRuntimeState getRuntimeState(@NotNull ZentrixGame game) {
+        throw new UnsupportedOperationException("getRuntimeState requires Zentrix API 1.8.0");
+    }
+
+    /**
+     * Ends a match's current phase now and starts the next one, exactly as the phase's timer
+     * running out would: its warnings and before-end actions that have not run yet are skipped,
+     * the next phase's start actions and border run, and {@code GamePhaseChangeEvent} fires.
+     * After the last phase the timeline completes. Main thread only.
+     *
+     * @param game The match
+     * @return {@code true} when the match moved on; {@code false} when it is not running its
+     *         phases or they are paused
+     * @throws IllegalStateException off the main thread
+     * @since 1.8.0
+     */
+    default boolean advancePhase(@NotNull ZentrixGame game) {
+        throw new UnsupportedOperationException("advancePhase requires Zentrix API 1.8.0");
+    }
 }

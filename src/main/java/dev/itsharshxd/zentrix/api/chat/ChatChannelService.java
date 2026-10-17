@@ -68,10 +68,33 @@ public interface ChatChannelService {
      * </p>
      *
      * @param player The player
-     * @return The new chat channel after toggling
+     * @return The channel the player is in afterwards; since 1.8.0 this is the channel actually
+     *         selected, which differs from the next one in the cycle when a
+     *         {@link dev.itsharshxd.zentrix.api.events.chat.ChatChannelSwitchEvent} listener
+     *         cancelled or redirected the switch
      */
     @NotNull
     ChatChannel toggleChannel(@NotNull Player player);
+
+    /**
+     * Switches a player's chat channel and reports the outcome.
+     * <p>
+     * Like {@link #setChannel(Player, ChatChannel)}, but returns the channel the player is in
+     * afterwards: the requested one, the one a
+     * {@link dev.itsharshxd.zentrix.api.events.chat.ChatChannelSwitchEvent} listener redirected
+     * to, or the unchanged channel when a listener cancelled the switch.
+     * </p>
+     *
+     * @param player  The player
+     * @param channel The requested channel
+     * @return The channel actually selected
+     * @since 1.8.0
+     */
+    @NotNull
+    default ChatChannel switchChannel(@NotNull Player player, @NotNull ChatChannel channel) {
+        setChannel(player, channel);
+        return getChannel(player);
+    }
 
     /**
      * Resets a player's chat channel back to {@link ChatChannel#GLOBAL}.

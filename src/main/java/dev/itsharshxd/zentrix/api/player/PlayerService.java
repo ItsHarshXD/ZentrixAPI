@@ -162,4 +162,65 @@ public interface PlayerService {
      * @return {@code true} if both players are in the same game
      */
     boolean areInSameGame(@NotNull UUID playerId1, @NotNull UUID playerId2);
+
+    /**
+     * Where a player stands, online or not.
+     * <p>
+     * Unlike {@link #getPlayer(UUID)}, this also answers for a player who left a running match
+     * and can still return to it ({@link ParticipantState#DISCONNECTED_RETURNABLE}), and tells an
+     * eliminated participant apart from a spectator who never played.
+     * </p>
+     *
+     * @param playerId The player's UUID
+     * @return The player's state; {@link ParticipantState#NOT_PARTICIPATING} outside any match
+     * @since 1.8.0
+     */
+    @NotNull
+    default ParticipantState getParticipantState(@NotNull UUID playerId) {
+        return getPlayer(playerId).map(ZentrixPlayer::getParticipantState)
+                .orElse(ParticipantState.NOT_PARTICIPATING);
+    }
+
+    /**
+     * The living player whose point of view a spectator currently has, if any.
+     *
+     * @param spectator The spectator
+     * @return The viewed player; empty in free flight or for a player who is not spectating
+     * @since 1.8.0
+     */
+    @NotNull
+    default Optional<Player> getSpectatorCameraTarget(@NotNull Player spectator) {
+        throw new UnsupportedOperationException("Spectator cameras require Zentrix API 1.8.0");
+    }
+
+    /**
+     * Puts a spectator into a living player's point of view, as clicking that player would.
+     * <p>
+     * Only living players of the match the spectator watches can be viewed. A
+     * {@link dev.itsharshxd.zentrix.api.events.spectator.SpectatorCameraEvent} listener may still
+     * refuse. Main thread only.
+     * </p>
+     *
+     * @param spectator The spectator
+     * @param target    The living player to view
+     * @return {@code true} when the spectator now views the target
+     * @throws IllegalStateException off the main thread
+     * @since 1.8.0
+     */
+    default boolean setSpectatorCameraTarget(@NotNull Player spectator, @NotNull Player target) {
+        throw new UnsupportedOperationException("Spectator cameras require Zentrix API 1.8.0");
+    }
+
+    /**
+     * Returns a spectator from another player's point of view to free flight, as sneaking would.
+     * Main thread only.
+     *
+     * @param spectator The spectator
+     * @return {@code true} when they had been viewing a player
+     * @throws IllegalStateException off the main thread
+     * @since 1.8.0
+     */
+    default boolean clearSpectatorCameraTarget(@NotNull Player spectator) {
+        throw new UnsupportedOperationException("Spectator cameras require Zentrix API 1.8.0");
+    }
 }

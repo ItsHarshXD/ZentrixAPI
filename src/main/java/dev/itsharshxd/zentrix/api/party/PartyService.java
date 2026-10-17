@@ -3,6 +3,7 @@ package dev.itsharshxd.zentrix.api.party;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -151,4 +152,74 @@ public interface PartyService {
      * @return The maximum party size
      */
     int getMaxPartySize();
+
+    // ==========================================
+    // Invitations (since 1.8.0)
+    // ==========================================
+
+    /**
+     * Gets the invitations a player has not answered yet.
+     *
+     * @param inviteeId The invited player's UUID
+     * @return The pending invitations, oldest first (never null)
+     * @since 1.8.0
+     */
+    @NotNull
+    default List<PartyInvitation> getPendingInvites(@NotNull UUID inviteeId) {
+        return List.of();
+    }
+
+    /**
+     * Gets the invitations a party leader has sent that are still pending.
+     *
+     * @param inviterId The leader's UUID
+     * @return The pending invitations (never null)
+     * @since 1.8.0
+     */
+    @NotNull
+    default List<PartyInvitation> getOutgoingInvites(@NotNull UUID inviterId) {
+        return List.of();
+    }
+
+    /**
+     * Accepts a pending invitation for a player, exactly as {@code /party accept} does: the same
+     * checks, the same messages, and
+     * {@link dev.itsharshxd.zentrix.api.events.party.PartyInviteAcceptEvent} before joining.
+     * Main thread only.
+     *
+     * @param invitee   The invited player
+     * @param inviterId The leader who sent the invitation
+     * @return {@code true} if the player joined the party
+     * @since 1.8.0
+     */
+    default boolean acceptInvite(@NotNull Player invitee, @NotNull UUID inviterId) {
+        return false;
+    }
+
+    /**
+     * Turns down a pending invitation for a player, exactly as {@code /party deny} does,
+     * messages included. Main thread only.
+     *
+     * @param invitee   The invited player
+     * @param inviterId The leader who sent the invitation
+     * @return {@code true} if there was such an invitation and it was turned down
+     * @since 1.8.0
+     */
+    default boolean denyInvite(@NotNull Player invitee, @NotNull UUID inviterId) {
+        return false;
+    }
+
+    /**
+     * Withdraws a pending invitation without messaging anyone; the caller explains it if it needs
+     * to. {@link dev.itsharshxd.zentrix.api.events.party.PartyInviteResolveEvent} reports it as
+     * {@link PartyInvitation.Resolution#CANCELLED}.
+     *
+     * @param inviterId The leader who sent the invitation
+     * @param inviteeId The invited player
+     * @return {@code true} if there was such an invitation and it was withdrawn
+     * @since 1.8.0
+     */
+    default boolean cancelInvite(@NotNull UUID inviterId, @NotNull UUID inviteeId) {
+        return false;
+    }
 }

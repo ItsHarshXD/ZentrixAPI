@@ -2,10 +2,14 @@ package dev.itsharshxd.zentrix.api.recipe;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.TreeSet;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -90,6 +94,12 @@ public class RecipeBuilder {
     private boolean oneTime = false;
     private int craftLimit = -1;
     private final Map<String, Object> customFields = new HashMap<>();
+    private RecipeStation station = RecipeStation.CRAFTING_TABLE;
+    private ItemStack input;
+    private int cookingTime = -1;
+    private float experience = -1f;
+    private final Set<String> disabledPhases = new TreeSet<>();
+    private final Set<String> disabledGameTypes = new TreeSet<>();
 
     /**
      * Creates a new RecipeBuilder instance.
@@ -180,6 +190,123 @@ public class RecipeBuilder {
     public RecipeBuilder shapeless() {
         this.type = ZentrixRecipe.RecipeType.SHAPELESS;
         return this;
+    }
+
+    // ==========================================
+    // Workstation recipes (since 1.8.0)
+    // ==========================================
+
+    /**
+     * Sets the workstation the recipe is made at. The default is
+     * {@link RecipeStation#CRAFTING_TABLE}, which uses {@link #shaped()}/{@link #shapeless()} and
+     * the pattern and ingredient methods; every other station takes one {@link #input(ItemStack)}
+     * and ignores them.
+     *
+     * @param station The station; not {@link RecipeStation#OTHER}
+     * @return This builder for chaining
+     * @throws IllegalArgumentException if the station is {@link RecipeStation#OTHER}
+     * @since 1.8.0
+     */
+    @NotNull
+    public RecipeBuilder station(@NotNull RecipeStation station) {
+        Objects.requireNonNull(station, "Station cannot be null");
+        if (station == RecipeStation.OTHER) {
+            throw new IllegalArgumentException("Recipes of station OTHER cannot be built");
+        }
+        this.station = station;
+        return this;
+    }
+
+    /**
+     * Sets the single input of a furnace, blast furnace, smoker, campfire or stonecutter recipe.
+     * Like every Zentrix ingredient it accepts only this item, one at a time.
+     *
+     * @param input The input item
+     * @return This builder for chaining
+     * @since 1.8.0
+     */
+    @NotNull
+    public RecipeBuilder input(@NotNull ItemStack input) {
+        Objects.requireNonNull(input, "Input cannot be null");
+        if (input.getType() == Material.AIR) {
+            throw new IllegalArgumentException("Input cannot be AIR");
+        }
+        this.input = input.clone();
+        return this;
+    }
+
+    /**
+     * Sets the cooking time of a cooking recipe. Without it the station's vanilla time is used;
+     * a time longer than the station keeps is shortened to {@link RecipeStation#getMaxCookingTime()}.
+     *
+     * @param ticks The cooking time in ticks; must be positive
+     * @return This builder for chaining
+     * @since 1.8.0
+     */
+    @NotNull
+    public RecipeBuilder cookingTime(int ticks) {
+        if (ticks < 1) {
+            throw new IllegalArgumentException("Cooking time must be at least 1 tick, got: " + ticks);
+        }
+        this.cookingTime = ticks;
+        return this;
+    }
+
+    /**
+     * Sets the experience a furnace, blast furnace or smoker recipe awards. Without it the
+     * vanilla minimum of 0.1 is used; campfires never award experience.
+     *
+     * @param experience The experience; zero or more and finite
+     * @return This builder for chaining
+     * @since 1.8.0
+     */
+    @NotNull
+    public RecipeBuilder experience(float experience) {
+        if (!Float.isFinite(experience) || experience < 0f) {
+            throw new IllegalArgumentException("Experience must be zero or more, got: " + experience);
+        }
+        this.experience = experience;
+        return this;
+    }
+
+    /**
+     * Switches the recipe off in these phases: while a match is in one of them the recipe behaves
+     * as if it did not exist. Replaces any phases set before; names are compared ignoring case.
+     *
+     * @param phases The phase names
+     * @return This builder for chaining
+     * @since 1.8.0
+     */
+    @NotNull
+    public RecipeBuilder disabledPhases(@NotNull Collection<String> phases) {
+        Objects.requireNonNull(phases, "Phases cannot be null");
+        this.disabledPhases.clear();
+        addNormalized(this.disabledPhases, phases);
+        return this;
+    }
+
+    /**
+     * Switches the recipe off in matches of these game types. Replaces any game types set before;
+     * names are compared ignoring case.
+     *
+     * @param gameTypes The game type names
+     * @return This builder for chaining
+     * @since 1.8.0
+     */
+    @NotNull
+    public RecipeBuilder disabledGameTypes(@NotNull Collection<String> gameTypes) {
+        Objects.requireNonNull(gameTypes, "Game types cannot be null");
+        this.disabledGameTypes.clear();
+        addNormalized(this.disabledGameTypes, gameTypes);
+        return this;
+    }
+
+    private static void addNormalized(Set<String> target, Collection<String> names) {
+        for (String name : names) {
+            if (name != null && !name.isBlank()) {
+                target.add(name.trim().toLowerCase(Locale.ROOT));
+            }
+        }
     }
 
     // ==========================================
@@ -641,6 +768,58 @@ public class RecipeBuilder {
         return new HashMap<>(customFields);
     }
 
+    /**
+     * @return The workstation the recipe is made at
+     * @since 1.8.0
+     */
+    @NotNull
+    public RecipeStation getStation() {
+        return station;
+    }
+
+    /**
+     * @return A copy of the single input of a workstation recipe, or null when none is set
+     * @since 1.8.0
+     */
+    @Nullable
+    public ItemStack getInput() {
+        return input != null ? input.clone() : null;
+    }
+
+    /**
+     * @return The cooking time in ticks, or -1 to use the station's vanilla time
+     * @since 1.8.0
+     */
+    public int getCookingTime() {
+        return cookingTime;
+    }
+
+    /**
+     * @return The experience, or -1 to use the default
+     * @since 1.8.0
+     */
+    public float getExperience() {
+        return experience;
+    }
+
+    /**
+     * @return The lowercase phase names the recipe is switched off in
+     * @since 1.8.0
+     */
+    @NotNull
+    public Set<String> getDisabledPhases() {
+        return Set.copyOf(disabledPhases);
+    }
+
+    /**
+     * @return The lowercase game type names the recipe is switched off in
+     * @since 1.8.0
+     */
+    @NotNull
+    public Set<String> getDisabledGameTypes() {
+        return Set.copyOf(disabledGameTypes);
+    }
+
     // ==========================================
     // Validation
     // ==========================================
@@ -665,6 +844,14 @@ public class RecipeBuilder {
         }
         if (result == null) {
             throw new IllegalStateException("Recipe result is required");
+        }
+
+        String stationError = stationError();
+        if (stationError != null) {
+            throw new IllegalStateException(stationError);
+        }
+        if (station != RecipeStation.CRAFTING_TABLE) {
+            return;
         }
 
         if (type == ZentrixRecipe.RecipeType.SHAPED) {
@@ -764,6 +951,14 @@ public class RecipeBuilder {
             errors.add("Recipe result is required");
         }
 
+        String stationError = stationError();
+        if (stationError != null) {
+            errors.add(stationError);
+        }
+        if (station != RecipeStation.CRAFTING_TABLE) {
+            return errors;
+        }
+
         if (type == ZentrixRecipe.RecipeType.SHAPED) {
             if (pattern.length == 0) {
                 errors.add("Shaped recipes require a pattern");
@@ -794,6 +989,18 @@ public class RecipeBuilder {
         return errors;
     }
 
+    /** What is wrong with the station settings, or null when nothing is. */
+    @Nullable
+    private String stationError() {
+        if (station == RecipeStation.OTHER) {
+            return "Recipes of station OTHER cannot be built; choose a station Zentrix can edit";
+        }
+        if (station.isSingleInput() && input == null) {
+            return station + " recipes require an input. Use input(new ItemStack(Material.XXX))";
+        }
+        return null;
+    }
+
     // ==========================================
     // Copy and reset
     // ==========================================
@@ -819,6 +1026,12 @@ public class RecipeBuilder {
         copy.oneTime = this.oneTime;
         copy.craftLimit = this.craftLimit;
         copy.customFields.putAll(this.customFields);
+        copy.station = this.station;
+        copy.input = this.input != null ? this.input.clone() : null;
+        copy.cookingTime = this.cookingTime;
+        copy.experience = this.experience;
+        copy.disabledPhases.addAll(this.disabledPhases);
+        copy.disabledGameTypes.addAll(this.disabledGameTypes);
         return copy;
     }
 
@@ -838,6 +1051,12 @@ public class RecipeBuilder {
         this.oneTime = false;
         this.craftLimit = -1;
         this.customFields.clear();
+        this.station = RecipeStation.CRAFTING_TABLE;
+        this.input = null;
+        this.cookingTime = -1;
+        this.experience = -1f;
+        this.disabledPhases.clear();
+        this.disabledGameTypes.clear();
         return this;
     }
 
@@ -845,7 +1064,11 @@ public class RecipeBuilder {
     public String toString() {
         StringBuilder sb = new StringBuilder("RecipeBuilder{");
         sb.append("id='").append(id).append('\'');
-        sb.append(", type=").append(type);
+        if (station == RecipeStation.CRAFTING_TABLE) {
+            sb.append(", type=").append(type);
+        } else {
+            sb.append(", station=").append(station);
+        }
         sb
             .append(", result=")
             .append(result != null ? result.getType() : "null");

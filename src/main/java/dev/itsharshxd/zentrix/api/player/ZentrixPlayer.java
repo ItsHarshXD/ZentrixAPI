@@ -103,6 +103,13 @@ public interface ZentrixPlayer {
 
     /**
      * Gets the player's selected class.
+     * <p>
+     * This is the class the player plays with: their explicit choice, or the configured default
+     * when they made none, resolved exactly as gameplay resolves it. For an eliminated participant
+     * it is the class they played with. Use
+     * {@link dev.itsharshxd.zentrix.api.classes.ClassService#getExplicitClass(java.util.UUID)} to
+     * tell an explicit choice apart from the default.
+     * </p>
      *
      * @return Optional containing the class, or empty if none selected
      */
@@ -185,4 +192,62 @@ public interface ZentrixPlayer {
      * @return {@code true} if stats are available
      */
     boolean hasGameStats();
+
+    /**
+     * Gets the assists credited to the player in this game.
+     *
+     * @return Assists this game, or 0 when stats are not available
+     * @since 1.8.0
+     */
+    default int getAssists() {
+        return 0;
+    }
+
+    /**
+     * Gets the teammates this player revived in this game.
+     *
+     * @return Revives this game, or 0 when stats are not available
+     * @since 1.8.0
+     */
+    default int getRevives() {
+        return 0;
+    }
+
+    /**
+     * Gets the kills in this game whose killing blow was a projectile.
+     *
+     * @return Ranged kills this game, or 0 when stats are not available
+     * @since 1.8.0
+     */
+    default int getRangedKills() {
+        return 0;
+    }
+
+    /**
+     * Gets this game's longest ranged kill, in blocks from where the shot was fired.
+     *
+     * @return The distance, or 0 without a ranged kill
+     * @since 1.8.0
+     */
+    default double getLongestRangedKill() {
+        return 0;
+    }
+
+    /**
+     * Where the player stands in their match.
+     * <p>
+     * Tells an eliminated participant, whose statistics, team and class are kept from when they
+     * were playing, apart from a spectator who never played.
+     * </p>
+     *
+     * @return The player's state in the match
+     * @since 1.8.0
+     */
+    @NotNull
+    default ParticipantState getParticipantState() {
+        if (isSpectating()) {
+            return ParticipantState.SPECTATING;
+        }
+        return isAlive() ? ParticipantState.ALIVE : ParticipantState.NOT_PARTICIPATING;
+    }
 }

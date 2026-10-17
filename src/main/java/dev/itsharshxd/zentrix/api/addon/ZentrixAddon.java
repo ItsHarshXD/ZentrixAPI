@@ -1,10 +1,16 @@
 package dev.itsharshxd.zentrix.api.addon;
 
+import dev.itsharshxd.zentrix.api.ApiVersion;
 import dev.itsharshxd.zentrix.api.ZentrixAPI;
 import dev.itsharshxd.zentrix.api.ZentrixProvider;
+import dev.itsharshxd.zentrix.api.platform.CapabilityStatus;
+import dev.itsharshxd.zentrix.api.platform.PlatformService;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.logging.Level;
 
 /**
@@ -94,12 +100,35 @@ public abstract class ZentrixAddon extends JavaPlugin {
         String requiredVersion = getRequiredAPIVersion();
         String currentVersion = ZentrixProvider.get().getAPIVersion();
 
-        if (!isVersionCompatible(requiredVersion, currentVersion)) {
+        ApiVersion.Compatibility compatibility = ApiVersion.check(requiredVersion, currentVersion);
+        if (!compatibility.isCompatible()) {
             getLogger().severe("========================================");
             getLogger().severe("Incompatible ZentrixAPI version!");
-            getLogger().severe("Required: " + requiredVersion + " or higher");
+            switch (compatibility) {
+                case OUTDATED -> getLogger().severe("Required: " + requiredVersion + " or higher");
+                case INCOMPATIBLE_MAJOR -> getLogger().severe("Required: " + requiredVersion
+                        + " (any " + ApiVersion.parse(requiredVersion).map(ApiVersion::major).orElse(0)
+                        + ".x release at or above it)");
+                default -> getLogger().severe("Could not read the versions. Required: '"
+                        + requiredVersion + "'; expected MAJOR.MINOR.PATCH");
+            }
             getLogger().severe("Found: " + currentVersion);
             getLogger().severe("Please update Zentrix or this addon.");
+            getLogger().severe("Disabling " + getName() + "...");
+            getLogger().severe("========================================");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+
+        // Verify the capabilities the addon cannot run without
+        List<CapabilityStatus> missing = missingCapabilities();
+        if (!missing.isEmpty()) {
+            getLogger().severe("========================================");
+            getLogger().severe("This addon needs Zentrix features this server cannot provide:");
+            for (CapabilityStatus status : missing) {
+                getLogger().severe("- " + status.id() + ": " + status.state()
+                        + (status.reason() != null ? " (" + status.reason() + ")" : ""));
+            }
             getLogger().severe("Disabling " + getName() + "...");
             getLogger().severe("========================================");
             getServer().getPluginManager().disablePlugin(this);
@@ -204,8 +233,10 @@ public abstract class ZentrixAddon extends JavaPlugin {
      * The default is "1.0.0".
      * </p>
      * <p>
-     * Version format follows semantic versioning: MAJOR.MINOR.PATCH
-     * Compatibility is determined by the major version number.
+     * Version format follows semantic versioning: MAJOR.MINOR.PATCH. The addon starts when the
+     * installed API has the same major version and is at least this version, patch included; a
+     * different major version or a string that is not a version keeps it from starting. See
+     * {@link ApiVersion}.
      * </p>
      *
      * @return The minimum required API version (e.g., "1.0.0")
@@ -213,6 +244,48 @@ public abstract class ZentrixAddon extends JavaPlugin {
     @NotNull
     protected String getRequiredAPIVersion() {
         return "1.0.0";
+    }
+
+    /**
+     * Returns the capabilities the addon cannot run without.
+     * <p>
+     * Each id is checked through {@link PlatformService#getCapability(String)} once the version
+     * check has passed; any that is not available keeps the addon from starting, with the reason
+     * logged. Ids come from {@link dev.itsharshxd.zentrix.api.platform.ZentrixCapabilities} or
+     * from another addon's {@link PlatformService#registerCapability registration}. The default is
+     * none.
+     * </p>
+     * <p>
+     * Optional features should not be listed: check them with
+     * {@link PlatformService#getCapability(String)} and degrade gracefully instead.
+     * </p>
+     *
+     * @return The required capability ids (never null)
+     * @since 1.8.0
+     */
+    @NotNull
+    protected Collection<String> getRequiredCapabilities() {
+        return List.of();
+    }
+
+    /** The required capabilities this server does not provide now. */
+    private List<CapabilityStatus> missingCapabilities() {
+        Collection<String> required = getRequiredCapabilities();
+        if (required == null || required.isEmpty()) {
+            return List.of();
+        }
+        PlatformService platform = ZentrixProvider.get().getPlatformService();
+        List<CapabilityStatus> missing = new ArrayList<>();
+        for (String id : required) {
+            if (id == null) {
+                continue;
+            }
+            CapabilityStatus status = platform.getCapability(id);
+            if (!status.isAvailable()) {
+                missing.add(status);
+            }
+        }
+        return missing;
     }
 
     /**
@@ -260,44 +333,4 @@ public abstract class ZentrixAddon extends JavaPlugin {
         return zentrixEnabled;
     }
 
-    /**
-     * Compares two version strings for compatibility.
-     * <p>
-     * Compatibility is determined by comparing major version numbers.
-     * A current version is compatible if its major version is greater than
-     * or equal to the required major version.
-     * </p>
-     *
-     * @param required The required version
-     * @param current  The current version
-     * @return {@code true} if versions are compatible
-     */
-    private boolean isVersionCompatible(String required, String current) {
-        try {
-            String[] reqParts = required.split("\\.");
-            String[] curParts = current.split("\\.");
-
-            int reqMajor = Integer.parseInt(reqParts[0]);
-            int curMajor = Integer.parseInt(curParts[0]);
-
-            // Compare major versions
-            if (curMajor < reqMajor) {
-                return false;
-            }
-
-            // Compare minor versions when the major versions match
-            if (curMajor == reqMajor && reqParts.length > 1 && curParts.length > 1) {
-                int reqMinor = Integer.parseInt(reqParts[1]);
-                int curMinor = Integer.parseInt(curParts[1]);
-                return curMinor >= reqMinor;
-            }
-
-            return true;
-        } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
-            // Treat unparsable versions as compatible and log a warning
-            getLogger().warning("Could not parse version strings for compatibility check. " +
-                    "Required: " + required + ", Current: " + current);
-            return true;
-        }
-    }
 }

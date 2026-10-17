@@ -107,4 +107,37 @@ public interface RevivalService {
             @Nullable ItemStack[] lostLoot) {
         return restoreLoadout(game, player, lostLoot, RevivalOptions.defaults());
     }
+
+    /**
+     * Whether the current phase of a match allows revivals, ignoring any API override. Together
+     * with {@link #getOverride(ZentrixGame)} this tells where {@link #isAllowed(ZentrixGame)} comes
+     * from.
+     *
+     * @since 1.8.0
+     */
+    default boolean isAllowedByPhase(@NotNull ZentrixGame game) {
+        throw new UnsupportedOperationException("isAllowedByPhase requires Zentrix API 1.8.0");
+    }
+
+    /**
+     * Checks whether a revival would be accepted now, without performing it.
+     * <p>
+     * Runs the same checks, in the same order, as {@link #revive(ZentrixGame, Player, Player)}
+     * before it searches for a destination: {@link RevivalResult#DISABLED},
+     * {@link RevivalResult#INVALID_REVIVER} or {@link RevivalResult#TARGET_NOT_ELIGIBLE} name the
+     * first one that failed, {@link RevivalResult#INVALID_GAME} an unknown match, and
+     * {@link RevivalResult#SUCCESS} means all of them passed. A safe destination and
+     * {@link dev.itsharshxd.zentrix.api.events.revival.PlayerReviveEvent} listeners are only
+     * consulted by the revival itself. Main thread only.
+     * </p>
+     *
+     * @since 1.8.0
+     */
+    @NotNull
+    default RevivalResult checkRevival(
+            @NotNull ZentrixGame game,
+            @NotNull Player reviver,
+            @NotNull Player target) {
+        throw new UnsupportedOperationException("checkRevival requires Zentrix API 1.8.0");
+    }
 }

@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.OptionalLong;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -180,6 +181,36 @@ public interface BroadcastService {
      * @param broadcastId The broadcast ID
      */
     void resetBroadcastTimer(@NotNull String broadcastId);
+
+    /**
+     * When a broadcast was last sent - or its timer last claimed or reset - in epoch milliseconds.
+     *
+     * @param broadcastId The broadcast ID
+     * @return The time, or empty when the broadcast is unknown or its timer has not started
+     * @since 1.8.0
+     */
+    @NotNull
+    default OptionalLong getLastBroadcastTime(@NotNull String broadcastId) {
+        return OptionalLong.empty();
+    }
+
+    /**
+     * When a broadcast's timer next comes due, in epoch milliseconds: its last send plus its
+     * interval. It is sent at the first check after that while it is enabled and has an audience.
+     *
+     * @param broadcastId The broadcast ID
+     * @return The time, or empty when the broadcast is unknown or its timer has not started
+     * @since 1.8.0
+     */
+    @NotNull
+    default OptionalLong getNextBroadcastTime(@NotNull String broadcastId) {
+        OptionalLong last = getLastBroadcastTime(broadcastId);
+        Optional<ZentrixBroadcast> broadcast = getBroadcast(broadcastId);
+        if (last.isEmpty() || broadcast.isEmpty()) {
+            return OptionalLong.empty();
+        }
+        return OptionalLong.of(last.getAsLong() + broadcast.get().getInterval() * 1000L);
+    }
 
     // ==========================================
     // Convenience methods

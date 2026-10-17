@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -118,11 +119,52 @@ public interface TeamService {
 
     /**
      * Gets the number of alive teams in a game.
+     * <p>
+     * Legacy semantics, kept unchanged: in a match played without teams this counts the players
+     * still playing, while {@link #getAliveTeams(ZentrixGame)} is empty there. Use
+     * {@link #getAliveSideCount(ZentrixGame)} for sides.
+     * </p>
      *
      * @param game The game
-     * @return The count of teams with at least one alive member
+     * @return The count of alive sides
+     * @deprecated since 1.8.0; ambiguous in solo matches. Use {@link #getAliveSideCount(ZentrixGame)}.
      */
+    @Deprecated(since = "1.8.0")
     int getAliveTeamCount(@NotNull ZentrixGame game);
+
+    /**
+     * Whether a match is played in teams. See {@link ZentrixGame#isTeamMode()}.
+     *
+     * @param game The game
+     * @return {@code true} when players compete as teams
+     * @since 1.8.0
+     */
+    default boolean isTeamMode(@NotNull ZentrixGame game) {
+        return game.isTeamMode();
+    }
+
+    /**
+     * Gets every side competing in a match. See {@link ZentrixGame#getCompetingSides()}.
+     *
+     * @param game The game
+     * @return The sides, eliminated ones included (never null)
+     * @since 1.8.0
+     */
+    @NotNull
+    default List<CompetingSide> getCompetingSides(@NotNull ZentrixGame game) {
+        return game.getCompetingSides();
+    }
+
+    /**
+     * Gets the number of sides still competing in a match. See {@link ZentrixGame#getAliveSideCount()}.
+     *
+     * @param game The game
+     * @return The count of alive sides
+     * @since 1.8.0
+     */
+    default int getAliveSideCount(@NotNull ZentrixGame game) {
+        return game.getAliveSideCount();
+    }
 
     /**
      * Checks if a team is eliminated.

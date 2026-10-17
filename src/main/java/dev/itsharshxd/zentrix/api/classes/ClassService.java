@@ -150,13 +150,32 @@ public interface ClassService {
     /**
      * Gets the default class that is selected if a player doesn't choose one.
      * <p>
-     * Returns empty if no default class is configured.
+     * This is {@code settings.default-class} from {@code content/classes.yml}, resolved the way
+     * gameplay resolves it: when that class is disabled, the first enabled class takes its place.
+     * Returns empty if no class is configured.
      * </p>
      *
      * @return Optional containing the default class, or empty if none
      */
     @NotNull
     Optional<PlayerClass> getDefaultClass();
+
+    /**
+     * Gets the class a player explicitly chose for their current match.
+     * <p>
+     * Empty when they made no choice and play with {@link #getDefaultClass()}, which
+     * {@link #getSelectedClass(UUID)} reports in that case. The player does not need to be
+     * online.
+     * </p>
+     *
+     * @param playerId The player's UUID
+     * @return Optional containing the chosen class, or empty if none was chosen
+     * @since 1.8.0
+     */
+    @NotNull
+    default Optional<PlayerClass> getExplicitClass(@NotNull UUID playerId) {
+        return hasExplicitClassSelection(playerId) ? getSelectedClass(playerId) : Optional.empty();
+    }
 
     /**
      * Checks if classes are enabled in the configuration.

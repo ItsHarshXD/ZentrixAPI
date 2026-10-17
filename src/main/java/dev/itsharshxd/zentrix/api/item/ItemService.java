@@ -278,4 +278,34 @@ public interface ItemService {
     default ItemBuilder createItemBuilder() {
         return new ItemBuilder();
     }
+
+    /**
+     * Makes a provider's items addressable as {@code <namespace>:<id>} throughout Zentrix.
+     * <p>
+     * Built-in prefixes always win, and a namespace belongs to one active provider at a time. The
+     * registration ends when the owner disables.
+     * </p>
+     *
+     * @param owner    the plugin the provider belongs to; it must be enabled
+     * @param provider the provider
+     * @return the registration, to unregister early
+     * @throws IllegalArgumentException for an invalid or reserved namespace, one another active
+     *                                  provider already uses, or a disabled owner
+     * @since 1.8.0
+     */
+    @NotNull
+    default dev.itsharshxd.zentrix.api.addon.Registration registerItemProvider(
+            @NotNull org.bukkit.plugin.Plugin owner, @NotNull ItemProvider provider) {
+        throw new UnsupportedOperationException("Item providers require Zentrix API 1.8.0");
+    }
+
+    /**
+     * The namespaces of the registered item providers.
+     *
+     * @since 1.8.0
+     */
+    @NotNull
+    default java.util.Set<String> getItemProviderNamespaces() {
+        return java.util.Set.of();
+    }
 }

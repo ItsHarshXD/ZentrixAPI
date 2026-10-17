@@ -57,6 +57,7 @@ public class PlayerJoinGameEvent extends ZentrixGameEvent implements Cancellable
 
     private final Player player;
     private final boolean spectator;
+    private final boolean rejoin;
     private boolean cancelled;
     private String cancelReason;
 
@@ -70,11 +71,41 @@ public class PlayerJoinGameEvent extends ZentrixGameEvent implements Cancellable
     public PlayerJoinGameEvent(@NotNull ZentrixGame game,
                                @NotNull Player player,
                                boolean spectator) {
+        this(game, player, spectator, false);
+    }
+
+    /**
+     * Constructs a new PlayerJoinGameEvent.
+     *
+     * @param game      The game the player is joining
+     * @param player    The player attempting to join
+     * @param spectator Whether the player is joining as a spectator
+     * @param rejoin    Whether the player is returning to a match they left
+     * @since 1.8.0
+     */
+    public PlayerJoinGameEvent(@NotNull ZentrixGame game,
+                               @NotNull Player player,
+                               boolean spectator,
+                               boolean rejoin) {
         super(game);
         this.player = player;
         this.spectator = spectator;
+        this.rejoin = rejoin;
         this.cancelled = false;
         this.cancelReason = null;
+    }
+
+    /**
+     * Checks if the player is returning, through their corpse, to a running match they left.
+     * <p>
+     * Cancelling a rejoin keeps the player out; their corpse and its return stay as they were.
+     * </p>
+     *
+     * @return {@code true} for a rejoin
+     * @since 1.8.0
+     */
+    public boolean isRejoin() {
+        return rejoin;
     }
 
     /**

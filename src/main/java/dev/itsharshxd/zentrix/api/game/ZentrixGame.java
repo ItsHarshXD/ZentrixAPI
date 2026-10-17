@@ -2,12 +2,14 @@ package dev.itsharshxd.zentrix.api.game;
 
 import dev.itsharshxd.zentrix.api.phase.GamePhase;
 import dev.itsharshxd.zentrix.api.player.ZentrixPlayer;
+import dev.itsharshxd.zentrix.api.team.CompetingSide;
 import dev.itsharshxd.zentrix.api.team.ZentrixTeam;
 import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -193,10 +195,70 @@ public interface ZentrixGame {
 
     /**
      * Gets the number of alive teams.
+     * <p>
+     * Legacy semantics, kept unchanged: in a match played without teams this counts the players
+     * still playing, as each is their own side, even though {@link #getAliveTeams()} is empty
+     * there. It is therefore the number of alive sides, not of alive teams. Use
+     * {@link #getAliveSideCount()} for sides and {@code getAliveTeams().size()} for teams.
+     * </p>
      *
-     * @return The count of teams with at least one alive member
+     * @return The count of alive sides
+     * @deprecated since 1.8.0; ambiguous in solo matches. Use {@link #getAliveSideCount()}.
      */
+    @Deprecated(since = "1.8.0")
     int getAliveTeamCount();
+
+    /**
+     * Whether this match is played in teams.
+     * <p>
+     * Settled when the match starts and fixed for the rest of it; before that it follows the
+     * current configuration of the game type and of {@code arena-management.solo-teams}.
+     * </p>
+     *
+     * @return {@code true} when players compete as teams
+     * @since 1.8.0
+     */
+    default boolean isTeamMode() {
+        return getTeamSize() > 1;
+    }
+
+    /**
+     * Whether {@link #isTeamMode()} is fixed for this match, which it is from the start on.
+     *
+     * @return {@code true} once the match's team mode can no longer change
+     * @since 1.8.0
+     */
+    default boolean isTeamModeLocked() {
+        return isPlaying();
+    }
+
+    /**
+     * Gets every side competing in this match: its teams in team mode, otherwise its players.
+     * <p>
+     * In team mode every team of the match is included, eliminated ones too. Without teams the
+     * sides are the players still playing, followed by the players this match eliminated who are
+     * still watching it; a player who has left is no longer listed. The list is a snapshot.
+     * </p>
+     *
+     * @return The sides (never null, may be empty)
+     * @since 1.8.0
+     */
+    @NotNull
+    default List<CompetingSide> getCompetingSides() {
+        return List.of();
+    }
+
+    /**
+     * Gets the number of sides still competing: alive teams in team mode, otherwise players still
+     * playing. This is the count win conditions use.
+     *
+     * @return The count of alive sides
+     * @since 1.8.0
+     */
+    @SuppressWarnings("deprecation")
+    default int getAliveSideCount() {
+        return getAliveTeamCount();
+    }
 
     /**
      * Gets the current game phase, if the game is playing.

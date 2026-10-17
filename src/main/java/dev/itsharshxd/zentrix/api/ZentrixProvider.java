@@ -2,6 +2,7 @@ package dev.itsharshxd.zentrix.api;
 
 import dev.itsharshxd.zentrix.api.addon.ZentrixAddon;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -20,8 +21,20 @@ import org.jetbrains.annotations.NotNull;
  *
  * <h2>Direct use</h2>
  * <p>
- * Direct use is limited to core startup and shutdown, or to advanced cases such
- * as manual API registration and unregistration.
+ * {@link #register(ZentrixAPI)} and {@link #unregister()} are core bootstrap functionality and
+ * are not supported for addons: there is no supported case for registering or replacing the API
+ * manually, and doing so does not change how Zentrix behaves. Addons retrieve the API, check
+ * {@link dev.itsharshxd.zentrix.api.platform.PlatformService#getLifecycleState()}, and customize
+ * Zentrix through the services' own registrations, events and hooks.
+ * </p>
+ *
+ * <h2>Lifecycle</h2>
+ * <p>
+ * The API becomes available while Zentrix starts, before it has finished loading arenas and
+ * saved custom games. {@link dev.itsharshxd.zentrix.api.events.lifecycle.ZentrixReadyEvent}
+ * fires once it has; {@link dev.itsharshxd.zentrix.api.events.lifecycle.ZentrixShutdownEvent}
+ * fires just before the API is unregistered on shutdown, after which {@link #isAvailable()} is
+ * {@code false}.
  * </p>
  *
  * @author ItsHarshXD
@@ -82,14 +95,15 @@ public final class ZentrixProvider {
      * <b>Internal method. Addons must not call this.</b>
      * </p>
      * <p>
-     * The core plugin calls this during startup. Calling it from an addon has no
-     * useful effect and may cause problems.
+     * The core plugin calls this during startup. Calling it from an addon is unsupported: it has
+     * no useful effect and may cause problems.
      * </p>
      *
      * @param api The API implementation to register
      * @throws IllegalArgumentException if api is null
      * @throws IllegalStateException if API is already registered
      */
+    @ApiStatus.Internal
     public static void register(@NotNull ZentrixAPI api) {
         if (api == null) {
             throw new IllegalArgumentException("API instance cannot be null");
@@ -106,9 +120,11 @@ public final class ZentrixProvider {
      * <b>Internal method. Addons must not call this.</b>
      * </p>
      * <p>
-     * The core plugin calls this during shutdown.
+     * The core plugin calls this during shutdown. Calling it from an addon is unsupported: it
+     * would cut every other addon off from the API while Zentrix keeps running.
      * </p>
      */
+    @ApiStatus.Internal
     public static void unregister() {
         instance = null;
     }

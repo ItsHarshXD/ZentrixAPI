@@ -26,4 +26,22 @@ public interface ZentrixCorpse {
     @NotNull Optional<ItemStack> getVisualOffHand();
     boolean isLootDropped();
     boolean isWarningSent();
+
+    /**
+     * Why the owner left the match, for a corpse that still holds their return.
+     *
+     * @return the leave reason, or empty once the corpse holds no return
+     * @since 1.8.0
+     */
+    default @NotNull Optional<CorpseLeaveReason> getLeaveReason() { return Optional.empty(); }
+
+    /**
+     * Whether the owner can still return to the match through this corpse. Even then, a rejoin
+     * can be refused for reasons outside the corpse; ask
+     * {@link dev.itsharshxd.zentrix.api.rejoin.RejoinService#getStatus} for the full answer.
+     *
+     * @return {@code true} while the corpse holds its owner's return
+     * @since 1.8.0
+     */
+    default boolean isReturnable() { return false; }
 }

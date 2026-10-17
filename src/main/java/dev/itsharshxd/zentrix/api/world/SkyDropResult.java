@@ -13,7 +13,7 @@ public enum SkyDropResult {
     /**
      * The player was placed, but no glider was deployed.
      *
-     * <p>Either none was asked for, or Matrix Gliders is not installed. The drop itself stands
+     * <p>Either none was asked for, or the player's built-in glider could not be opened. The drop itself stands
      * either way, so a caller only has to react to this if the fall matters to it.
      */
     PLACED_WITHOUT_GLIDER,

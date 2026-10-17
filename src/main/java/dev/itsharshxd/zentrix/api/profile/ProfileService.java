@@ -3,6 +3,7 @@ package dev.itsharshxd.zentrix.api.profile;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -106,6 +107,23 @@ public interface ProfileService {
      * @return {@code true} if stats are in the cache
      */
     boolean isCached(@NotNull UUID playerId);
+
+    /**
+     * Gets a player's cached statistics only when they are really loaded.
+     * <p>
+     * Unlike {@link #getCachedStats(UUID)}, which answers with empty statistics for a player who
+     * is not cached, this tells a real record of zeroes apart from one that has not been loaded:
+     * an empty result means "not loaded", so call {@link #loadStats(UUID)} to load it.
+     * </p>
+     *
+     * @param playerId The player's UUID
+     * @return The cached stats, or empty when they are not cached
+     * @since 1.8.0
+     */
+    @NotNull
+    default Optional<PlayerStats> getCachedStatsIfPresent(@NotNull UUID playerId) {
+        return isCached(playerId) ? Optional.of(getCachedStats(playerId)) : Optional.empty();
+    }
 
     /**
      * Formats a survival time in seconds to a human-readable format.

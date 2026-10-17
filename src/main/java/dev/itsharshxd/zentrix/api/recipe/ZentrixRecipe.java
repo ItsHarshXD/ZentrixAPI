@@ -1,8 +1,11 @@
 package dev.itsharshxd.zentrix.api.recipe;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.OptionalInt;
+import java.util.Set;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -93,11 +96,92 @@ public interface ZentrixRecipe {
 
     /**
      * Gets the type of this recipe.
+     * <p>
+     * Only meaningful for crafting-table recipes. Every other workstation recipe reports
+     * {@link RecipeType#SHAPED}, as it always has; use {@link #getStation()} to tell them apart.
+     * </p>
      *
      * @return The recipe type (SHAPED or SHAPELESS)
      */
     @NotNull
     RecipeType getType();
+
+    /**
+     * Gets the workstation this recipe is made at.
+     *
+     * @return The station; {@link RecipeStation#OTHER} for a type Zentrix has no editor for
+     * @since 1.8.0
+     */
+    @NotNull
+    default RecipeStation getStation() {
+        return RecipeStation.CRAFTING_TABLE;
+    }
+
+    /**
+     * Gets the cooking time of a furnace, blast furnace, smoker or campfire recipe.
+     *
+     * @return The cooking time in ticks, or empty when the station does not cook
+     * @since 1.8.0
+     */
+    @NotNull
+    default OptionalInt getCookingTime() {
+        return OptionalInt.empty();
+    }
+
+    /**
+     * Gets the experience a furnace, blast furnace or smoker recipe awards.
+     *
+     * @return The experience, or 0 when the station awards none
+     * @since 1.8.0
+     */
+    default float getExperience() {
+        return 0f;
+    }
+
+    /**
+     * Gets every ingredient with every item it accepts.
+     * <p>
+     * {@link #getIngredients()} shows one representative item per ingredient and loses the
+     * other accepted items; this keeps them, along with how each ingredient compares items.
+     * Shaped ingredients come in pattern-key order, others in recipe order.
+     * </p>
+     *
+     * @return The ingredients (never null)
+     * @since 1.8.0
+     */
+    @NotNull
+    default List<RecipeIngredient> getIngredientChoices() {
+        List<RecipeIngredient> choices = new ArrayList<>();
+        for (ItemStack item : getIngredients()) {
+            if (item != null) {
+                choices.add(new RecipeIngredient(null, RecipeIngredient.Matching.ITEM, List.of(item)));
+            }
+        }
+        return choices;
+    }
+
+    /**
+     * Gets the phases this recipe is switched off in, lowercase. While a match is in one of them
+     * the recipe behaves as if it did not exist.
+     *
+     * @return The phase names (never null)
+     * @since 1.8.0
+     */
+    @NotNull
+    default Set<String> getDisabledPhases() {
+        return Set.of();
+    }
+
+    /**
+     * Gets the game types this recipe is switched off in, lowercase.
+     *
+     * @return The game type names (never null)
+     * @since 1.8.0
+     */
+    @NotNull
+    default Set<String> getDisabledGameTypes() {
+        return Set.of();
+    }
 
     /**
      * Checks if this is a shaped recipe.
