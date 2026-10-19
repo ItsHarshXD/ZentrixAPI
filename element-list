@@ -37,6 +37,7 @@ dev.itsharshxd.zentrix.api.events.lifecycle
 dev.itsharshxd.zentrix.api.events.loot
 dev.itsharshxd.zentrix.api.events.nether
 dev.itsharshxd.zentrix.api.events.party
+dev.itsharshxd.zentrix.api.events.perk
 dev.itsharshxd.zentrix.api.events.player
 dev.itsharshxd.zentrix.api.events.recipe
 dev.itsharshxd.zentrix.api.events.revival
@@ -56,6 +57,7 @@ dev.itsharshxd.zentrix.api.loot
 dev.itsharshxd.zentrix.api.matchmaking
 dev.itsharshxd.zentrix.api.nether
 dev.itsharshxd.zentrix.api.party
+dev.itsharshxd.zentrix.api.perk
 dev.itsharshxd.zentrix.api.phase
 dev.itsharshxd.zentrix.api.placeholder
 dev.itsharshxd.zentrix.api.platform
