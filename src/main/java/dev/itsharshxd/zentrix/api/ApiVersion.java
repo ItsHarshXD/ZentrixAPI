@@ -25,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 public record ApiVersion(int major, int minor, int patch) implements Comparable<ApiVersion> {
 
     /** The version of the API classes this addon was compiled and is running against. */
-    public static final ApiVersion CURRENT = new ApiVersion(1, 8, 0);
+    public static final ApiVersion CURRENT = new ApiVersion(1, 9, 0);
 
     private static final Pattern FORMAT = Pattern.compile("(\\d+)(?:\\.(\\d+))?(?:\\.(\\d+))?");
 

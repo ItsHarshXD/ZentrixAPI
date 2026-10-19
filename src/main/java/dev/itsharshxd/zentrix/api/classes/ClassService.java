@@ -178,6 +178,21 @@ public interface ClassService {
     }
 
     /**
+     * Whether a player may pick a class: it is enabled, and it needs no permission, or the
+     * player holds its permission, or they own it as a cosmetic
+     * ({@link dev.itsharshxd.zentrix.api.cosmetics.CosmeticCategory#CLASSES}). The lobby class
+     * picker and the cosmetics menu both follow this rule.
+     *
+     * @param player    The player
+     * @param classType The class type or ID, case-insensitive
+     * @return {@code false} as well when the class does not exist
+     * @since 1.9.0
+     */
+    default boolean isUnlocked(@NotNull Player player, @NotNull String classType) {
+        return getClass(classType).map(playerClass -> playerClass.canSelect(player)).orElse(false);
+    }
+
+    /**
      * Checks if classes are enabled in the configuration.
      * <p>
      * When disabled, players don't select classes and don't receive class kits.

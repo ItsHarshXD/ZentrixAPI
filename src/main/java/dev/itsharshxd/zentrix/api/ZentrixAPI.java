@@ -103,6 +103,7 @@ import org.jetbrains.annotations.NotNull;
  *   <li>{@link dev.itsharshxd.zentrix.api.customgame.CustomGameService} - Player-hosted custom games (since 1.8.0)</li>
  *   <li>{@link dev.itsharshxd.zentrix.api.scoreboard.ScoreboardService} - Sidebar contributions (since 1.8.0)</li>
  *   <li>{@link dev.itsharshxd.zentrix.api.settings.SettingsService} - Editable settings, validated and applied (since 1.8.0)</li>
+ *   <li>{@link dev.itsharshxd.zentrix.api.perk.PerkService} - Perk tiers and temporary boosts from perks.yml (since 1.9.0)</li>
  * </ul>
  *
  * @author ItsHarshXD
@@ -589,7 +590,7 @@ public interface ZentrixAPI {
     }
 
     /**
-     * Cosmetics players own and choose: victory effects and gliders.
+     * Cosmetics players own and choose: victory effects, gliders and, since 1.9.0, classes.
      *
      * @since 1.8.0
      */
@@ -656,5 +657,15 @@ public interface ZentrixAPI {
     @NotNull
     default dev.itsharshxd.zentrix.api.settings.SettingsService getSettingsService() {
         throw new UnsupportedOperationException("SettingsService requires Zentrix API 1.8.0");
+    }
+
+    /**
+     * Rank-based limits from {@code perks.yml}: tiers, perk values and temporary boosts.
+     *
+     * @since 1.9.0
+     */
+    @NotNull
+    default dev.itsharshxd.zentrix.api.perk.PerkService getPerkService() {
+        throw new UnsupportedOperationException("PerkService requires Zentrix API 1.9.0");
     }
 }

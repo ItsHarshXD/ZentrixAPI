@@ -1,5 +1,6 @@
 package dev.itsharshxd.zentrix.api.cosmetics;
 
+import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -58,10 +59,39 @@ public interface CosmeticsService {
     @NotNull
     CompletableFuture<Map<CosmeticCategory, CosmeticOwnership>> refresh(@NotNull UUID playerId);
 
-    /** Grants cosmetics. Ones already owned are left as they are. */
+    /**
+     * Grants cosmetics permanently. Ones already owned permanently are left as they are; ones
+     * owned for a limited time become permanent.
+     */
     @NotNull
     CompletableFuture<CosmeticChange> grant(
             @NotNull UUID playerId, @NotNull CosmeticCategory category, @NotNull Collection<String> ids);
+
+    /**
+     * Grants cosmetics for a limited time, such as a glider for seven days.
+     *
+     * <p>A cosmetic the player does not own is granted until {@code duration} from now. One they
+     * already own for a limited time keeps its remaining time with {@code duration} added. One
+     * they own permanently is left as it is: a timed grant never shortens a permanent one.
+     *
+     * <p>When the time runs out the cosmetic is taken away on its own, even while the player is
+     * offline or the server is restarting, and on every server sharing the database. A selection
+     * of it falls back to the server's default, and
+     * {@link dev.itsharshxd.zentrix.api.events.cosmetics.CosmeticOwnershipChangeEvent} fires with
+     * {@link dev.itsharshxd.zentrix.api.events.cosmetics.CosmeticOwnershipChangeEvent.Cause#EXPIRED}.
+     *
+     * @param duration how long to grant them for; must be positive
+     * @return completes on the main thread with the change
+     * @throws IllegalArgumentException when the duration is zero or negative
+     * @since 1.9.0
+     */
+    @NotNull
+    default CompletableFuture<CosmeticChange> grantTimed(
+            @NotNull UUID playerId, @NotNull CosmeticCategory category, @NotNull Collection<String> ids,
+            @NotNull Duration duration) {
+        return CompletableFuture.failedFuture(
+                new UnsupportedOperationException("Timed cosmetics require Zentrix API 1.9.0"));
+    }
 
     /** Takes cosmetics away. Taking the chosen one clears the choice, so the default is used again. */
     @NotNull
