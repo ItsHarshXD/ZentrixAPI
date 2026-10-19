@@ -16,13 +16,28 @@ import org.jetbrains.annotations.Nullable;
  */
 public enum Perk {
 
-    /** How many scheduled, waiting or running custom games one host may have at once. */
+    /**
+     * Whether a player may create and publish custom games. Refusing it never stops them joining
+     * custom games, and never cancels the games they already published.
+     *
+     * @since 1.10.0
+     */
+    CUSTOM_GAMES_CREATE("custom-games.create", Type.TOGGLE),
+    /**
+     * How many scheduled, waiting or running custom games one host may have at once. This limit
+     * counts one host's own games; the server-wide publish limit is separate, see
+     * {@link #CUSTOM_GAMES_BYPASS_PUBLISH_LIMIT}.
+     */
     CUSTOM_GAMES_MAX_HOSTED("custom-games.max-games", Type.NUMBER),
     /** Whether a host may protect their custom games with a password. */
     CUSTOM_GAMES_PRIVATE("custom-games.private-games", Type.TOGGLE),
     /** Whether a host may change the settings of the scenarios they pick. */
     CUSTOM_GAMES_SCENARIO_SETTINGS("custom-games.scenario-settings", Type.TOGGLE),
-    /** Whether a host's publications skip the server-wide publish limit. */
+    /**
+     * Whether a host's publications skip the server-wide publish limit, which caps how many games
+     * every host together may publish per interval. Their games still count towards it, and
+     * {@link #CUSTOM_GAMES_MAX_HOSTED} still applies.
+     */
     CUSTOM_GAMES_BYPASS_PUBLISH_LIMIT("custom-games.bypass-publish-limit", Type.TOGGLE),
     /** The largest a party may grow, decided by its current leader. */
     PARTY_MAX_SIZE("party.max-size", Type.NUMBER),
