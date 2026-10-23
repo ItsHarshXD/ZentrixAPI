@@ -96,7 +96,7 @@ import org.jetbrains.annotations.NotNull;
  *   <li>{@link dev.itsharshxd.zentrix.api.platform.PlatformService} - Installed version, edition, server, integrations and capabilities (since 1.8.0)</li>
  *   <li>{@link dev.itsharshxd.zentrix.api.rejoin.RejoinService} - Corpse-backed rejoin status and operations (since 1.8.0)</li>
  *   <li>{@link dev.itsharshxd.zentrix.api.placeholder.PlaceholderService} - Addon values in {@code %zentrix_...%} placeholders (since 1.8.0)</li>
- *   <li>{@link dev.itsharshxd.zentrix.api.cosmetics.CosmeticsService} - Cosmetic ownership and choices (since 1.8.0)</li>
+ *   <li>{@link dev.itsharshxd.zentrix.api.cosmetics.CosmeticsService} - Cosmetic ownership and choices (since 1.8.0); every type, player actions and custom types (since 1.11.0)</li>
  *   <li>{@link dev.itsharshxd.zentrix.api.glider.GliderService} - Glider catalog, glides and previews (since 1.8.0)</li>
  *   <li>{@link dev.itsharshxd.zentrix.api.scenario.hook.GameplayHookService} - Gameplay hooks without a scenario (since 1.8.0)</li>
  *   <li>{@link dev.itsharshxd.zentrix.api.celebration.CelebrationService} - Victory celebration catalog and previews (since 1.8.0)</li>

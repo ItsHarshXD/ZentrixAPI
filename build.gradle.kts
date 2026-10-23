@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "com.github.ItsHarshXD"
-version = "1.10.0"
+version = "1.11.0"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_21

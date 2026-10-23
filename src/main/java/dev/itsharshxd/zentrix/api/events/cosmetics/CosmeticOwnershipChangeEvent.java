@@ -14,6 +14,9 @@ import org.jetbrains.annotations.NotNull;
  * running out, or ownership imported from MatrixGliders. Only fired when something actually
  * changed. The player may be offline.
  *
+ * <p>Only for built-in categories, so {@link #getCategory()} always has one; changes to an addon's
+ * types are not reported here.
+ *
  * <p>Main thread; only fired while a listener is registered.
  *
  * @since 1.8.0

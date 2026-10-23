@@ -26,7 +26,13 @@ public enum CosmeticCategory {
      *
      * @since 1.9.0
      */
-    CLASSES("classes");
+    CLASSES("classes"),
+    /**
+     * The design of the cage around the player's Cornucopia podium. Not part of the Free edition.
+     *
+     * @since 1.11.0
+     */
+    CAGE_DESIGNS("cage-designs");
 
     private final String id;
 
@@ -38,6 +44,16 @@ public enum CosmeticCategory {
     @NotNull
     public String getId() {
         return id;
+    }
+
+    /**
+     * The key this category has among every cosmetic type, such as {@code zentrix:gliders}.
+     *
+     * @since 1.11.0
+     */
+    @NotNull
+    public CosmeticTypeKey key() {
+        return CosmeticTypeKey.of(this);
     }
 
     /** The category an ID names, ignoring case. */

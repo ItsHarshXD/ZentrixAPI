@@ -22,18 +22,29 @@ import org.jetbrains.annotations.Nullable;
  * is owned permanently. Expired cosmetics are never listed: Zentrix removes them as they expire,
  * also for players who were offline at the time.
  *
- * @param category the category
+ * <p>Since 1.11.0 ownership also describes an addon's {@linkplain CosmeticTypeKey type}, whose
+ * {@code category} is null. Ownership read through the 1.8.0 methods, which take a
+ * {@link CosmeticCategory}, always has one.
+ *
+ * @param category the built-in category, or null for an addon's type
  * @param owned    the owned cosmetic IDs, in the order they were granted
  * @param selected the chosen cosmetic's ID, or null for the server's default
  * @param expiries when each timed cosmetic expires, by ID; empty when every one is permanent
+ * @param type     the type, built-in or an addon's (since 1.11.0)
  * @since 1.8.0
  */
 public record CosmeticOwnership(
-        @NotNull CosmeticCategory category, @NotNull Set<String> owned, @Nullable String selected,
-        @NotNull Map<String, Instant> expiries) {
+        @Nullable CosmeticCategory category, @NotNull Set<String> owned, @Nullable String selected,
+        @NotNull Map<String, Instant> expiries, @NotNull CosmeticTypeKey type) {
 
     public CosmeticOwnership {
-        Objects.requireNonNull(category, "category");
+        if (type == null) {
+            type = CosmeticTypeKey.of(Objects.requireNonNull(category, "category"));
+        } else if (category == null) {
+            category = type.getCategory().orElse(null);
+        } else if (!type.equals(category.key())) {
+            throw new IllegalArgumentException("The type " + type + " is not the category " + category.getId());
+        }
         Set<String> ids = Collections.unmodifiableSet(new LinkedHashSet<>(owned));
         Map<String, Instant> timed = new LinkedHashMap<>();
         if (expiries != null) {
@@ -47,10 +58,38 @@ public record CosmeticOwnership(
         expiries = Collections.unmodifiableMap(timed);
     }
 
+    /** Ownership of a built-in category, as API 1.9.0 described it. */
+    public CosmeticOwnership(
+            @NotNull CosmeticCategory category, @NotNull Set<String> owned, @Nullable String selected,
+            @NotNull Map<String, Instant> expiries) {
+        this(Objects.requireNonNull(category, "category"), owned, selected, expiries, category.key());
+    }
+
     /** Ownership without timed cosmetics, as API 1.8.0 described it. */
     public CosmeticOwnership(
             @NotNull CosmeticCategory category, @NotNull Set<String> owned, @Nullable String selected) {
         this(category, owned, selected, Map.of());
+    }
+
+    /**
+     * Ownership of any type, built-in or an addon's.
+     *
+     * @since 1.11.0
+     */
+    public CosmeticOwnership(
+            @NotNull CosmeticTypeKey type, @NotNull Set<String> owned, @Nullable String selected,
+            @NotNull Map<String, Instant> expiries) {
+        this(null, owned, selected, expiries, Objects.requireNonNull(type, "type"));
+    }
+
+    /**
+     * Nothing owned or chosen in a type.
+     *
+     * @since 1.11.0
+     */
+    @NotNull
+    public static CosmeticOwnership empty(@NotNull CosmeticTypeKey type) {
+        return new CosmeticOwnership(type, Set.of(), null, Map.of());
     }
 
     /** Whether the player owns a cosmetic. */

@@ -11,7 +11,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Called before a player's own choice of cosmetic in the cosmetics menu is saved.
+ * Called before a player's own choice of cosmetic in the cosmetics menu is saved, and, since
+ * 1.11.0, one an addon makes for them through {@code CosmeticsService#equip} or {@code #unequip}.
+ * Only for built-in categories; {@link CosmeticEquipEvent}, called next, covers every type.
  *
  * <p>Cancelling keeps their current choice; the menu plays its error sound, and telling the player
  * why is up to the listener. Choices made through {@code CosmeticsService#select} do not fire this

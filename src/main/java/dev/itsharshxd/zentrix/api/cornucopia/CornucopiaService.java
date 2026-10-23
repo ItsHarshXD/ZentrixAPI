@@ -30,15 +30,24 @@ public interface CornucopiaService {
     @NotNull Map<UUID, Location> getPodiumAssignments(@NotNull ZentrixGame game);
 
     /**
-     * Runtime override used for every subsequently created cage until cleared. Cages that already
-     * stand are repainted immediately, and clearing the override repaints them back to each game's
-     * configured material. Per-player overrides always win over the global one.
+     * Runtime override of the head-level wall, used for every subsequently created cage until
+     * cleared. Cages that already stand are repainted immediately, and clearing the override
+     * repaints them back to their design's wall. Per-player overrides always win over the global
+     * one.
+     *
+     * <p>Only cage designs that accept it are repainted: the built-in Classic design does, and
+     * server owners choose for every other design ({@code material-override} in
+     * {@code content/cosmetics/cage-designs.yml}, or Addon Wall Override in the cage editor). Any
+     * other design keeps its own wall, so a carefully built cage is never changed by an addon.
      */
     void setGlobalCageMaterial(@NotNull Material material);
     void clearGlobalCageMaterial();
     @NotNull Optional<Material> getGlobalCageMaterial();
 
-    /** Runtime override for the cage assigned to one player. */
+    /**
+     * Runtime override of the head-level wall of the cage assigned to one player. Like the global
+     * override, only a design that accepts it is repainted.
+     */
     void setPlayerCageMaterial(@NotNull UUID playerId, @NotNull Material material);
     void clearPlayerCageMaterial(@NotNull UUID playerId);
     @NotNull Optional<Material> getPlayerCageMaterial(@NotNull UUID playerId);

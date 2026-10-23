@@ -2,7 +2,7 @@
 
 This guide explains how addon contributions are owned, ordered and cleaned up, so several addons
 can customize the same Zentrix feature without depending on load order or on Zentrix internals.
-It covers API 1.8.0. For threading and result semantics see [THREADING.md](THREADING.md).
+It covers API 1.11.0. For threading and result semantics see [THREADING.md](THREADING.md).
 
 ## 1. Ways to customize a feature
 
@@ -11,9 +11,9 @@ Zentrix offers four kinds of extension point. Each service documents which one i
 | Kind | What it does | Examples |
 |---|---|---|
 | **Observe** | A notification after something happened. It cannot be cancelled. | `SpectatorStartEvent`, `CosmeticOwnershipChangeEvent`, `LootRefillEvent`, `CustomGameStateChangeEvent`, `SettingChangeEvent`, `IdentityUnmaskEvent` |
-| **Intercept** | A Bukkit event fired *before* Zentrix applies a decision. Cancelling it or changing its documented mutable fields changes the outcome. | `ChatMessageEvent`, `ClassAbilityProcEvent`, `ClassKitGrantEvent`, `LootContainerFillEvent`, `RevivalItemConsumeEvent`, `GliderDeployEvent`, `VictoryCelebrationEvent`, `IdentityMaskEvent`, `CosmeticSelectEvent`, `SpectatorCameraEvent` |
-| **Contribute** | An owned registration that Zentrix consults every time a decision is made. | `GameplayHookService`, `ScoreboardService` sidebar contributors, `ItemService#registerItemProvider`, `PlaceholderService`, `LocaleService#registerMessages`, `CompassTrackerService#registerTargetFilter` |
-| **Operate** | A service method that performs the same operation a command or menu performs, with a result. | `CustomGameService#join`, `PhaseService#advancePhase`, `SettingsService#set`, `GameLootService#refill`, `RevivalService#checkRevival`, `CosmeticsService#grant` |
+| **Intercept** | A Bukkit event fired *before* Zentrix applies a decision. Cancelling it or changing its documented mutable fields changes the outcome. | `ChatMessageEvent`, `ClassAbilityProcEvent`, `ClassKitGrantEvent`, `LootContainerFillEvent`, `RevivalItemConsumeEvent`, `GliderDeployEvent`, `VictoryCelebrationEvent`, `IdentityMaskEvent`, `CosmeticSelectEvent`, `CosmeticEquipEvent`, `CosmeticUnlockEvent`, `CosmeticPreviewEvent`, `CosmeticTriggerEvent`, `SpectatorCameraEvent` |
+| **Contribute** | An owned registration that Zentrix consults every time a decision is made. | `GameplayHookService`, `ScoreboardService` sidebar contributors, `ItemService#registerItemProvider`, `PlaceholderService`, `LocaleService#registerMessages`, `CompassTrackerService#registerTargetFilter`, `CosmeticsService#registerType` |
+| **Operate** | A service method that performs the same operation a command or menu performs, with a result. | `CustomGameService#join`, `PhaseService#advancePhase`, `SettingsService#set`, `GameLootService#refill`, `RevivalService#checkRevival`, `CosmeticsService#grant`, `CosmeticsService#equip`, `CosmeticsService#purchase` |
 
 Prefer the narrowest kind that does the job: observe when you only react, intercept when you need
 to change one occurrence, contribute when you supply behavior for every occurrence.
@@ -43,6 +43,7 @@ Identifiers you contribute live in your own namespace:
 | Registry | Form | Reserved |
 |---|---|---|
 | Placeholders | `%zentrix_<namespace>:<key>%` | `zentrix` |
+| Cosmetic types | `<plugin namespace>:<key>`, from `CosmeticTypeKey.of(plugin, key)` | `zentrix` |
 | Item providers | `<namespace>:<id>` | `custom`, `itemsadder`, `nexo`, `minecraft`, `zentrix` |
 | Locale messages | keys you register under your plugin | built-in keys can only be overridden through `registerOverrides` |
 
@@ -61,6 +62,7 @@ Every contribution point declares how several contributions combine.
 | Item providers | Built-in prefixes (`custom:`, `itemsadder:`, `nexo:`) always win; then the provider owning the namespace; then vanilla materials. |
 | Compass target filters | All filters must accept a target. |
 | Locale overrides | Layered over the active locale file by `priority`; removing a layer restores the next value without rewriting the file. |
+| Cosmetic types | One registration per key. Types list in `/cosmetics` after the built-in categories, in registration order. |
 
 Rules of thumb:
 
@@ -98,7 +100,47 @@ Write an **ordinary addon** with `GameplayHookService` and events when the mecha
 match, such as server-wide rules or integrations. It runs after the match's scenarios, so selected
 scenarios keep deciding first.
 
-## 6. Supported surface
+## 6. Cosmetics: your own menu, your own types
+
+`CosmeticsService` exposes the data and operations behind `/cosmetics` without any GUI helpers, so
+an addon can draw its own menu, mixing in other plugins' cosmetics as it likes:
+
+```java
+CosmeticsService cosmetics = ZentrixAPI.get().getCosmeticsService();
+for (CosmeticType type : cosmetics.getTypes()) {
+    if (!type.available()) continue;                       // e.g. gliders in the Free edition
+    for (CosmeticState state : cosmetics.getStates(player, type.key())) {
+        Cosmetic cosmetic = state.cosmetic();              // name, icon, lore, rarity, price, source
+        // state.owned(), state.unlocked(), state.selected(), state.equipped(), state.purchasable()
+    }
+}
+cosmetics.equip(player, key, id);      // the player's own choice, with CosmeticSelect/EquipEvent
+cosmetics.purchase(player, key, id);   // pays with Zentrix's currency, then unlocks
+cosmetics.startPreview(player, key, id);
+```
+
+**Selected** is the stored choice; **equipped** is what is in effect - the choice while the player
+can still use it, otherwise the type's default.
+
+To add a type of your own, register a `CosmeticTypeDefinition` with a `CosmeticHandler`:
+
+```java
+Registration hats = cosmetics.registerType(this,
+    CosmeticTypeDefinition.builder("hats")
+        .name("&eHats")
+        .icon(new ItemStack(Material.LEATHER_HELMET))
+        .triggers(CosmeticMoment.GAME_START, CosmeticMoment.GAME_LEAVE)
+        .previews(true)
+        .build(),
+    new HatHandler());   // lists CosmeticDefinitions, reacts to triggers, shows previews
+```
+
+It then shows in `/cosmetics`, is stored in every storage backend under
+`cosmetics.addon.<namespace>.<key>`, honours each cosmetic's permission and price, and its handler
+hears each player's equipped cosmetic at the listed `CosmeticMoment`s. Ownership survives the type
+being unregistered and counts again once it returns. Custom types are Premium only.
+
+## 7. Supported surface
 
 Only `dev.itsharshxd.zentrix.api` is supported. Classes under `dev.itsharshxd.plugin.zentrix`, and
 relocated libraries shaded into the Zentrix jar, are internal: they change without notice, may be
