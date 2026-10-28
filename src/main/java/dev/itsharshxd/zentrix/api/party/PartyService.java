@@ -153,6 +153,18 @@ public interface PartyService {
      */
     int getMaxPartySize();
 
+    /**
+     * Gets the maximum size of the party a player leads, which their perk tier in
+     * {@code perks.yml} can change.
+     *
+     * @param leader The party's current leader
+     * @return The maximum party size for that leader
+     * @since 1.9.0
+     */
+    default int getMaxPartySize(@NotNull Player leader) {
+        return getMaxPartySize();
+    }
+
     // ==========================================
     // Invitations (since 1.8.0)
     // ==========================================

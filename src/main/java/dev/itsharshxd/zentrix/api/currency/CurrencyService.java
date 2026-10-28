@@ -254,4 +254,22 @@ public interface CurrencyService {
             @NotNull UUID playerId, @NotNull String source) {
         return setBalance(playerId, getStartingBalance(), source);
     }
+
+    /**
+     * The multiplier applied to the match rewards of {@code gameplay/economy.yml} this player
+     * earns, from their permission nodes such as {@code zentrix.multiplier.1.5}. The highest node
+     * applies; nodes do not stack.
+     *
+     * <p>Only positive match rewards are multiplied, before
+     * {@link dev.itsharshxd.zentrix.api.events.currency.CurrencyRewardEvent} sees them. Penalties,
+     * administrator commands and addon transactions such as {@link #deposit(UUID, double, String)}
+     * never are.
+     *
+     * @param player The player
+     * @return 1.0 when the player has no multiplier node or multipliers are switched off
+     * @since 1.9.0
+     */
+    default double getRewardMultiplier(@NotNull org.bukkit.entity.Player player) {
+        return 1.0D;
+    }
 }

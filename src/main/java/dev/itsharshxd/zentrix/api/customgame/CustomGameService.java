@@ -11,7 +11,8 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Player-hosted custom games: listing, joining and moderating them.
  *
- * <p>Hosts draft and publish games through the custom games menu; this service exposes the
+ * <p>Hosts draft and publish games through the custom games menu, when their perk tier allows
+ * {@link dev.itsharshxd.zentrix.api.perk.Perk#CUSTOM_GAMES_CREATE} (since 1.10.0); this service exposes the
  * published games and the same join, cancel and terminate operations the menus use, so an addon
  * can build its own listings or moderation tools. Each change of state fires
  * {@link dev.itsharshxd.zentrix.api.events.customgame.CustomGameStateChangeEvent}; a successful

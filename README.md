@@ -24,7 +24,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly("com.github.ItsHarshXD:ZentrixAPI:1.8.0")
+    compileOnly("com.github.ItsHarshXD:ZentrixAPI:1.12.0")
 }
 ```
 
@@ -36,7 +36,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'com.github.ItsHarshXD:ZentrixAPI:1.8.0'
+    compileOnly 'com.github.ItsHarshXD:ZentrixAPI:1.12.0'
 }
 ```
 
@@ -53,7 +53,7 @@ dependencies {
 <dependency>
     <groupId>com.github.ItsHarshXD</groupId>
     <artifactId>ZentrixAPI</artifactId>
-    <version>1.8.0</version>
+    <version>1.12.0</version>
     <scope>provided</scope>
 </dependency>
 ```
@@ -101,7 +101,7 @@ api.getCurrencyService().getBalance(player);
 
 | | Supported |
 |---|---|
-| API contract | 1.8.0, reported at runtime by `ZentrixAPI.get().getAPIVersion()` and `ApiVersion.CURRENT` |
+| API contract | 1.12.0, reported at runtime by `ZentrixAPI.get().getAPIVersion()` and `ApiVersion.CURRENT` |
 | Server software | Paper or Purpur |
 | Minecraft | 1.21.9 – 26.3; 26.3 support is in beta and flagged by the startup report and `ServerPlatform#beta()` |
 | Java | 21 for 1.21.x servers; 26.x servers need Java 25. The API itself is compiled for Java 21 |
