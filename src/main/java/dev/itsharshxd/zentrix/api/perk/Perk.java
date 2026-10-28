@@ -41,6 +41,21 @@ public enum Perk {
     CUSTOM_GAMES_BYPASS_PUBLISH_LIMIT("custom-games.bypass-publish-limit", Type.TOGGLE),
     /** The largest a party may grow, decided by its current leader. */
     PARTY_MAX_SIZE("party.max-size", Type.NUMBER),
+    /**
+     * How many friends a player may have. Asked as a friend is added, so a player already past a
+     * lowered limit keeps their friends.
+     *
+     * @since 1.12.0
+     */
+    FRIENDS_MAX_FRIENDS("friends.max-friends", Type.NUMBER),
+    /**
+     * A bonus, in percent, on the currency a player earns from match rewards: {@code 50} pays
+     * one and a half times as much. Boosts add to it. Penalties are never raised, and a reward
+     * multiplier permission node a player also holds applies instead when it is higher.
+     *
+     * @since 1.12.0
+     */
+    REWARDS_BONUS("rewards.bonus", Type.NUMBER),
     /** Whether a player may use the team changer in a waiting lobby. */
     TEAM_CHANGER("team-changer", Type.TOGGLE);
 
