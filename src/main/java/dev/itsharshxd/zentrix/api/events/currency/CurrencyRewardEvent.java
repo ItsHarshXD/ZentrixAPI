@@ -20,6 +20,11 @@ import org.jetbrains.annotations.Nullable;
  * queued; {@link CurrencyChangeEvent} still fires for the resulting change. A reward whose amount is
  * zero after this event is not paid and sends no message.
  *
+ * <p>The amount already includes Zentrix's reward multiplier, such as the player's
+ * {@code rewards.bonus} perk or a {@code zentrix.multiplier.*} permission.
+ * {@link #getBaseAmount()} and {@link #getMultiplier()} expose it, so an addon's boost can replace
+ * or build on it deliberately instead of stacking on it unnoticed.
+ *
  * <p>Fired on the main thread, and only while a listener is registered.
  *
  * @since 1.8.0
@@ -31,7 +36,9 @@ public final class CurrencyRewardEvent extends ZentrixEvent implements Cancellab
     private final Player player;
     private final CurrencyEventType rewardType;
     private final ZentrixGame game;
+    private final double baseAmount;
     private final double configuredAmount;
+    private final double multiplier;
     private double amount;
     private boolean cancelled;
 
@@ -40,12 +47,34 @@ public final class CurrencyRewardEvent extends ZentrixEvent implements Cancellab
             @NotNull CurrencyEventType rewardType,
             @Nullable ZentrixGame game,
             double amount) {
+        this(player, rewardType, game, amount, 1.0D);
+    }
+
+    /**
+     * Constructs a reward whose amount already includes Zentrix's reward multiplier.
+     *
+     * @param baseAmount   the amount before the multiplier
+     * @param multiplier   the multiplier Zentrix applied, such as the player's {@code rewards.bonus}
+     *                     perk; 1.0 for none
+     * @since 1.13.0
+     */
+    public CurrencyRewardEvent(
+            @NotNull Player player,
+            @NotNull CurrencyEventType rewardType,
+            @Nullable ZentrixGame game,
+            double baseAmount,
+            double multiplier) {
         super(false);
+        if (!Double.isFinite(multiplier) || multiplier < 0) {
+            throw new IllegalArgumentException("Reward multiplier must be a finite, non-negative number");
+        }
         this.player = player;
         this.rewardType = rewardType;
         this.game = game;
-        this.configuredAmount = amount;
-        this.amount = amount;
+        this.baseAmount = baseAmount;
+        this.multiplier = multiplier;
+        this.configuredAmount = multiply(baseAmount, multiplier);
+        this.amount = configuredAmount;
     }
 
     /** The player being rewarded. */
@@ -67,11 +96,45 @@ public final class CurrencyRewardEvent extends ZentrixEvent implements Cancellab
     }
 
     /**
-     * The amount Zentrix decided before any listener: the configured reward, or the amount an
-     * earlier, more specific event such as {@code PlayerKillEvent} settled on.
+     * The amount Zentrix decided before any listener, after its {@linkplain #getMultiplier() reward
+     * multiplier}: the configured reward, or the amount an earlier, more specific event such as
+     * {@code PlayerKillEvent} settled on, raised by the multiplier.
      */
     public double getConfiguredAmount() {
         return configuredAmount;
+    }
+
+    /**
+     * The amount before Zentrix's reward multiplier: the configured reward, or the amount an earlier,
+     * more specific event such as {@code PlayerKillEvent} settled on.
+     *
+     * @since 1.13.0
+     */
+    public double getBaseAmount() {
+        return baseAmount;
+    }
+
+    /**
+     * The reward multiplier Zentrix already applied, such as the player's {@code rewards.bonus}
+     * perk or a {@code zentrix.multiplier.*} permission. The amount includes it: an addon that
+     * boosts the reward can compare against it rather than stack on it unnoticed.
+     *
+     * @return the multiplier; 1.0 when none
+     * @since 1.13.0
+     */
+    public double getMultiplier() {
+        return multiplier;
+    }
+
+    /**
+     * How much the reward multiplier added to {@linkplain #getBaseAmount() the base amount}, before
+     * any listener: {@code getConfiguredAmount() - getBaseAmount()}.
+     *
+     * @return the bonus; 0 when no multiplier applied
+     * @since 1.13.0
+     */
+    public double getBonusAmount() {
+        return configuredAmount - baseAmount;
     }
 
     /** The amount that will be paid; negative for a penalty. */
@@ -111,5 +174,13 @@ public final class CurrencyRewardEvent extends ZentrixEvent implements Cancellab
     @NotNull
     public static HandlerList getHandlerList() {
         return HANDLERS;
+    }
+
+    /** The same rounding Zentrix's currency rewards use, so a listener sees the amount that pays. */
+    private static double multiply(double amount, double multiplier) {
+        if (multiplier == 1.0D) {
+            return amount;
+        }
+        return Math.round(amount * multiplier * 100.0D) / 100.0D;
     }
 }

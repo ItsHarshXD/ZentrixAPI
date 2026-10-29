@@ -74,8 +74,35 @@ public interface CosmeticHandler {
     }
 
     /**
-     * Shows a cosmetic to a player for a while, as the cosmetics menu's right-click does.
-     * Zentrix closes the menu first and opens it again once {@code onFinish} runs.
+     * Shows a cosmetic to a player for a while, as the cosmetics menu's right-click does, where
+     * and how the server chose.
+     *
+     * <p>In the showcase, the player is taken to a viewing spot and watches a still model of
+     * themselves: show the cosmetic at {@link CosmeticPreview#location()}, not on the player.
+     * This default calls {@link #startPreview(Player, CosmeticDefinition, Runnable)}, which shows
+     * on the player, so a handler that can only do that still works there.
+     *
+     * <p>Zentrix closes the menu first and opens it again once {@code onFinish} runs.
+     *
+     * @param preview  where the preview shows, and whether it is in the showcase
+     * @param onFinish to run once the preview has finished on its own; not after
+     *                 {@link #stopPreview}
+     * @return whether it shows; false, the default, when this type has no previews
+     * @since 1.13.0
+     */
+    default boolean startPreview(@NotNull Player player, @NotNull CosmeticDefinition cosmetic,
+                                 @NotNull CosmeticPreview preview, @NotNull Runnable onFinish) {
+        return startPreview(player, cosmetic, onFinish);
+    }
+
+    /**
+     * Shows a cosmetic to a player for a while, on the player, as the cosmetics menu's
+     * right-click does in place.
+     *
+     * <p>Called by the default
+     * {@link #startPreview(Player, CosmeticDefinition, CosmeticPreview, Runnable)} for a handler
+     * that does not override the location-aware form. Zentrix closes the menu first and opens it
+     * again once {@code onFinish} runs.
      *
      * @param onFinish to run once the preview has finished on its own; not after
      *                 {@link #stopPreview}

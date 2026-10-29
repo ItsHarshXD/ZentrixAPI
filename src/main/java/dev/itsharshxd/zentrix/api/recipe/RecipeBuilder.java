@@ -318,7 +318,7 @@ public class RecipeBuilder {
      * <p>
      * The pattern is an array of 1-3 strings, each representing a row
      * of the crafting grid. Each character maps to an ingredient.
-     * Use a space character for empty slots.
+     * Use a space or {@code '.'} for empty slots.
      * </p>
      *
      * <p>Example patterns:</p>
@@ -331,9 +331,13 @@ public class RecipeBuilder {
      *
      * // 1x3 pattern (stick-like)
      * .pattern("D", "D", "D")
+     *
+     * // Empty corners, read like a crafting grid
+     * .pattern(".D.", "DSD", ".D.")
      * }</pre>
      *
-     * @param pattern The pattern rows (1-3 rows, each 1-3 characters)
+     * @param pattern The pattern rows (1-3 rows, each 1-3 characters); {@code '.'} is read as an
+     *                empty slot, the same as a space
      * @return This builder for chaining
      * @throws IllegalArgumentException if pattern is invalid
      */
@@ -343,6 +347,7 @@ public class RecipeBuilder {
         if (pattern.length == 0 || pattern.length > 3) {
             throw new IllegalArgumentException("Pattern must have 1-3 rows");
         }
+        String[] normalized = new String[pattern.length];
         for (int i = 0; i < pattern.length; i++) {
             String row = pattern[i];
             if (row == null) {
@@ -350,6 +355,8 @@ public class RecipeBuilder {
                     "Pattern row " + i + " cannot be null"
                 );
             }
+            // '.' reads the way a crafting grid's empty slots do, as a space does here.
+            row = row.replace('.', ' ');
             if (row.isEmpty() || row.length() > 3) {
                 throw new IllegalArgumentException(
                     "Each pattern row must be 1-3 characters, row " +
@@ -358,29 +365,31 @@ public class RecipeBuilder {
                         row.length()
                 );
             }
+            normalized[i] = row;
         }
-        this.pattern = Arrays.copyOf(pattern, pattern.length);
+        this.pattern = normalized;
         return this;
     }
 
     /**
      * Maps a pattern character to an ingredient item.
      * <p>
-     * Each unique character in the pattern (except spaces) should be
-     * mapped to an ingredient using this method.
+     * Each unique character in the pattern (except spaces and {@code '.'}, which are empty slots)
+     * should be mapped to an ingredient using this method.
      * </p>
      *
-     * @param key  The pattern character (must not be a space)
+     * @param key  The pattern character (must not be a space or {@code '.'})
      * @param item The ingredient item for this character
      * @return This builder for chaining
-     * @throws IllegalArgumentException if item is null or key is a space
+     * @throws IllegalArgumentException if item is null or key is a space or {@code '.'}
      */
     @NotNull
     public RecipeBuilder ingredient(char key, @NotNull ItemStack item) {
         Objects.requireNonNull(item, "Ingredient cannot be null");
-        if (key == ' ') {
+        if (key == ' ' || key == '.') {
             throw new IllegalArgumentException(
-                "Cannot map space character to an ingredient - spaces represent empty slots"
+                "Cannot map " + (key == ' ' ? "space" : "'.'") +
+                    " to an ingredient - both represent empty slots"
             );
         }
         this.ingredientMap.put(key, item.clone());

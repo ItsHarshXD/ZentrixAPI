@@ -77,6 +77,8 @@ public class CurrencyChangeEvent extends ZentrixEvent implements Cancellable {
     private double newBalance;
     private final ChangeReason reason;
     private final String source;
+    private final double multiplier;
+    private final double bonusAmount;
     private boolean cancelled;
 
     /**
@@ -95,6 +97,25 @@ public class CurrencyChangeEvent extends ZentrixEvent implements Cancellable {
                                double newBalance,
                                @NotNull ChangeReason reason,
                                @Nullable String source) {
+        this(playerId, playerName, oldBalance, newBalance, reason, source, 1.0D, 0.0D);
+    }
+
+    /**
+     * Constructs a new CurrencyChangeEvent carrying the reward multiplier Zentrix applied.
+     *
+     * @param multiplier  the multiplier already included in {@code newBalance}, such as the
+     *                    player's {@code rewards.bonus} perk; 1.0 when none
+     * @param bonusAmount how much the multiplier added to the requested change; 0 when none
+     * @since 1.13.0
+     */
+    public CurrencyChangeEvent(@NotNull UUID playerId,
+                               @NotNull String playerName,
+                               double oldBalance,
+                               double newBalance,
+                               @NotNull ChangeReason reason,
+                               @Nullable String source,
+                               double multiplier,
+                               double bonusAmount) {
         super(false);
         this.playerId = playerId;
         this.playerName = playerName;
@@ -102,6 +123,8 @@ public class CurrencyChangeEvent extends ZentrixEvent implements Cancellable {
         this.newBalance = newBalance;
         this.reason = reason;
         this.source = source;
+        this.multiplier = multiplier;
+        this.bonusAmount = bonusAmount;
         this.cancelled = false;
     }
 
@@ -200,6 +223,49 @@ public class CurrencyChangeEvent extends ZentrixEvent implements Cancellable {
      */
     public double getChangeAmount() {
         return newBalance - oldBalance;
+    }
+
+    /**
+     * Gets the reward multiplier Zentrix applied to this change, such as the player's
+     * {@code rewards.bonus} perk or a {@code zentrix.multiplier.*} permission.
+     * <p>
+     * The change already includes it. An addon that boosts rewards can compare against it rather
+     * than stack on it unnoticed.
+     * </p>
+     *
+     * @return The multiplier; 1.0 when none
+     * @since 1.13.0
+     */
+    public double getMultiplier() {
+        return multiplier;
+    }
+
+    /**
+     * Gets how much of the requested change Zentrix's reward multiplier added, before any listener.
+     * <p>
+     * Listeners may change the final balance afterwards, so this is the bonus the multiplier
+     * contributed to the change as it was requested.
+     * </p>
+     *
+     * @return The bonus amount; 0 when no multiplier applied
+     * @since 1.13.0
+     */
+    public double getBonusAmount() {
+        return bonusAmount;
+    }
+
+    /**
+     * Gets the requested change without the reward multiplier's bonus.
+     * <p>
+     * This is {@code getChangeAmount() - getBonusAmount()}, so an addon can base its own boost on
+     * the reward before Zentrix's multiplier, or add to the final change deliberately.
+     * </p>
+     *
+     * @return The change with Zentrix's reward bonus removed
+     * @since 1.13.0
+     */
+    public double getBaseChangeAmount() {
+        return getChangeAmount() - bonusAmount;
     }
 
     /**
