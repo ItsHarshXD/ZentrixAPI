@@ -2,7 +2,7 @@
 
 This guide explains how addon contributions are owned, ordered and cleaned up, so several addons
 can customize the same Zentrix feature without depending on load order or on Zentrix internals.
-It covers API 1.12.0. For threading and result semantics see [THREADING.md](THREADING.md).
+It covers API 1.13.0. For threading and result semantics see [THREADING.md](THREADING.md).
 
 ## 1. Ways to customize a feature
 
@@ -139,6 +139,12 @@ It then shows in `/cosmetics`, is stored in every storage backend under
 `cosmetics.addon.<namespace>.<key>`, honours each cosmetic's permission and price, and its handler
 hears each player's equipped cosmetic at the listed `CosmeticMoment`s. Ownership survives the type
 being unregistered and counts again once it returns. Custom types are Premium only.
+
+When the server previews in the showcase, a type's `CosmeticHandler` is told to show at the
+model's location: override
+`startPreview(Player, CosmeticDefinition, CosmeticPreview, Runnable)` and use
+`preview.location()`. The older `startPreview(Player, CosmeticDefinition, Runnable)` still runs,
+on the player, for handlers that do not.
 
 ## 7. Supported surface
 

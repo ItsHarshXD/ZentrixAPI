@@ -350,6 +350,10 @@ public interface CosmeticsService {
      * {@link dev.itsharshxd.zentrix.api.events.cosmetics.CosmeticPreviewEvent} may refuse it. A
      * preview does not need the player to own the cosmetic. Classes have no previews. Main thread.
      *
+     * <p>When the server previews in the showcase, the preview shows on the player's still model
+     * instead, addons' types included. Their handler receives a
+     * {@link CosmeticPreview} with the model's location.</p>
+     *
      * @return whether the preview shows
      * @since 1.11.0
      */
