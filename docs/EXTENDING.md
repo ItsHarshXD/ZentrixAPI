@@ -2,7 +2,7 @@
 
 This guide explains how addon contributions are owned, ordered and cleaned up, so several addons
 can customize the same Zentrix feature without depending on load order or on Zentrix internals.
-It covers API 1.13.0. For threading and result semantics see [THREADING.md](THREADING.md).
+It covers API 1.14.0. For threading and result semantics see [THREADING.md](THREADING.md).
 
 ## 1. Ways to customize a feature
 
