@@ -511,7 +511,9 @@ public interface RecipeService {
     /**
      * Reloads all recipes from disk.
      * <p>
-     * This clears the recipe registry, then reloads the files.
+     * This clears the recipe registry, then reloads the files. Recipes registered through this
+     * service that no file describes are registered again afterwards, so add-ons do not have to
+     * register them again. A file takes precedence over a service registration for the same ID.
      * </p>
      */
     void reloadRecipes();

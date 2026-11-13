@@ -2,7 +2,7 @@
 
 This guide explains how addon contributions are owned, ordered and cleaned up, so several addons
 can customize the same Zentrix feature without depending on load order or on Zentrix internals.
-It covers API 1.14.0. For threading and result semantics see [THREADING.md](THREADING.md).
+It covers API 1.15.0. For threading and result semantics see [THREADING.md](THREADING.md).
 
 ## 1. Ways to customize a feature
 
@@ -12,7 +12,7 @@ Zentrix offers four kinds of extension point. Each service documents which one i
 |---|---|---|
 | **Observe** | A notification after something happened. It cannot be cancelled. | `SpectatorStartEvent`, `CosmeticOwnershipChangeEvent`, `LootRefillEvent`, `CustomGameStateChangeEvent`, `SettingChangeEvent`, `IdentityUnmaskEvent` |
 | **Intercept** | A Bukkit event fired *before* Zentrix applies a decision. Cancelling it or changing its documented mutable fields changes the outcome. | `ChatMessageEvent`, `ClassAbilityProcEvent`, `ClassKitGrantEvent`, `LootContainerFillEvent`, `RevivalItemConsumeEvent`, `GliderDeployEvent`, `VictoryCelebrationEvent`, `IdentityMaskEvent`, `CosmeticSelectEvent`, `CosmeticEquipEvent`, `CosmeticUnlockEvent`, `CosmeticPreviewEvent`, `CosmeticTriggerEvent`, `SpectatorCameraEvent` |
-| **Contribute** | An owned registration that Zentrix consults every time a decision is made. | `GameplayHookService`, `ScoreboardService` sidebar contributors, `ItemService#registerItemProvider`, `PlaceholderService`, `LocaleService#registerMessages`, `CompassTrackerService#registerTargetFilter`, `CosmeticsService#registerType` |
+| **Contribute** | An owned registration that Zentrix consults every time a decision is made. | `GameplayHookService`, `ScoreboardService` sidebar contributors, `ItemService#registerItemProvider`, `PlaceholderService`, `LocaleService#registerMessages`, `CompassTrackerService#registerTargetFilter`, `CosmeticsService#registerType`, `GuiLayoutService#registerBackgroundCondition`, `GuiLayoutService#registerBackgroundResolver` |
 | **Operate** | A service method that performs the same operation a command or menu performs, with a result. | `CustomGameService#join`, `PhaseService#advancePhase`, `SettingsService#set`, `GameLootService#refill`, `RevivalService#checkRevival`, `CosmeticsService#grant`, `CosmeticsService#equip`, `CosmeticsService#purchase` |
 
 Prefer the narrowest kind that does the job: observe when you only react, intercept when you need
@@ -44,6 +44,7 @@ Identifiers you contribute live in your own namespace:
 |---|---|---|
 | Placeholders | `%zentrix_<namespace>:<key>%` | `zentrix` |
 | Cosmetic types | `<plugin namespace>:<key>`, from `CosmeticTypeKey.of(plugin, key)` | `zentrix` |
+| Menu background conditions and values | `<plugin namespace>:<name>`, from `MenuBackgroundCondition.nameOf(plugin, name)` | - |
 | Item providers | `<namespace>:<id>` | `custom`, `itemsadder`, `nexo`, `minecraft`, `zentrix` |
 | Locale messages | keys you register under your plugin | built-in keys can only be overridden through `registerOverrides` |
 
@@ -63,6 +64,8 @@ Every contribution point declares how several contributions combine.
 | Compass target filters | All filters must accept a target. |
 | Locale overrides | Layered over the active locale file by `priority`; removing a layer restores the next value without rewriting the file. |
 | Cosmetic types | One registration per key. Types list in `/cosmetics` after the built-in categories, in registration order. |
+| Menu background conditions and values | One registration per name. Server owners combine them with built-in conditions in `guis.yml`. |
+| Menu background resolvers | Resolvers for the menu first, then those for every menu, each in registration order. The first one that does not `keep()` decides. |
 
 Rules of thumb:
 
@@ -146,7 +149,44 @@ model's location: override
 `preview.location()`. The older `startPreview(Player, CosmeticDefinition, Runnable)` still runs,
 on the player, for handlers that do not.
 
-## 7. Supported surface
+## 7. Menu backgrounds
+
+Server owners give menus resource-pack textures with `background` blocks in `guis.yml`. Zentrix
+decides a menu's texture after the menu placed its buttons and before it opens, and again when it
+redraws, from what it shows. `GuiLayoutService` lets an addon take part (all on the main thread):
+
+```java
+GuiLayoutService layouts = ZentrixAPI.get().getGuiLayoutService();
+
+// A condition owners write as myranks:rank, e.g.  when: { myranks:rank: gold }
+//                                         or      when: "myranks:rank(gold) and page > 1"
+layouts.registerBackgroundCondition(this, "rank",
+    (context, argument) -> ranks.has(context.getPlayer(), argument));
+
+// A value owners compare, e.g.  when: "myranks:level >= 10"
+layouts.registerBackgroundValue(this, "level", context -> ranks.level(context.getPlayer()));
+
+// Choose the texture yourself: here, every menu for players with a theme selected.
+layouts.registerBackgroundResolver(this, MenuBackgroundResolver.ALL_MENUS, (context, configured) ->
+    themes.of(context.getPlayer())
+        .map(theme -> MenuBackgroundChoice.glyphs(theme.glyphs(context.getMenuId())))
+        .orElse(MenuBackgroundChoice.keep()));
+
+// What a menu shows: elements and their states, list sizes, page, view and the texture chosen.
+layouts.getOpenMenu(player).ifPresent(menu -> menu.isShown("disband"));
+
+// Your condition's answer changed while the menu is open: decide it again now.
+layouts.refreshBackground(player);
+```
+
+Conditions see the same `MenuView` the built-in `shown`, `state`, `entries`, `page` and `view`
+conditions use. `guis.yml` is read again when a condition or value registers or ends, so rules
+using it start working at once, and conditions registered while the server starts are in place
+before any rule is checked. Glyphs a resolver returns are written as in `guis.yml` (a palette
+name or the characters) and get the owner's shared colour and reset. Resolvers rest while the owner
+has `backgrounds.enabled: false`, and are refused in the Free edition.
+
+## 8. Supported surface
 
 Only `dev.itsharshxd.zentrix.api` is supported. Classes under `dev.itsharshxd.plugin.zentrix`, and
 relocated libraries shaded into the Zentrix jar, are internal: they change without notice, may be

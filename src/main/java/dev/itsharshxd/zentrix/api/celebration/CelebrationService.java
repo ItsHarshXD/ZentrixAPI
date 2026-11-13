@@ -14,9 +14,8 @@ import org.jetbrains.annotations.NotNull;
  * addon change or suppress those choices before playback starts. A celebration that fails never
  * delays the match's restart.
  *
- * <p>Celebrations are not part of the Free edition: there {@link #isAvailable()} is {@code false},
- * the catalog is empty and previews fail. Methods that change something must be called on the main
- * thread.
+ * <p>Celebrations are part of every edition, Free included, as are the victory-effect cosmetics
+ * that choose them. Methods that change something must be called on the main thread.
  *
  * @since 1.8.0
  */
