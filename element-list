@@ -50,6 +50,7 @@ dev.itsharshxd.zentrix.api.gamerule
 dev.itsharshxd.zentrix.api.gametype
 dev.itsharshxd.zentrix.api.glider
 dev.itsharshxd.zentrix.api.gui
+dev.itsharshxd.zentrix.api.gui.background
 dev.itsharshxd.zentrix.api.identity
 dev.itsharshxd.zentrix.api.item
 dev.itsharshxd.zentrix.api.locale
